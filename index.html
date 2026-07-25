@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--  
+Thank you to Nicolai Skogstad for inspiring me to make this website.
+A lot of the design choices behind this site is inspired by his own (nicolai.skogstad.com)
+Thank you to Emily Wong for creating the icon for the site!
+
+Click the source symbol on the left hand side for a surprise :)
+
+Disclaimer: Although majority of the work put into this website was done by me (Tuong Bao Nguyen, 2026), AI assisted in certain parts/functionalities of the site, notably, part of the animation scripts.
+-->
+<head>
+<meta charset="UTF-8">
+<title>Tuong N | EE Portfolio</title>
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<style>
+  :root{
+    --bg:#0a0e14;
+    --bg-alt:#0f151d;
+    --panel:#131a24;
+    --line:#22303f;
+    --accent:#4cc9f0;
+    --accent2:#f5b942;
+    --text:#e9eef2;
+    --text-dim:#8ea0ad;
+    --radius:14px;
+  }
+  html[data-theme="light"]{
+    --bg:#faf6ee;
+    --bg-alt:#f2ebda;
+    --panel:#fffdf7;
+    --line:#e4d8c0;
+    --accent:#6fa3c7;
+    --accent2:#e2a366;
+    --text:#3d3527;
+    --text-dim:#8a7d68;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    transition:background .35s ease,color .35s ease;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  /*Disclaimer: Although majority of the work was done by me (Tuong Bao Nguyen), 
+  AI assisted in certain parts/functionalities of the site, notably, the animations.
+  
+  Thank you to Nicolai Skogstad (nicolai.skogstad.com) for inspiring me to make this website 2026*/
+
+  .circuit-bg{
+    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;
+    transition:opacity .35s ease;
+  }
+  html[data-theme="light"] .circuit-bg{opacity:.3;}
+
+  .theme-fill{fill:var(--bg);transition:fill .35s ease;}
+  .deco-blue{color:var(--accent);transition:color .35s ease;}
+  .deco-amber{color:var(--accent2);transition:color .35s ease;}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 5%;
+    background:rgba(10,14,20,.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    transition:background .35s ease,border-color .35s ease;
+  }
+  html[data-theme="light"] nav{background:rgba(250,246,238,.8);}
+  .logo{font-weight:700;letter-spacing:1px;color:var(--accent);font-size:1.1rem;display: flex;
+    align-items: center;}
+  .logo span{color:var(--text-dim);}
+  .logo img {
+    width: 53px;
+    height: 53px;
+    margin-right: 12px;
+    transition: transform 0.2s ease;
+  }
+  .logo img:hover {
+    animation: wiggle 0.35s ease;
+  }
+
+  @keyframes wiggle {
+      0%   { transform: rotate(0deg) scale(1); }
+      25%  { transform: rotate(-10deg) scale(1.05); }
+      50%  { transform: rotate(10deg) scale(1.05); }
+      75%  { transform: rotate(-6deg) scale(1.05); }
+      100% { transform: rotate(0deg) scale(1); }
+  }
+  .nav-links{display:flex;align-items:center;gap:28px;}
+  .nav-links a{
+    font-size:.92rem;color:var(--text-dim);position:relative;transition:.25s;
+  }
+  .nav-links a:hover{color:var(--accent);}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:-6px;left:0;width:0;height:2px;
+    background:var(--accent);transition:.3s;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .theme-toggle{
+    border:1px solid var(--line);background:var(--panel);color:var(--text);
+    width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;font-size:1rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;transition:.25s;
+  }
+  .theme-toggle:hover{border-color:var(--accent);transform:translateY(-2px);}
+
+  section{
+    position:relative;z-index:1;
+    padding:70px 8% 70px;
+    max-width:1200px;margin:0 auto;
+  }
+
+  /* HERO */
+  #home{
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding-top:100px;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.3fr .7fr;gap:60px;align-items:center;
+  }
+  .eyebrow{
+    color:var(--accent);font-size:.85rem;letter-spacing:3px;text-transform:uppercase;
+    margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  }
+  .eyebrow::before{content:'';width:30px;height:2px;background:var(--accent);display:inline-block;}
+  h1.name{
+    font-size:clamp(2rem,4.2vw,3.4rem);
+    font-weight:800;line-height:1.3;white-space:nowrap;
+    padding-bottom:0.1em;
+    background:linear-gradient(120deg,var(--text) 100%,var(--accent)); /* idk if i want to keep this gradient or not*/
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hook{
+    font-size:clamp(1.05rem,2vw,1.35rem);
+    color:var(--text-dim);margin-top:18px;max-width:560px;
+  }
+  .impact-strip{
+    display:flex;gap:26px;margin-top:26px;flex-wrap:wrap;
+  }
+  .impact-item{font-size:.82rem;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+  .impact-item .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);}
+  .specs{
+    margin-top:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:560px;
+  }
+  .spec-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;transition:.35s ease;
+  }
+  .spec-label{font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);}
+  .spec-val{font-size:.95rem;margin-top:4px;color:var(--text);}
+  .spec-links{grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap;}
+  .pill{
+    border:1px solid var(--line);padding:8px 14px;border-radius:30px;font-size:.85rem;
+    display:flex;align-items:center;gap:6px;transition:.25s;
+  }
+  .pill:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+
+  .hero-visual{
+    position:relative;display:flex;align-items:center;justify-content:center;
+  }
+
+  .avatar-ring{
+    width:280px;height:280px;border-radius:50%;
+    background:var(--bg-alt);
+    border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    animation:float 5s ease-in-out infinite;
+    transition:background .35s ease,border-color .35s ease;
+  }
+  .avatar-ring::before{
+    content:'';position:absolute;inset:-8px;border-radius:50%;
+    border:1px dashed var(--accent);opacity:.4;
+    animation:spin 18s linear infinite;
+  }
+  .avatar-image{
+    width:95%;height:95%;border-radius:50%;
+    background:linear-gradient(135deg,var(--panel),var(--bg-alt));
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-dim);font-size:.85rem;text-align:center;padding:20px;
+    border:1px solid var(--line);
+  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  /* SECTION HEADERS */
+  .sec-head{margin-bottom:44px;}
+  .sec-tag{color:var(--accent);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;}
+  .sec-tag::before{content:'';width:30px;height:2px;background:var(--accent);display:inline-block;}
+  .bus-tag{
+    color:var(--accent2);border:1px solid var(--accent2);border-radius:5px;
+    padding:2px 8px;font-size:.7rem;letter-spacing:1.5px;
+  }
+  .eyebrow .bus-tag{margin-left:2px;}
+  .sec-title{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:800;margin-top:6px;}
+  .sec-sub{color:var(--text-dim);font-size:.95rem;margin-top:10px;max-width:640px;}
+  .sec-sub2{color:var(--text-dim);font-size:.90rem;margin-top:10px;margin-bottom:10px;max-width:1000px;}
+  .sec-sub3{color:var(--text-dim);font-size:.70rem;margin-top:10px;margin-bottom:20px;max-width:1000px;}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;}
+  .about-text{color:var(--text-dim);font-size:1rem;display:flex;flex-direction:column;}
+  .about-text p{margin-bottom:14px;}
+  .skills-wrap h3, .edu-wrap h3{
+    font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:16px;
+  }
+  .edu-wrap{margin-bottom:36px;}
+  .skill-tags{display:flex;flex-wrap:wrap;gap:10px;}
+  .skill-tag{
+    background:var(--panel);border:1px solid var(--line);padding:8px 14px;
+    border-radius:8px;font-size:.85rem;transition:.35s ease;
+  }
+  .skill-tag.hi{border-color:var(--accent);color:var(--accent);}
+
+  /* Education marker — electrical single-line-diagram segment */
+  .edu-timeline{display:flex;gap:18px;align-items:stretch;}
+  .edu-marker-single{flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
+  .uni-link:hover{text-decoration:underline;}
+  .uni-logo-link{flex-shrink:0;}
+  .uni-logo-link:hover .uni-logo-slot{border-color:var(--accent);color:var(--accent);}
+  .uni-logo-slot{
+    width:46px;height:46px;border:1px dashed var(--line);border-radius:8px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:.6rem;color:var(--text-dim);background:var(--bg-alt);margin-bottom:6px;
+    line-height:1.2;transition:.35s ease;
+  }
+  .edu-entries{display:flex;flex-direction:column;justify-content:space-between;flex:1;}
+  .edu-content{padding:6px 0;}
+  .edu-degree{font-weight:700;}
+  .edu-meta{color:var(--text-dim);font-size:.85rem;margin-top:2px;}
+  .edu-desc{color:var(--text-dim);font-size:.85rem;margin-top:8px;line-height:1.55;}
+
+  .hobbies-wrap{margin-top:24px;}
+  .hobbies-wrap h3{
+    font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:16px;
+  }
+  
+  .hobbies-wrap{margin-top:24px;}
+  .hobbies-wrap h3{
+    font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:16px;
+  }
+  /* Hobby carousel — center photo large, neighbors peeking on each side */
+  .hobby-carousel{margin-top:25px;
+    position: relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:15px;}
+  .peek-viewport{
+    position:relative;width:100%;height:150px;overflow:hidden;
+  }
+  .peek-track{
+    position:center;top:0;left:0;height:100%;
+    display:flex;align-items:center;gap:10px;
+    transition:transform .45s cubic-bezier(.65,0,.35,1);
+    will-change:transform;
+  }
+  .peek-slide{
+    flex:0 0 calc(20% - 10px);height:78%;border-radius:9px;overflow:hidden;
+    position:relative;cursor:pointer;background:var(--bg-alt);border:1px solid var(--line);
+    transition:transform .45s cubic-bezier(.65,0,.35,1),opacity .45s ease,height .45s ease,filter .45s ease,border-color .25s ease;
+  }
+  .peek-slide img{
+    width:100%;height:100%;object-fit:cover;display:block;user-select:none;-webkit-user-drag:none;
+  }
+  .peek-slide.placeholder{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    padding:6px;color:var(--text-dim);font-size:.62rem;border-style:dashed;
+  }
+  .peek-slide .label{
+    position:absolute;left:0;right:0;bottom:0;padding:7px 8px;font-size:.68rem;color:#fff;
+    background:linear-gradient(transparent,rgba(0,0,0,.65));
+    opacity:0;transition:opacity .3s ease;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .peek-slide.d0{height:100%;filter:saturate(1);opacity:1;z-index:5;cursor:zoom-in;border-color:var(--accent);}
+  .peek-slide.d0 .label{opacity:1;}
+  .peek-slide.d1{height:82%;filter:saturate(.8);opacity:.7;z-index:3;}
+  .peek-slide.d2{height:66%;filter:saturate(.55);opacity:.4;z-index:1;}
+  .peek-slide.dfar{height:66%;opacity:0;z-index:0;pointer-events:none;}
+  .peek-slide:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .peek-dots{display:flex;justify-content:center;gap:7px;margin-top:14px;}
+  .peek-dot{
+    width:6px;height:6px;border-radius:50%;border:none;background:var(--line);
+    padding:0;cursor:pointer;transition:background .2s,transform .2s;
+  }
+  .peek-dot.active{background:var(--accent);transform:scale(1.35);}
+  .peek-dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  @media(prefers-reduced-motion:reduce){
+    .peek-track,.peek-slide{transition:none;}
+  }
+  .jump-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:48px;
+    height:48px;
+    border:none;
+    border-radius:50%;
+    background:transparent;
+    color:var(--accent2);
+    font-size:28px;
+    cursor:pointer;
+    visibility: hidden;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity 0s, visibility 0s;
+    z-index:10;
+  }
+  .jump-arrow.show{
+      opacity:1;
+      visibility: visible;
+      pointer-events:auto;
+      transition:
+          opacity 0.3s ease 0.3s,
+          visibility 0s linear 0s;
+  }
+  .jump-arrow.left{
+      left:325px;      
+  }
+  .jump-arrow.right{
+      right:325px;
+  }
+  .jump-arrow:hover {
+      color: var(--accent);
+      text-shadow:
+          0 0 5px var(--accent),
+          0 0 10px var(--accent),
+          0 0 30px var(--accent),
+  }
+
+  /* CARDS: internships / projects */
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;margin-bottom:28px;
+    transition:.35s ease;
+  }
+  .card:hover{border-color:var(--accent);box-shadow:0 10px 30px -15px rgba(76,201,240,.25);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;}
+  .card-title{font-size:1.25rem;font-weight:700;}
+  .card-sub{color:var(--accent);font-size:.85rem;margin-top:4px;}
+  
+  .card-top-left{display:flex;gap:14px;align-items:flex-start;}
+  .company-logo-link{flex-shrink:0;}
+  .company-logo-slot{
+    width:56px;height:56px;border:1px dashed var(--line);border-radius:8px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-size:.62rem;color:var(--text-dim);background:var(--bg-alt);
+    transition:.25s;
+  }
+  .company-logo-link:hover .company-logo-slot{border-color:var(--accent);color:var(--accent);}
+  .card-company-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:2px;}
+  .card-company-link{
+    display:inline-block;color:var(--accent);font-size:1rem;font-weight:600;
+    transition:.2s;
+  }
+  .card-company-link:hover{text-decoration:underline;}
+  .card-location{color:var(--text-dim);font-size:.85rem;display:flex;align-items:center;gap:5px;}
+  .card-period{color:var(--text-dim);font-size:.85rem;white-space:nowrap;text-align:right;}
+
+  /* expand / collapse */
+  .card-toggle-btn{
+    margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--accent);
+    padding:8px 16px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:.25s;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .card-toggle-btn:hover{border-color:var(--accent);background:rgba(76,201,240,.08);}
+  .card-toggle-btn .chevron{display:inline-block;transition:transform .3s ease;font-size:.7rem;}
+  .card.expanded .card-toggle-btn .chevron{transform:rotate(180deg);}
+  .card-details{
+    max-height:0;overflow:hidden;opacity:0;padding:4px;margin:0 -4px;
+    transition:max-height .45s ease,opacity .3s ease,margin-top .45s ease;
+  }
+  .card.expanded .card-details{max-height:2200px;opacity:1;margin-top:16px;}
+
+  .card-imgs{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+  .img-slot{
+  width:140px;height:100px;border-radius:8px;border:1px dashed var(--line);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-dim);font-size:.72rem;text-align:center;padding:3px;
+  background:var(--bg-alt);transition:.35s ease,box-shadow .2s ease;
+  cursor:zoom-in;overflow:hidden;object-fit:contain;
+  }
+  .img-slot:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(76,201,240,.15);}
+  .img-slot img, .uni-logo-slot img, .company-logo-slot img{
+  width:100%;height:100%;object-fit:contain;border-radius:inherit;
+  min-width:0;min-height:0;display:block;
+  }
+
+  .lightbox-overlay{
+    position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);
+    display:none;align-items:center;justify-content:center;padding:40px;
+    cursor:zoom-out;
+  }
+  .lightbox-overlay.active{display:flex;}
+  .lightbox-content{
+    max-width:min(90vw,600px);max-height:85vh;overflow:auto;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:28px;display:flex;align-items:center;justify-content:center;
+    color:var(--text-dim);font-size:1rem;text-align:center;
+    transform:scale(.85);opacity:0;transition:transform .3s ease,opacity .3s ease;
+  }
+  .lightbox-overlay.active .lightbox-content{transform:scale(1);opacity:1;}
+  .lightbox-content img{max-width:100%;max-height:80vh;border-radius:8px;display:block;}
+
+  /* sub-tabs for academic / personal projects */
+  .subtabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
+  .subtab-btn{
+    padding:8px 16px;border-radius:20px;border:1px solid var(--line);
+    background:transparent;color:var(--text-dim);font-size:.82rem;cursor:pointer;transition:.25s;
+  }
+  .subtab-btn.active{background:var(--accent2);color:#1a1206;border-color:var(--accent2);font-weight:600;}
+  .subtab-panel{display:none;}
+  .subtab-panel.active{display:block;animation:fadeIn .4s ease;}
+
+  .coming-soon-card{text-align:center;padding:54px 28px;}
+  .coming-soon-icon{
+    font-size:2.6rem;display:inline-block;margin-bottom:18px;
+    animation:spin 4s linear infinite;
+  }
+  .coming-soon-card h4{font-size:1.3rem;font-weight:700;margin-bottom:8px;}
+  .coming-soon-card p{color:var(--text-dim);font-size:.9rem;margin-bottom:24px;}
+  .progress-track{
+    width:100%;max-width:280px;height:8px;background:var(--bg-alt);
+    border-radius:4px;overflow:hidden;margin:0 auto;position:relative;
+    border:1px solid var(--line);
+  }
+  .progress-fill{
+    position:absolute;top:0;left:-40%;width:40%;height:100%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;
+    animation:loadBar 1.8s ease-in-out infinite;
+  }
+  @keyframes loadBar{
+    0%{left:-40%;}
+    50%{left:60%;}
+    100%{left:100%;}
+  }
+
+  .card-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .col-label{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:8px;
+  }
+  .col-label.acc{color:var(--accent);}
+  ul.plain{list-style:none;color:var(--text-dim);font-size:.9rem;}
+  ul.plain li{margin-bottom:6px;padding-left:14px;position:relative;}
+  ul.plain li::before{content:'▹';position:absolute;left:0;color:var(--accent);}
+
+  .card-footer{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+  .skill-chip{
+    background:var(--bg-alt);border:1px solid var(--line);padding:5px 11px;
+    border-radius:6px;font-size:.78rem;color:var(--text-dim);transition:.35s ease;
+  }
+  .dl-btns{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap;}
+  .dl-btn{
+    display:flex;align-items:center;gap:6px;
+    background:transparent;border:1px solid var(--accent);color:var(--accent);
+    padding:8px 14px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:.25s;
+  }
+  .dl-btn:hover{background:var(--accent);color:#04121a;}
+
+  /* PROJECTS TABS */ 
+  .tabs{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap;}
+  .tab-btn{
+    padding:10px 20px;border-radius:30px;border:1px solid var(--line);
+    background:transparent;color:var(--text-dim);font-size:.9rem;cursor:pointer;transition:.25s;
+  }
+  .tab-btn.active{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:600;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;animation:fadeIn .4s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* CONTACT — heading left, cards centered */
+  .contact-links{display:flex;justify-content:center;gap:22px;margin-top:30px;flex-wrap:wrap;}
+  .contact-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:22px 34px;min-width:220px;transition:.35s ease;
+    display:block;text-align:left;
+  }
+  .contact-card:hover{border-color:var(--accent);transform:translateY(-4px);}
+  .contact-icon{font-size:1.6rem;margin-bottom:10px;color:var(--accent);}
+  .contact-label{font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;}
+  .contact-val{margin-top:4px;font-size:.95rem;}
+
+  footer{
+    position:relative;
+    padding:26px 5%;color:var(--text-dim);font-size:.82rem;
+    border-top:1px solid var(--line);
+    background:var(--panel);
+    text-align:center;transition:.35s ease;
+  }
+  footer .bus{color:var(--accent2);}
+  .footer-views{
+    position:absolute;right:5%;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--text-dim);
+    background:var(--bg-alt);border:1px solid var(--line);padding:6px 14px;border-radius:20px;
+    transition:.35s ease;
+  }
+
+  /* BUS RAIL — side scroll nav, source to ground, dashed current flow */
+  .bus-rail{
+    position:fixed;left:32px;top:50%;transform:translateY(-50%);
+    z-index:90;display:flex;flex-direction:column;align-items:center;
+  }
+  .rail-line-svg{
+    position:absolute;left:50%;top:0;transform:translateX(-50%);
+    height:100%;width:2px;overflow:visible;pointer-events:none;z-index:1;
+  }
+  .bus-line{stroke:var(--line);stroke-width:2;}
+  .bus-current{
+    stroke:var(--accent);stroke-width:2;stroke-dasharray:6 10;
+    animation:flow 1.4s linear infinite;
+  }
+  @keyframes flow{to{stroke-dashoffset:-32;}}
+
+  .bus-source, .bus-ground{
+    display:flex;align-items:center;justify-content:center;position:relative;z-index:2;
+    transform-origin:center;color:var(--line);
+  }
+  .bus-source{cursor:pointer;}
+  .bus-source.pulse-anim{animation:sourcePulse .7s ease;}
+  @keyframes sourcePulse{
+    0%{transform:scale(1);filter:none;}
+    45%{transform:scale(1.5);filter:drop-shadow(0 0 10px #f5b942);}
+    100%{transform:scale(1);filter:none;}
+  }
+  .travel-spark{
+    position:absolute;left:50%;top:0%;width:7px;height:7px;border-radius:50%;
+    background:var(--accent2);transform:translate(-50%,-50%);
+    box-shadow:0 0 10px var(--accent2);opacity:0;pointer-events:none;z-index:3;
+  }
+
+  .bus-node-wrap{
+    position:relative;display:flex;align-items:center;justify-content:center;
+    padding:32px 0;cursor:pointer;z-index:2;
+  }
+  .bus-dot{
+    width:14px;height:14px;border-radius:50%;background:var(--bg-alt);
+    border:2px solid var(--line);transition:.3s;flex-shrink:0;position:relative;z-index:2;
+  }
+  .bus-node-wrap.active .bus-dot{
+    border-color:var(--accent);background:var(--accent);
+    box-shadow:0 0 0 5px rgba(76,201,240,.15),0 0 14px rgba(76,201,240,.6);
+  }
+  .bus-dot.lit{
+    border-color:var(--accent2) !important;background:var(--accent2) !important;
+    box-shadow:0 0 0 6px rgba(245,185,66,.25),0 0 16px rgba(245,185,66,.8) !important;
+  }
+  .bus-letter{
+    position:absolute;left:24px;top:50%;transform:translateY(-50%);
+    font-size:.68rem;font-weight:700;color:var(--text-dim);letter-spacing:.5px;transition:.25s;
+  }
+  .bus-node-wrap.active .bus-letter{color:var(--accent);}
+
+  @media(max-width:1050px){
+    .bus-rail{left:16px;}
+  }
+  @media(max-width:900px){
+    .bus-rail{left:8px;transform:translateY(-50%) scale(0.85);}
+  }
+
+  @media(max-width:820px){
+    .hero-grid,.about-grid{grid-template-columns:1fr;}
+    .card-cols{grid-template-columns:1fr;}
+    .hero-visual{order:-1;margin-bottom:10px;}
+    .avatar-ring{width:200px;height:200px;}
+    .dl-btns{margin-left:0;width:100%;}
+    .code-window{width:100%;}
+    footer{padding-top:70px;}
+    .footer-views{position:static;transform:none;margin:14px auto 0;display:inline-flex;}
+    h1.name{white-space:normal;font-size:clamp(1.8rem,8vw,2.6rem);}
+  }
+</style>
+</head>
+<body>
+
+<svg class="circuit-bg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="#16202c" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect class="grid-bg" x="-80" y="-80" width="1360" height="960" fill="url(#grid)"/>
+
+  <!-- wind turbine, top right -->
+  <g class="deco-blue" opacity="0.55">
+    <line x1="860" y1="110" x2="860" y2="280" stroke="currentColor" stroke-width="2.5"/>
+    <circle cx="860" cy="110" r="4" fill="currentColor"/>
+    <g id="turbineBlades1" stroke="currentColor" stroke-width="2.5" fill="none">
+      <line x1="860" y1="110" x2="860" y2="65"/>
+      <line x1="860" y1="110" x2="898.97" y2="132.5"/>
+      <line x1="860" y1="110" x2="821.03" y2="132.5"/>
+    </g>
+  </g>
+
+  <!-- second, smaller wind turbine -->
+  <g class="deco-blue" opacity="0.35">
+    <line x1="930" y1="165" x2="930" y2="275" stroke="currentColor" stroke-width="2"/>
+    <circle cx="930" cy="165" r="3" fill="currentColor"/>
+    <g id="turbineBlades2" stroke="currentColor" stroke-width="2" fill="none">
+      <line x1="930" y1="165" x2="930" y2="130"/>
+      <line x1="930" y1="165" x2="960.31" y2="182.5"/>
+      <line x1="930" y1="165" x2="899.69" y2="182.5"/>
+    </g>
+  </g>
+
+  <!-- solar panel array, bottom left -->
+  <g class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.55">
+    <rect x="70" y="500" width="150" height="90"/>
+    <line x1="120" y1="500" x2="120" y2="590"/>
+    <line x1="170" y1="500" x2="170" y2="590"/>
+    <line x1="70" y1="545" x2="220" y2="545"/>
+  </g>
+  <!-- sun above panels (pulses continuously, independent of scroll) -->
+  <g id="sunGroup" class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.5">
+    <circle cx="145" cy="420" r="22"/>
+    <line x1="177" y1="420" x2="189" y2="420"/>
+    <line x1="167.56" y1="442.56" x2="176.14" y2="451.14"/>
+    <line x1="145" y1="452" x2="145" y2="464"/>
+    <line x1="122.44" y1="442.56" x2="113.86" y2="451.14"/>
+    <line x1="113" y1="420" x2="101" y2="420"/>
+    <line x1="122.44" y1="397.44" x2="113.86" y2="388.86"/>
+    <line x1="145" y1="388" x2="145" y2="376"/>
+    <line x1="167.56" y1="397.44" x2="176.14" y2="388.86"/>
+  </g>
+
+  <!-- transmission line: two poles at different heights -->
+  <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3">
+    <line x1="900" y1="400" x2="900" y2="620"/>
+    <line x1="855" y1="432" x2="945" y2="432"/>
+    <line x1="868" y1="478" x2="932" y2="478"/>
+    <line x1="880" y1="524" x2="920" y2="524"/>
+
+    <line x1="735" y1="440" x2="735" y2="600"/>
+    <line x1="702" y1="462" x2="768" y2="462"/>
+    <line x1="712" y1="498" x2="758" y2="498"/>
+    <line x1="720" y1="534" x2="750" y2="534"/>
+  </g>
+
+  <!-- connecting cables, dimmer than the poles themselves -->
+  <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.14">
+    <path d="M768,462 Q812,478 855,432"/>
+    <path d="M758,498 Q800,512 868,478"/>
+    <path d="M750,534 Q800,545 880,524"/>
+  </g>
+</svg>
+
+<nav>
+  <a href="#home" class="logo">
+    <img src="MainImages/titleiconbar.png" alt="Logo">
+    EE<span>/portfolio</span>
+  </a>
+  <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+    <button class="theme-toggle" id="themeToggle" title="Toggle light / dark mode">☾</button>
+  </div>
+</nav>
+
+<div class="bus-rail" id="busRail">
+  <svg class="rail-line-svg"><line class="bus-line" x1="1" y1="0" x2="1" y2="100%"/><line class="bus-current" x1="1" y1="0" x2="1" y2="100%"/></svg>
+  <div class="travel-spark" id="travelSpark"></div>
+
+  <div class="bus-source" id="busSource" title="Click me!">
+    <svg width="30" height="30" viewBox="0 0 30 30">
+      <rect class="theme-fill" x="0" y="0" width="30" height="30"/>
+      <circle cx="15" cy="15" r="11" fill="none" stroke="#f5b942" stroke-width="2"/>
+      <path d="M8 15 Q11.5 8 15 15 T22 15" fill="none" stroke="#f5b942" stroke-width="1.8"/>
+    </svg>
+  </div>
+
+  <div class="bus-node-wrap active" data-target="home" title="Bus A — Home"><span class="bus-dot"></span><span class="bus-letter">A</span></div>
+  <div class="bus-node-wrap" data-target="about" title="Bus B — About"><span class="bus-dot"></span><span class="bus-letter">B</span></div>
+  <div class="bus-node-wrap" data-target="experience" title="Bus C — Experience"><span class="bus-dot"></span><span class="bus-letter">C</span></div>
+  <div class="bus-node-wrap" data-target="projects" title="Bus D — Projects"><span class="bus-dot"></span><span class="bus-letter">D</span></div>
+  <div class="bus-node-wrap" data-target="contact" title="Bus E — Contact"><span class="bus-dot"></span><span class="bus-letter">E</span></div>
+
+  <div class="bus-ground" title="Ground">
+    <svg width="30" height="26" viewBox="0 0 30 26">
+      <rect class="theme-fill" x="0" y="0" width="30" height="26"/>
+      <line x1="15" y1="0" x2="15" y2="10" stroke="currentColor" stroke-width="2"/>
+      <line x1="6" y1="10" x2="24" y2="10" stroke="currentColor" stroke-width="2"/>
+      <line x1="9.5" y1="15" x2="20.5" y2="15" stroke="currentColor" stroke-width="2"/>
+      <line x1="13" y1="20" x2="17" y2="20" stroke="currentColor" stroke-width="2"/>
+    </svg>
+  </div>
+</div>
+
+<!-- HOME -->
+<section id="home">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">Masters Student · Electrical Engineering<span class="bus-tag">BUS A</span></div>
+      <h1 class="name">Tuong Bao Nguyen</h1>
+      <p class="hook">I am currently studying a Master of Electrical Engineering at the <a class="uni-link" href="https://unimelb.edu.au" target="_blank" rel="noopener">University of Melbourne</a> with a core focus on low-carbon power systems.</p>
+
+      <div class="impact-strip">
+        <div class="impact-item"><span class="dot"></span>Renewable integration</div>
+        <div class="impact-item"><span class="dot"></span>Grid stability &amp; control</div>
+        <div class="impact-item"><span class="dot"></span>Emissions-aware forecasting</div>
+      </div>
+
+      <div class="specs">
+        <div class="spec-card">
+          <div class="spec-label">Field</div>
+          <div class="spec-val">Power Systems Engineering</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-label">Specialisation</div>
+          <div class="spec-val">Low-Carbon Power Systems</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-label">Location</div>
+          <div class="spec-val">Melbourne, Australia</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-label">Focus</div>
+          <div class="spec-val">Grid Decarbonisation</div>
+        </div>
+        <div class="spec-links">
+          <a class="pill" href="#contact">✉ Email</a>
+          <a class="pill" href="#contact">in LinkedIn</a>
+          <a class="pill" href="#projects">↓ View Work</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="avatar-ring">
+        <img src="MainImages/pfp.png" alt="User profile photo" class="avatar-image">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-head">
+    <div class="sec-tag">Get to know me <span class="bus-tag">BUS B</span></div>
+    <div class="sec-title">About Me</div>
+    <div class="sec-sub">Driven by a passion for power systems, renewable energy, and solving real-world engineering challenges, discover the journey, interests, and experiences that have shaped my aspirations in the energy industry.</div>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm an electrical engineering student at the University of Melbourne with a passion for power systems, renewable energy, and the technologies driving the transition to a low-carbon future. My goal is to build a career designing and improving the electrical infrastructure that powers communities while supporting a more sustainable energy system.</p>
+      <p>I enjoy solving complex engineering problems and applying theory to practical challenges. Through my studies, internships, and personal projects, I've developed experience in power system analysis, renewable energy integration, electrical design, and hardware development. I'm particularly interested in grid modernisation, battery energy storage systems, power electronics, and emerging technologies that improve the reliability and efficiency of electricity networks.</p>
+      <p>Outside of engineering, I enjoy staying active through the gym and boxing, continuously learning new technologies, and working on personal engineering projects that allow me to explore ideas beyond the classroom. I also enjoy connecting with engineers and industry professionals, sharing ideas, and learning from different perspectives.</p>
+      <p>I'm always looking for opportunities to learn, collaborate, and contribute to projects that make a meaningful impact on the future of energy.</p>
+    </div>
+
+    <div>
+      <div class="edu-wrap">
+        <h3>Education</h3>
+        <div class="edu-timeline">
+          <div class="edu-marker-single">
+            <a class="company-logo-link" href="https://unimelb.edu.au" target="_blank" rel="noopener" title="Visit company website">
+              <div class="uni-logo-slot"><img src="MainImages/uni_logo.png" alt="University Logo"></div>
+            </a>
+            <svg width="30" height="240" viewBox="0 0 30 240">
+              <!-- incoming supply arrow -->
+              <path d="M9,0 L21,0 L15,16 Z" fill="#4cc9f0"/>
+              <!-- busbar -->
+              <line x1="15" y1="16" x2="15" y2="224" stroke="#8ea0ad" stroke-width="3"/>
+              <!-- breaker tap 1 -->
+              <line x1="15" y1="48" x2="27" y2="48" stroke="#4cc9f0" stroke-width="2"/>
+              <rect x="11" y="44" width="8" height="8" class="theme-fill" stroke="#f5b942" stroke-width="1.8" transform="rotate(45 15 48)"/>
+              <!-- breaker tap 2 -->
+              <line x1="15" y1="196" x2="27" y2="196" stroke="#4cc9f0" stroke-width="2"/>
+              <rect x="11" y="192" width="8" height="8" class="theme-fill" stroke="#f5b942" stroke-width="1.8" transform="rotate(45 15 196)"/>
+              <!-- outgoing arrowhead -->
+              <path d="M9,224 L21,224 L15,240 Z" fill="#8ea0ad"/>
+            </svg>
+          </div>
+          <div class="edu-entries">
+            <div class="edu-content">
+              <div class="edu-degree">Master of Electrical Engineering</div>
+              <div class="edu-spec">Low-Carbon Power Systems</div>
+              <div class="edu-meta">The University of Melbourne · Expected Nov 2027</div>
+              <div class="edu-desc">Developing advanced expertise in power systems, renewable energy integration, and sustainable electricity networks.</div>
+            </div>
+            <div class="edu-content">
+              <div class="edu-degree">Bachelor of Science</div>
+              <div class="edu-spec">Electrical Engineering Systems</div>
+              <div class="edu-meta">The University of Melbourne · Nov 2025</div>
+              <div class="edu-desc">Established core understanding of electrical engineering systems, circuit analysis, electronics, and programming through coursework theory, laboratory experience, and practical engineering projects.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skills-wrap">
+        <h3>Skills</h3>
+        <div class="skill-tags">
+          <span class="skill-tag hi">Power System Analysis</span>
+          <span class="skill-tag hi">Circuit Analysis</span>
+          <span class="skill-tag hi">Renewable Energy</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">C</span>
+          <span class="skill-tag">Verilog</span>
+          <span class="skill-tag">MATLAB / Simulink</span>
+          <span class="skill-tag">LTSpice</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">Circuit Debugging</span>
+          <span class="skill-tag">Electrical Fault Diagnosis</span>
+          <span class="skill-tag">Oscilloscope</span>
+          <span class="skill-tag">Digital Multimeter</span>
+          <span class="skill-tag">Signal/Network Analysis</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="hobbies-wrap">
+    <h3>Beyond the Grid</h3>
+    <div class="sec-sub">Outside of studying and work, here's what keeps me grounded.</div>
+  </div>
+  <div class="hobby-carousel">
+    <button id="jumpFirst" class="jump-arrow left">&#10094;</button>
+    <div class="peek-viewport" id="hobbyViewport">
+      <div class="peek-track" id="hobbyTrack"></div>
+    </div>
+    <button id="jumpLast" class="jump-arrow right">&#10095;</button>
+  </div>
+  <div class="peek-dots" id="hobbyDots"></div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="sec-head">
+    <div class="sec-tag">Where I've worked <span class="bus-tag">BUS C</span></div>
+    <div class="sec-title">Experience</div>
+    <div class="sec-sub">Building practical engineering experience through internships, research, and industry projects, I've developed the technical skills and practical knowledge needed for a career in electrical and power systems engineering.</div>
+  </div>
+
+  <!-- Internships -->
+  <div class="card">
+    <div class="card-top">
+      <div class="card-top-left">
+        <a class="company-logo-link" href="https://proa.energy" target="_blank" rel="noopener" title="Visit company website">
+          <div class="company-logo-slot"><img src="Internships/Proa Energy/Proa logo.jpg" alt="Proa Energy Logo"></div>
+        </a>
+        <div>
+          <div class="card-title">Power Systems Engineering Intern</div>
+          <div class="card-company-row">
+            <a class="card-company-link" href="https://proa.energy" target="_blank" rel="noopener">Proa Energy ↗</a>
+            <div class="card-location">📍 Melbourne, Australia</div>
+          </div>
+          <div class="sec-sub2">National Electricity Market (NEM) Constraint Forecasting</div>
+        </div>
+      </div>
+    <div class="card-period">Aug 2026 – Present</div>
+    </div>
+  
+    <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+    <div class="card-details">
+      
+      <div class="card coming-soon-card">
+        <div class="coming-soon-icon">🌣</div>
+        <h4>Coming Soon</h4>
+        <p>Still completing internship — check back soon!</p>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+      </div>
+
+      <!--
+      <div class="card-imgs">
+        <div class="img-slot">Add photo of workspace/setup</div>
+        <div class="img-slot">Add photo of hardware built</div>
+      </div>
+
+      <div class="card-cols">
+        <div>
+          <div class="col-label acc">Accomplishments</div>
+          <ul class="plain">
+            <li>Key result or deliverable #1</li>
+            <li>Key result or deliverable #2</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-label">Responsibilities</div>
+          <ul class="plain">
+            <li>Core task or duty #1</li>
+            <li>Core task or duty #2</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-label">Learnings</div>
+          <ul class="plain">
+            <li>Technical or professional lesson #1</li>
+            <li>Technical or professional lesson #2</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="skill-chip">Skill/Tool #1</span>
+        <span class="skill-chip">Skill/Tool #2</span>
+        <span class="skill-chip">Skill/Tool #3</span>
+      </div>
+    -->
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-top">
+    <div class="card-top-left">
+      <a class="company-logo-link" href="https://www.kai-scientific.com" target="_blank" rel="noopener" title="Visit company website">
+        <div class="company-logo-slot"><img src="Internships/KaiScientific/kai_scientific_limited_logo.jpg" alt="Kai Scientific Logo"></div>
+      </a>
+      <div>
+        <div class="card-title">Electrical Engineering Intern</div>
+        <div class="card-company-row">
+          <a class="card-company-link" href="https://www.kai-scientific.com" target="_blank" rel="noopener">Kai Scientific Limited ↗</a>
+          <div class="card-location">📍 Tatsuno, Japan</div>
+        </div>
+        <div class="sec-sub2">R&D of Ultra-High Vacuum Electronics</div>
+      </div>
+    </div>
+    <div class="card-period">Jun 2026 – Aug 2026</div>
+  </div>
+
+  <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+  <div class="card-details">
+    <div class="card-imgs">
+      <div class="img-slot">Add photo of team</div>
+      <div class="img-slot">Add photo of camera</div>
+      <div class="img-slot"><img src="Internships/KaiScientific/Kai Professional Photo.jpg" alt="Professional Photo"></div>
+      <div class="img-slot"><img src="Internships/KaiScientific/kaicameracad.jpg" alt="CITIUS 5.04M camera"></div>
+      <div class="img-slot"><img src="Internships/KaiScientific/kaipolaroid.jpg" alt="Team Photo 2"></div>
+    </div>
+
+      <div class="card-cols">
+        <div>
+          <div class="col-label acc">Accomplishments</div>
+          <ul class="plain">
+            <li>Contributed to the optimisation of electronic hardware by reducing power consumption to minimise heat generation and improve reliability in high-vacuum operating environments</li>
+            <li>Improved hardware characterisation by developing a Python tool to analyse over <b>45 GB</b> of electronic sensor noise data, supporting signal integrity assessment and electrical performance validation</li>
+            <li>Contributed to engineering investigations into wide-bandgap semiconductor technologies, supporting the assessment of radiation-tolerant electronic devices for advanced scientific applications</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-label">Responsibilities</div>
+          <ul class="plain">
+            <li>Assisted in the design, prototyping, assembly, and validation of electronic circuits and hardware for high-performance scientific camera systems</li>
+            <li>Conducted electrical testing, signal analysis, and troubleshooting to identify hardware faults and verify system reliability using laboratory test equipment and Python-based data analysis</li>
+            <li>Performed technical investigations into semiconductor devices and collaborated with multidisciplinary teams to support hardware integration, system commissioning, and engineering documentation</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-label">Learnings</div>
+          <ul class="plain">
+            <li>Strengthened practical skills in electronic circuit testing, hardware validation, signal integrity analysis, and engineering problem-solving throughout the product development lifecycle</li>
+            <li>Gained experience analysing large-scale electrical measurement data to evaluate sensor performance, noise characteristics, and overall system reliability</li>
+            <li>Developed a deeper understanding of advanced semiconductor materials, hardware integration, and the engineering considerations for electronics operating in high-vacuum and synchrotron radiation environments</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="skill-chip">Electronic Circuits</span>
+        <span class="skill-chip">Electrical Testing</span>
+        <span class="skill-chip">Hardware Validation</span>
+        <span class="skill-chip">Systems Integration</span>
+        <span class="skill-chip">Signal Integrity</span>
+        <div class="dl-btns">
+          <button class="dl-btn">View Post ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="sec-head">
+    <div class="sec-tag">What I've built <span class="bus-tag">BUS D</span></div>
+    <div class="sec-title">Projects</div>
+    <div class="sec-sub">Self-driven builds, academic work, and team efforts; most of it circling back to my interests, aspirations, or renewables in some form.</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="personal">Personal Projects</button>
+    <button class="tab-btn" data-tab="academic">Academic Projects</button>
+    <button class="tab-btn" data-tab="teams">Project Teams</button>
+  </div>
+
+  <!-- Academic -->
+  <div class="tab-panel" id="academic">
+    <div class="subtabs">
+      <button class="subtab-btn active" data-subtab="electrical-academic">Electrical Projects</button>
+      <button class="subtab-btn" data-subtab="software-academic">Software Projects</button>
+    </div>
+
+    <div class="sec-sub2"><b>Copyright and Academic Work Disclaimer</b></div>
+    <div class="sec-sub3"><i>The projects presented here were completed by me (and collaborators) for university engineering projects. Unless otherwise stated, all original code, circuit designs, simulations, PCB layouts, documentation, and other materials were created by me (and collaborators) and remain our intellectual property.<br><br>
+      These projects were undertaken as part of coursework at the <a class="uni-link" href="https://unimelb.edu.au" target="_blank" rel="noopener">University of Melbourne</a> and may have utilised university provided laboratory equipment, software, datasets, or assignment specificiations. Such resources remain the property of their respective owners and are included only where appropriate for the purpose of demonstrating my engineering skills and experience. No confidential, proprietary, or assessment restricted materials have been intentionally reproduced.<br><br>
+      All trademarks, logos, software, and third-party content remain the property of their respective owners. If you believe any material in this portfolio has been included in error or infringes copyright, please <a class="uni-link" href="#contact">contact me</a> and it will be reviewed promptly.</i></div>
+
+    <div class="subtab-panel active" id="electrical-academic">
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Inverted Pendulum Stabilisation and Control System</div>
+            <div class="card-sub">Control Systems</div>
+          </div>
+          <div class="card-period">Semester 1, 2026</div>
+        </div>
+        <div class="sec-sub2">Designed and implemented a feedback control system to stabilise an inverted pendulum (inherently unstable mechanical system) on a LEGO EV3 robot using MATLAB/Simulink. Developed mathematical plant models through system identification and transfer function analysis, designed and tuned phase-lead and closed-loop controllers, and validated performance through simulation and real-time hardware testing under external disturbances.</div>
+        <div class="sec-sub2"><b>Collaborators:</b> 
+          <a class="uni-link" href="https://linkedin.com/in/james-teng-735a10317" target="_blank" rel="noopener">James Teng</a> & 
+          <a class="uni-link" href="https://www.linkedin.com/in/ethanng04/" target="_blank" rel="noopener">Ethan Ng</a>
+        </div>
+
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Inverted Pendulum Project Photo.png" alt="Robot Photo"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Bode Diagram (with Controller).png" alt="Bode diagram with controller"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Root Locus.png" alt="Root Locus of System"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Nyquist Diagram.png" alt="Nyquist of System"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Closed loop experimental.png" alt="Closed Loop Experminetal"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Experimental Pendulum.png" alt="Pendulum Experimental"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Non linear system.png" alt="Non Linear System Design"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Open loop base response.png" alt="Open Loop Base Response"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Pendulum Simulation.png" alt="Pendulum Simulation"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Pendulum Step response.png" alt="Pendulum Step Response"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Designed a phase-lead controller achieving a <b>50° phase margin</b>, <b>30 rad/s crossover frequency</b>, and complementary sensitivity bandwidth below <b>50 rad/s</b></li>
+              <li>Successfully stabilised an inherently unstable inverted pendulum, rejecting both impulse and constant disturbances during real-time hardware testing</li>
+              <li>Validated controller performance through MATLAB/Simulink simulation and physical implementation, demonstrating close agreement between predicted and experimental system behaviour</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Developed and validated MATLAB/Simulink simulations for controller verification and disturbance analysis</li>
+              <li>Implemented and tested real-time controllers on the LEGO EV3 platform using Simulink External Mode and analysed experimental performance</li>
+              <li>Evaluated controller robustness by comparing simulation and hardware results, identifying the effects of nonlinearities, sensor noise, friction, and model uncertainty</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Applied control systems theory including system identification, transfer function modelling, frequency domain analysis, root locus, and phase-lead controller design</li>
+              <li>Gained practical experience deploying controllers from simulation to embedded hardware and understanding the challenges of real-world implementation</li>
+              <li>Learned how modelling assumptions, nonlinear dynamics, actuator limitations, and sensor imperfections influence closed-loop control performance</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">MATLAB</span>
+            <span class="skill-chip">Simulink</span>
+            <span class="skill-chip">Feedback Control Systems</span>
+            <span class="skill-chip">System Identification</span>
+            <span class="skill-chip">Transfer Function Modelling</span>
+            <span class="skill-chip">Hardware Testing</span>
+            <div class="dl-btns">
+              <a href="Projects/AcademicElectric/InvertedPendulum/Inverted Pendulum Project.zip" download class="dl-btn">↓ Project</a>
+              <a href="Projects/AcademicElectric/InvertedPendulum/Inverted Pendulum Report.zip" download class="dl-btn">↓ Report</a>
+              <a class="dl-btn" href="https://drive.google.com/drive/folders/14P7wUSrj3-xnWN7l8UFbVTN7KVB5OHVz?usp=sharing" target="_blank" rel="noopener">View Video ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-title">Custom Speaker System with Integrated Equaliser</div>
+            <div class="card-sub">Analogue Circuits</div>
+          </div>
+          <div class="card-period">Semester 1, 2025</div>
+        </div>
+        <div class="sec-sub2">Designed and developed a 5-way active audio crossover using operational amplifier filter stages to accurately divide the audio spectrum into dedicated frequency bands for separate speakers. Simulated, tuned, and validated the analog circuitry using LTSpice before implementing and testing prototypes physically, optimising gain, frequency response, and signal fidelity for high-quality audio reproduction.</div>
+        <div class="sec-sub2"><b>Collaborators:</b> 
+          <a class="uni-link" href="https://linkedin.com/in/zhong-chun-xie-84b460303" target="_blank" rel="noopener">Zhong Chun Xie</a> & 
+          <a class="uni-link" href="https://linkedin.com" target="_blank" rel="noopener">Ayra Delfina</a>
+        </div>
+
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/speaker system.png" alt="Speaker System"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/Circuit Schematic.png" alt="Speaker LTSpice Circuit"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/speaker flowchart.png" alt="Speaker Flowchart"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/Experimental Freq Response.png" alt="Speaker Experimental Freq Response"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/Simulated Freq Response.png" alt="Speaker Simulated Freq Response"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/Experimental Soundwave.png" alt="Speaker Experimental Soundwave"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/input stage experimental.png" alt="Speaker Input Experimental"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/ENAD/Images/Crossover Simulation.png" alt="Speaker Crossover Simulation"></div>            
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Achieved precise frequency separation across <b>5 audio bands</b> with <b>±0.5 dB gain accuracy</b> and less than <b>0.5% total harmonic distortion</b></li>
+              <li>Optimised the circuit to deliver a flat <b>20 Hz–20 kHz</b> frequency response with consistent audio performance</li>
+              <li>Successfully translated LTSpice simulations into physical prototypes, achieving approximately <b>95%</b> agreement between simulated and measured performance</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed active filter circuits using operational amplifiers, selecting component values to meet crossover frequency and gain requirements</li>
+              <li>Modelled, simulated, and optimised circuit performance in LTSpice, analysing frequency response, gain, phase, and distortion characteristics</li>
+              <li>Built, tested, and debugged physical prototypes using electronic test equipment to validate circuit operation and refine performance</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Developed a strong understanding of active filter design, including Butterworth response, crossover networks, and op-amp circuit implementation</li>
+              <li>Improved practical skills in analogue circuit debugging, component tolerance analysis, and translating simulations into reliable hardware</li>
+              <li>Gained experience balancing theoretical performance with real-world limitations such as noise, distortion, power supply stability, and circuit layout effects</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Analogue Circuit Design</span>
+            <span class="skill-chip">Operation Amplifier Design</span>
+            <span class="skill-chip">LTSpice</span>
+            <span class="skill-chip">Filter Design</span>
+            <span class="skill-chip">Prototyping & Testing</span>
+            <span class="skill-chip">Electronic Instrumentation</span>
+            <div class="dl-btns">
+              <a href="Projects/AcademicElectric/ENAD/Custom Speaker with Audio Equaliser.zip" download class="dl-btn">↓ Project</a>
+              <a href="Projects/AcademicElectric/ENAD/Audio Crossover Presentation.pdf" download class="dl-btn">↓ Presentation</a>
+              <a href="Projects/AcademicElectric/ENAD/Custom Speaker with Equaliser Report.pdf" download class="dl-btn">↓ Report</a>
+              <a class="dl-btn" href="https://drive.google.com/drive/folders/1liyRN0E3hK8UAZs4EEIevt88N8rypZOv?usp=sharing" target="_blank" rel="noopener">View Video ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-title">FPGA Clock</div>
+            <div class="card-sub">Digital Systems</div>
+          </div>
+          <div class="card-period">Semester 1, 2024</div>
+        </div>
+        <div class="sec-sub2">Designed and implemented a multi-mode digital clock system on the DE1-SoC FPGA using Verilog HDL and finite state machines (FSMs). The project incorporated four operating modes: clock, timer, stopwatch, and game, while demonstrating core digital design concepts including synchronous logic, clock division, state machine design, and FPGA implementation. The system is interfaced with six seven-segment displays to provide real time visual output and was developed using modular hardware architecture to improve scalability and code reuse.</div>
+
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/AcademicElectric/FPGA Clock/Images/DE1-SoC project.jpg" alt="Project Image"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/FPGA Clock/Images/Clock Block Diagram.png" alt="Project Block Diagram"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/FPGA Clock/Images/toplevelmodule.png" alt="Project Top Level Module"></div>
+            <div class="img-slot"><img src="Projects/AcademicElectric/FPGA Clock/Images/ClockFSM.png" alt="Clock FSM"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Developed a fully functional multi-mode (<b>4 modes</b>) digital system on an FPGA, integrating clock, timer, stopwatch, and game functionalities within a single hardware design</li>
+              <li>Implemented a clock divider to convert a <b>50 MHz</b> FPGA system clock into lower-frequency (<b>50 Hz</b>) timing signals, achieving accurate real time operation with approximately <b>0.5% timing accuracy</b></li>
+              <li>Created a modular and reusable Verilog architecture that simplified debugging, testing, and future expansion of digital hardware designs</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed and implemented digital logic modules in Verilog HDL, including finite state machines, counters, timers, and display controllers</li>
+              <li>Developed clock generation and frequency division modules to provide stable timing signals for multiple operating modes</li>
+              <li>Tested, debugged, and validated FPGA functionality using simulation and on-board hardware testing to verify timing accuracy and system reliability</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Gained practical experience in FPGA development, digital hardware design, and hardware description languages through implementing a complete embedded digital system</li>
+              <li>Developed a strong understanding of synchronous digital design concepts, including finite state machines, clock domains, timing constraints, and sequential logic</li>
+              <li>Improved hardware debugging and verification skills by identifying and resolving logic, timing, and integration issues during FPGA implementation</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Verilog HDL</span>
+            <span class="skill-chip">FPGA Design (Intel DE1-SoC)</span>
+            <span class="skill-chip">Digital Logic Design</span>
+            <span class="skill-chip">Finite State Machines</span>
+            <div class="dl-btns">
+              <a href="Projects/AcademicElectric/FPGA Clock/FPGA Clock.zip" download class="dl-btn">↓ Project</a>
+              <a href="Projects/AcademicElectric/FPGA Clock/FPGA Clock Report.pdf" download class="dl-btn">↓ Report</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card coming-soon-card">
+        <div class="coming-soon-icon">🌣</div>
+        <h4>Coming Soon</h4>
+        <p>Still uploading more projects — check back soon!</p>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="subtab-panel" id="software-academic">
+      
+      <!--
+      <div class="card">
+        <div class="card-top">
+          <div>
+            <div class="card-title">COMING SOON</div>
+            <div class="card-sub">Course / Unit Code</div>
+          </div>
+          <div class="card-period">Semester, Year</div>
+        </div>
+        
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="sec-sub2">Project description</div>
+
+          <div class="code-window">
+            <div class="code-window-bar">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <span class="code-filename">forecast_model.py</span>
+            </div>
+            <div class="code-window-body">
+              <div class="code-line" style="width:55%"></div>
+              <div class="code-line hi" style="width:80%"></div>
+              <div class="code-line" style="width:40%"></div>
+              <div class="code-line" style="width:65%"></div>
+              <div class="code-line hi" style="width:35%"></div>
+              <div class="code-line" style="width:70%"></div>
+            </div>
+          </div>
+          <div class="sec-sub2">Project description</div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain"><li>Outcome #1</li></ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain"><li>Responsibility #1</li></ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain"><li>Learning #1</li></ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Skill 1</span>
+            <span class="skill-chip">Skill 2</span>
+            <div class="dl-btns">
+              <button class="dl-btn">View Project ↗</button>
+              <button class="dl-btn">↓ Presentation</button>
+              <button class="dl-btn">↓ Report</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    -->
+
+      <div class="card coming-soon-card">
+        <div class="coming-soon-icon">🌣</div>
+        <h4>Coming Soon</h4>
+        <p>Still uploading more projects — check back soon!</p>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal -->
+  <div class="tab-panel active" id="personal">
+    <div class="subtabs">
+      <button class="subtab-btn active" data-subtab="electrical-personal">Electrical Projects</button>
+      <button class="subtab-btn" data-subtab="software-personal">Software Projects</button>
+    </div>
+
+    <div class="subtab-panel active" id="electrical-personal">
+      <div class="card">
+        <div class="card-top">
+          <div><div class="card-title">Power Flow Analysis and Voltage Stability Assessment of a Transmission Network</div><div class="card-sub">Self-directed · Power Systems</div></div>
+          <div class="card-period">Nov 2025 — Feb 2026</div>
+        </div>
+        <div class="sec-sub2">To better understand the operation and reliability of electrical transmission networks, I developed a Python-based Newton-Raphson power flow solver capable of building and analysing custom multi-bus systems using data structures. By modelling generators, transmission lines, transformers, and loads, the solver evaluates power flow, voltage stability, and network performance under normal operation and N-1 contingency scenarios, providing insight into the secure operation of modern power systems.</div>
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/network_diagram.png" alt="Network Diagram"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig1_base_voltage_profile.png" alt="Bus Voltages"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig2_nr_convergence.png" alt="Solver Convergence"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig4_voltage_stability_scan.png" alt="Voltage Stability"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig5_transformer_loading.png" alt="Transformer Loading"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig6_meshed_vs_radial_losses.png" alt="Redistribution"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/resultslog.jpg" alt="Results log"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Developed a custom Newton-Raphson power flow solver capable of analysing multi-bus transmission networks with reliable convergence within <b>4–5 iterations</b></li>
+              <li>Identified <b>5–10% voltage drops</b> at heavily loaded buses by modelling transformer loading under increased demand, and <b>62%–253% power flow redistribution</b> under N-1 scenarios</li>
+              <li>Validated simulation results against pandapower, achieving bus voltage within <b>2% of benchmark solutions</b></li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Modelled transmission lines, transformers, generators, and electrical loads to simulate realistic operating conditions</li>
+              <li>Analysed voltage profiles, transformer loading, and system performance under network reconfiguration and contingency events</li>
+              <li>Compared results to industry standard under both nominal operating conditions and N-1 contingency scenarios</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Gained a deeper understanding of power system modelling, load flow analysis, and voltage stability assessment</li>
+              <li>Strengthened skills in numerical methods, Python programming, and validation of engineering models</li>
+              <li>Developed practical insight into how contingency analysis supports secure, reliable, and resilient power system operation</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Python</span>
+            <span class="skill-chip">Power Systems</span>
+            <span class="skill-chip">Power Flow Analysis</span>
+            <span class="skill-chip">Voltage Stability</span>
+            <span class="skill-chip">Contingency Analysis (N-1)</span>
+            <div class="dl-btns">
+              <a href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download class="dl-btn">↓ Project</a>
+              <a href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download class="dl-btn">↓ Report</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div><div class="card-title">Solar Powered Autonomous Seed Planter</div><div class="card-sub">Team-based · Embedded Systems</div></div>
+          <div class="card-period">Jul 2025 — Oct 2025</div>
+        </div>
+        <div class="sec-sub2">Designed and developed a solar-powered autonomous seed planter that demonstrates the integration of renewable energy, battery storage, and embedded control for off-grid operation. The project focused on low voltage DC power system design, energy management, and adaptive load control to maintain reliable performance under varying solar irradiance. Using Power system modelling and Arduino-based control for electromechanical actuation, the system simulated key principles of distributed energy resources, including energy storage, voltage regulation, and efficient power distribution in standalone renewable energy systems.</div>
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplanter front view.png" alt="Solar Planter Front View"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplantersideview.png" alt="Solar Planter Side View"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplantermatlab.png" alt="Solar Planter MATLAB analysis"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplanterlog.png" alt="Solar Planter MATLAB log"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/variationandloss.png" alt="Solar Planter Voltage Comparison"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/Solarplanterflowchart.png" alt="Solar Planter Flowchart"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/SolarPlanterPrototype.png" alt="Prototype Photo 1"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplanterprototype2.png" alt="Prototype Photo 2"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Maintained regulated voltage within <b>±10%</b> under fluctuating solar irradiance while reducing energy losses by <b>36%</b> versus a fixed-duty baseline, using adaptive control validated across <b>32 simulated irradiance cycles</b> in MATLAB</li>
+              <li>Extended battery energy system runtime by <b>47%</b>, achieving <b>6+ hours</b> of off-grid operation under low irradiance conditions by designing a <b>3-tier hysteresis based load shedding scheme</b> that dynamically trades load current for battery longevity</li>
+              <li>Led a <b>4 person team</b> to design an energy aware embedded system delivering consistent mechanical output of <b>11+ seeds per minute</b></li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed and simulated the low-voltage DC power system, including solar generation, battery storage, and voltage regulation using MATLAB</li>
+              <li>Owned the electrical system architecture end to end; solar panel integration, battery pack selection and placement, load electronics, and wiring across the platform</li>
+              <li>Designed the embedded load management logic: real time battery voltage monitoring, hysteresis based power mode switching, and dynamic load shedding to protect against brownout and maximize runtime, with serial communication for in-field diagnostics and troubleshooting</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Gained practical experience designing off-grid renewable energy systems with solar generation and battery storage</li>
+              <li>Learned how energy management strategies, load balancing, and voltage regulation improve system reliability and efficiency</li>
+              <li>Developed skills in multidisciplinary systems integration, combining power electronics, embedded programming, and mechanical design into a complete working prototype</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Renewable Energy Systems</span>
+            <span class="skill-chip">Battery Energy Storage Systems</span>
+            <span class="skill-chip">MATLAB</span>
+            <span class="skill-chip">Energy Management</span>
+            <span class="skill-chip">Arduino UNO</span>
+            <span class="skill-chip">C/C++ Programming</span>
+            <div class="dl-btns">
+              <a href="Projects/PersonalElectric/SolarPlanter/Solar Powered Autonomous Planter.zip" download class="dl-btn">↓ Project</a>
+              <a href="Projects/PersonalElectric/SolarPlanter/Solar-Powered Autonomous Planter.pdf" download class="dl-btn">↓ Presentation</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <div><div class="card-title">Automatic Pet Feeder</div><div class="card-sub">Team-based · Embedded Systems</div></div>
+          <div class="card-period">Sep 2025 — Oct 2025</div>
+        </div>
+        <div class="sec-sub2">The Autonomous Pet Feeder is an embedded systems project designed to automate pet feeding while improving accessibility for owners with busy schedules or memory related challenges. Built around an Arduino Uno, the system integrates automatic and manual feeding modes, scheduled meal dispensing, weight based portion control, and an intuitive user interface. The project combined embedded programming, electronic hardware integration, mechanical enclosure design, and rapid prototyping to deliver a reliable, low cost smart feeding solution.</div>
+        <div class="sec-sub2"><b>Collaborators:</b> 
+          <a class="uni-link" href="https://linkedin.com/in/alicia-m-3b3554326/" target="_blank" rel="noopener">Alicia McFarlane</a> & 
+          <a class="uni-link" href="https://linkedin.com/in/raph-umali-122789348" target="_blank" rel="noopener">Raph Umali</a>
+        </div>
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder Isometric .png" alt="Feeder Project Isometric"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder Interior.png" alt="Feeder Electrical Photo"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder Rear View.png" alt="Feeder Project Rear"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder Circuit Schematic.png" alt="Circuit Schematic"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Automatic Pet Feeder Flowchart.png" alt="Feeder Flowchart"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder CAD Bowl.png" alt="Feeder CAD Bowl"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder CAD Chasis.png" alt="Feeder CAD Chasis"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder CAD Servo.png" alt="Feeder CAD Servo"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Designed and developed an embedded feeding system supporting automatic scheduling, manual feeding, with configurable feeding times and options optimised for each pet</li>
+              <li>Achieved <b>±2 g dispensing accuracy</b> across more than <b>50 testing cycles</b> using a load cell feedback system and servo controlled food dispensing</li>
+              <li>Delivered a fully integrated prototype combining embedded software, electronic hardware, and a custom SolidWorks designed enclosure through successful team collaboration</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Programmed the Arduino-based finite state machine (FSM) in C to manage feeding schedules, user interaction, sensor inputs, and actuator control</li>
+              <li>Integrated hardware including the servo motor, load cell, LCD display, keypad, buzzer, and supporting circuitry</li>
+              <li>Assisted in assembling the mechanical enclosure incorporating laser-cut components for reliable hardware mounting while assisting with system testing and troubleshooting</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Developed practical experience in embedded systems development, integrating software with sensors, actuators, and electronic hardware</li>
+              <li>Learned how finite state machine (FSM) architectures improve the reliability, maintainability, and scalability of embedded control systems</li>
+              <li>Gained experience in multidisciplinary engineering by combining embedded programming, electronics, CAD design, prototyping, and iterative hardware validation</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">System Integration</span>
+            <span class="skill-chip">SolidWorks</span>
+            <span class="skill-chip">System Testing & Validation</span>
+            <span class="skill-chip">Arduino UNO</span>
+            <span class="skill-chip">Sensor & Actuator Integration</span>
+            <span class="skill-chip">Event Driven Programming</span>
+            <div class="dl-btns">
+              <a href="Projects/PersonalElectric/AutoPetFeeder/Automatic_Pet_Feeder.zip" download class="dl-btn">↓ Project</a>
+              <a href="Projects/PersonalElectric/AutoPetFeeder/Automatic_Pet_Feeder_Report.pdf" download class="dl-btn">↓ Report</a>
+              <a href="Projects/PersonalElectric/AutoPetFeeder/AIO Product Pitch Presentation.pdf" download class="dl-btn">↓ Presentation</a>
+              <a class="dl-btn" href="https://drive.google.com/drive/folders/1eQ68kN8R9-SHEL-78HJGPzv-UzEJWkG6?usp=sharing" target="_blank" rel="noopener">View Video ↗</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="subtab-panel" id="software-personal">
+
+      <div class="card">
+        <div class="card-top">
+          <div><div class="card-title">Online Personal Portfolio</div><div class="card-sub">Self-directed · Web-Dev</div></div>
+          <div class="card-period">Jun 2026 — Jul 2026</div>
+        </div>
+        <div class="sec-sub2">Developed a personal engineering portfolio website to present power systems & electrical engineering projects, industry experience, and technical skills. Implemented a responsive interface with interactive project showcases, downloadable reports, and contact functionality using HTML, CSS, and JavaScript.</div>
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Developed a responsive online portfolio to showcase engineering projects, technical skills, and professional experience</li>
+              <li>Improved project accessibility by organising work into a structured, easy to navigate interface with detailed project pages</li>
+              <li>Strengthened personal branding through a professional online presence suitable for internship and graduate engineering applications</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed and implemented the website using HTML, CSS, and JavaScript</li>
+              <li>Created and organised project pages, technical summaries, and downloadable project content</li>
+              <li>Tested and refined the user interface to improve usability, navigation, and performance across different devices and browsers</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Gained practical experience in front-end web development and responsive design principles</li>
+              <li>Improved understanding of user interface (UI) and user experience (UX) design for technical audiences</li>
+              <li>Learned to effectively communicate engineering projects and technical achievements through a professional digital portfolio</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">HTML</span>
+            <span class="skill-chip">CSS</span>
+            <span class="skill-chip">JavaScript</span>
+            <span class="skill-chip">Front-End Development</span>
+            <span class="skill-chip">UI/UX Designt</span>
+            <span class="skill-chip">Technical Communication</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-top">
+          <div><div class="card-title">Login and Registration System</div><div class="card-sub">Self-directed · Python</div></div>
+          <div class="card-period">Feb 2024 — Mar 2024</div>
+        </div>
+        <div class="sec-sub2">Designed and developed a secure desktop authentication application in Python using the Tkinter GUI framework. The system supports user registration, login authentication, encrypted credential storage, password validation, and account management through an intuitive graphical interface. Security features were implemented to protect user information while providing a responsive and user-friendly experience.</div>
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalSoftware/LoginSystem/loginflowchart.png" alt="login Flowchart"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/LoginSystem/loginscreen.jpg" alt="Login Screen"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/LoginSystem/registerscreen.jpg" alt="Register Screen"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/LoginSystem/Encryption.drawio.png" alt="Encryption Flowchart"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Developed a secure authentication system supporting encrypted user credential storage and reliable login verification</li>
+              <li>Improved application usability by creating an intuitive Tkinter interface with input validation and informative user feedback</li>
+              <li>Enhanced system reliability by implementing error handling, duplicate account detection, and persistent user data management</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed and implemented the graphical user interface using Python's Tkinter library</li>
+              <li>Developed registration, login, password validation, and account authentication functionality</li>
+              <li>Implemented password encryption/hashing, file-based database management, and exception handling to improve application security</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Applied secure software development principles, including password hashing and user authentication techniques</li>
+              <li>Strengthened event-driven application development skills in Python</li>
+              <li>Gained experience designing user interfaces while balancing usability, functionality, and security considerations</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Python</span>
+            <span class="skill-chip">Tkinter</span>
+            <span class="skill-chip">Encryption</span>
+            <span class="skill-chip">GUI Development</span>
+            <span class="skill-chip">Git</span>
+            <span class="skill-chip">Event Driven Programming</span>
+            <div class="dl-btns">
+              <a class="dl-btn" href="https://github.com/tuongnguyen48205/Login-and-Registration" target="_blank" rel="noopener">View Project ↗</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-top">
+          <div><div class="card-title">Image Editor</div><div class="card-sub">Self-directed · Python</div></div>
+          <div class="card-period">Dec 2023 — Jan 2024</div>
+        </div>
+        <div class="sec-sub2">Designed and developed a desktop image editing application in Python using the Tkinter GUI framework. The application enables users to upload, preview, transform, and save multiple images through an intuitive interface. It supports common image processing operations including rotation, flipping, thresholding, grayscale conversion, opacity adjustment, zooming, and image inversion, while providing image metadata and batch processing capabilities.</div>
+        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-details">
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalSoftware/ImageEditor/imageeditorflowchart.png" alt="Image Editor Flowchart"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/ImageEditor/imageeditorscreen.jpg" alt="Image Editor Main Screen"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/ImageEditor/Imagesummary.jpg" alt="Image Editor Image Summary Screen"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/ImageEditor/transform.jpg" alt="Image Editor Transform Selection"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/ImageEditor/transformed.jpg" alt="Image Editor Transformed Screen"></div>
+            <div class="img-slot"><img src="Projects/PersonalSoftware/ImageEditor/downloadtransform.jpg" alt="Image Editor Download Screen"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Developed a multi-image editing application supporting batch processing of up to <b>10 PNG and JPG images</b></li>
+              <li>Improved user experience through an interactive GUI featuring image previews, navigation controls, metadata display, and export functionality</li>
+              <li>Automated image transformation workflows, allowing users to apply multiple editing operations and save processed images efficiently</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed and implemented the graphical user interface using Python's Tkinter library</li>
+              <li>Developed image processing functionality including rotation, flipping, grayscale conversion, thresholding, opacity adjustment, zooming, and inversion</li>
+              <li>Implemented image import/export, file handling, image metadata display, and input validation to ensure reliable application performance</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Gained practical experience developing desktop applications using event-driven programming with Tkinter</li>
+              <li>Strengthened knowledge of digital image processing techniques and image manipulation using Python libraries</li>
+              <li>Improved software design skills by creating a responsive GUI capable of managing multiple images, user interactions, and file operations</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">Python</span>
+            <span class="skill-chip">Tkinter</span>
+            <span class="skill-chip">Image Processing</span>
+            <span class="skill-chip">Pillow (PIL)</span>
+            <span class="skill-chip">File Handling</span>
+            <span class="skill-chip">Batch Processing</span>
+            <div class="dl-btns">
+              <a class="dl-btn" href="https://github.com/tuongnguyen48205/Image-Editor" target="_blank" rel="noopener">View Project ↗</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teams -->
+  <div class="tab-panel" id="teams">
+
+    <!--
+    <div class="card">
+      <div class="card-top">
+        <div><div class="card-title">Team/Club Project Title #1</div><div class="card-sub">Team or Society Name</div></div>
+        <div class="card-period">Year – Year</div>
+      </div>
+      <div class="sec-sub2">Project description</div>
+      <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+      <div class="card-details">
+        <div class="card-imgs"><div class="img-slot">Add team photo</div></div>
+        <div class="card-cols">
+          <div><div class="col-label acc">Accomplishments</div><ul class="plain"><li>Team outcome #1</li></ul></div>
+          <div><div class="col-label">Responsibilities</div><ul class="plain"><li>Your role in the team</li></ul></div>
+          <div><div class="col-label">Learnings</div><ul class="plain"><li>Teamwork or technical lesson</li></ul></div>
+        </div>
+        <div class="card-footer">
+          <span class="skill-chip">Collaboration</span>
+          <div class="dl-btns"><button class="dl-btn">↓ Presentation</button><button class="dl-btn">↓ Report</button></div>
+        </div>
+      </div>
+    </div>
+  -->
+    <div class="card coming-soon-card">
+        <div class="coming-soon-icon">🌣</div>
+        <h4>Coming Soon</h4>
+        <p>Still uploading more projects — check back soon!</p>
+        <div class="progress-track"><div class="progress-fill"></div></div>
+      </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="sec-head">
+    <div class="sec-tag">Let's connect <span class="bus-tag">BUS E</span></div>
+    <div class="sec-title">Contact</div>
+    <div class="sec-sub">Open to interesting conversations, exciting opportunities, and meaningful collaborations.</div>
+  </div>
+  <div class="contact-links">
+    <a class="contact-card" href="mailto:tuongnguyen48205@gmail.com">
+      <div class="contact-icon">✉</div>
+      <div class="contact-label">Email</div>
+      <div class="contact-val">tuongnguyen48205@gmail.com</div>
+    </a>
+    <a class="contact-card" href="https://linkedin.com/in/tuong-nguyen05" target="_blank">
+      <div class="contact-icon">in</div>
+      <div class="contact-label">LinkedIn</div>
+      <div class="contact-val">linkedin.com/in/tuong-nguyen05</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Tuong Bao Nguyen — built on a single-line diagram, one <span class="bus">bus</span> at a time. Powered, increasingly, by renewables.</div>
+  <div class="footer-views" id="viewCounter">👁 —</div>
+</footer>
+
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <div class="lightbox-content" id="lightboxContent"></div>
+</div>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.subtab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const scope = btn.closest('.tab-panel');
+      scope.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+      scope.querySelectorAll('.subtab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      scope.querySelector('#'+btn.dataset.subtab).classList.add('active');
+    });
+  });
+
+  // Expand / collapse card details
+  document.querySelectorAll('.card-toggle-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const card = btn.closest('.card');
+      const nowExpanded = card.classList.toggle('expanded');
+      btn.querySelector('.btn-label').textContent = nowExpanded ? 'Less details' : 'More details';
+    });
+  });
+
+  const busNodes = [...document.querySelectorAll('.bus-node-wrap')];
+  busNodes.forEach(node=>{
+    node.addEventListener('click',()=>{
+      document.getElementById(node.dataset.target).scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  const sections = busNodes.map(n=>document.getElementById(n.dataset.target));
+  const spy = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        busNodes.forEach(n=>n.classList.remove('active'));
+        const match = document.querySelector(`.bus-node-wrap[data-target="${entry.target.id}"]`);
+        if(match) match.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px',threshold:0});
+  sections.forEach(s=>{ if(s) spy.observe(s); });
+
+  // Spin turbines as the page scrolls (sun pulses separately, see below)
+  const blades1 = document.getElementById('turbineBlades1');
+  const blades2 = document.getElementById('turbineBlades2');
+  function onScrollEffects(){
+    const y = window.scrollY || window.pageYOffset || 0;
+    const angle1 = (y * 0.5) % 360;
+    const angle2 = (y * 0.7) % 360;
+    if(blades1) blades1.setAttribute('transform', `rotate(${angle1} 860 110)`);
+    if(blades2) blades2.setAttribute('transform', `rotate(${angle2} 930 165)`);
+  }
+  window.addEventListener('scroll', onScrollEffects, {passive:true});
+  onScrollEffects();
+
+  // Sun pulses continuously, driven by time, not scroll position
+  const sunGroup = document.getElementById('sunGroup');
+  function pulseSun(ts){
+    const scale = 1 + 0.07 * Math.sin(ts * 0.003);
+    if(sunGroup) sunGroup.setAttribute('transform', `translate(145 420) scale(${scale}) translate(-145 -420)`);
+    requestAnimationFrame(pulseSun);
+  }
+  requestAnimationFrame(pulseSun);
+
+  // Click the source: jump to top, then play a current traveling
+  // from source to ground, lighting each bus yellow as it passes,
+  // while the page auto-scrolls in sync down to the bottom.
+  // This was super hard to implement ;-;
+  const busSource = document.getElementById('busSource');
+  const spark = document.getElementById('travelSpark');
+  const busDotFractions = [0.16, 0.34, 0.52, 0.70, 0.88];
+  let playing = false;
+
+  function setScroll(y){
+    document.documentElement.scrollTop = y;
+    document.body.scrollTop = y;
+  }
+
+  function playJourney(){
+    if(playing) return;
+    playing = true;
+    busSource.classList.add('pulse-anim');
+    setTimeout(()=>busSource.classList.remove('pulse-anim'), 700);
+
+    const prevHtmlBehavior = document.documentElement.style.scrollBehavior;
+    const prevBodyBehavior = document.body.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.body.style.scrollBehavior = 'auto';
+
+    setScroll(0);
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        startDescent(()=>{
+          document.documentElement.style.scrollBehavior = prevHtmlBehavior;
+          document.body.style.scrollBehavior = prevBodyBehavior;
+        });
+      });
+    });
+  }
+
+  function startDescent(onDone){
+    const duration = 7000;
+    const start = performance.now();
+    const maxScroll = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight
+    ) - window.innerHeight;
+    const litSet = new Set();
+
+    function frame(now){
+      const elapsed = now - start;
+      const p = Math.min(elapsed / duration, 1);
+
+      spark.style.top = (p * 100) + '%';
+      spark.style.opacity = (p > 0.01 && p < 0.995) ? '1' : '0';
+
+      setScroll(Math.max(p * maxScroll, 0));
+
+      busNodes.forEach((node,i)=>{
+        const dot = node.querySelector('.bus-dot');
+        const frac = busDotFractions[i];
+        if(p >= frac - 0.02 && p <= frac + 0.06){
+          dot.classList.add('lit');
+          litSet.add(i);
+        } else if(p > frac + 0.06 && litSet.has(i)){
+          dot.classList.remove('lit');
+        }
+      });
+
+      if(p < 1){
+        requestAnimationFrame(frame);
+      } else {
+        spark.style.opacity = '0';
+        busNodes.forEach(n=>n.querySelector('.bus-dot').classList.remove('lit'));
+        playing = false;
+        if(onDone) onDone();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  busSource.addEventListener('click', playJourney);
+
+  // Light / dark mode toggle
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', ()=>{
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
+    themeToggle.textContent = isLight ? '☾' : '☼';
+  });
+
+  // Click any image  to zoom it into a lightbox.
+  const lightboxOverlay = document.getElementById('lightboxOverlay');
+  const lightboxContent = document.getElementById('lightboxContent');
+  document.querySelectorAll('.img-slot').forEach(slot=>{
+    slot.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      lightboxContent.innerHTML = slot.innerHTML;
+      lightboxOverlay.classList.add('active');
+    });
+  });
+    lightboxOverlay.addEventListener('click', ()=>{
+    lightboxOverlay.classList.remove('active');
+  });
+    document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') lightboxOverlay.classList.remove('active');
+  });
+
+  // View counter — persists via shared storage where available,
+  // falls back to a session-only count if storage isn't reachable.
+  (async function(){
+    const el = document.getElementById('viewCounter');
+    try{
+      const res = await fetch('/.netlify/functions/view-counter');
+      const data = await res.json();
+      el.textContent = `👁 ${data.count} views`;
+    }catch(e){
+      el.textContent = `👁 1 view (this session)`;
+    }
+  })();
+
+  (function(){
+  const hobbySlides = [
+    { src:'MainImages/HobbyImages/Gym.jpg',     label:'Gym' },
+    { src:'MainImages/HobbyImages/friends.jpg', label:'Friends' },
+    { src:'MainImages/HobbyImages/Tinkering.jpg',label:'Tinkering' },
+    { src:'MainImages/HobbyImages/Bingsu.jpg',  label:'Bingsu :)' },
+    { src:'MainImages/HobbyImages/Hiking.jpg',  label:'Hiking' },
+    { src:'MainImages/HobbyImages/Travelling.jpg',label:'Travelling' },
+    { src:'MainImages/HobbyImages/Boxing.jpg',  label:'Boxing' },
+  ];
+
+  const track = document.getElementById('hobbyTrack');
+  const viewport = document.getElementById('hobbyViewport');
+  const dotsWrap = document.getElementById('hobbyDots');
+  const jumpFirst = document.getElementById('jumpFirst');
+  const jumpLast = document.getElementById('jumpLast');
+  if(!track || !viewport || !dotsWrap) return;
+
+  let hIndex = Math.floor(hobbySlides.length / 2);
+
+  hobbySlides.forEach((s,i)=>{
+    const slide = document.createElement('div');
+    slide.tabIndex = 0;
+    if(s.src){
+      slide.className = 'peek-slide';
+      slide.innerHTML = `<img src="${s.src}" alt="${s.label}" draggable="false"><div class="label">${s.label}</div>`;
+    } else {
+      slide.className = 'peek-slide placeholder';
+      slide.textContent = s.label;
+    }
+    slide.addEventListener('click', ()=>{
+      if(i === hIndex){
+        if(s.src){
+          lightboxContent.innerHTML = `<img src="${s.src}" alt="${s.label}">`;
+          lightboxOverlay.classList.add('active');
+        }
+      } else {
+        hGoTo(i);
+      }
+    });
+    slide.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') hGoTo(i); });
+    track.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'peek-dot' + (i === hIndex ? ' active' : '');
+    dot.setAttribute('aria-label', `Go to slide ${i+1}`);
+    dot.addEventListener('click', ()=>hGoTo(i));
+    dotsWrap.appendChild(dot);
+  });
+
+  const slideEls = track.querySelectorAll('.peek-slide');
+  const dotEls = dotsWrap.querySelectorAll('.peek-dot');
+  const HGAP = 10;
+
+  function hDistClass(d){
+    if(d === 0) return 'd0';
+    if(d === 1) return 'd1';
+    if(d === 2) return 'd2';
+    return 'dfar';
+  }
+
+  jumpFirst.addEventListener('click', () => {
+    hGoTo(hobbySlides.length - 1);
+  });
+  jumpLast.addEventListener('click', () => {
+    hGoTo(0);
+  });
+  function hPosition(){
+    const slideWidth = slideEls[hIndex].getBoundingClientRect().width;
+    const step = slideWidth + HGAP;
+    const offset = (viewport.clientWidth - slideWidth) / 2 - hIndex * step;
+    track.style.transform = `translateX(${offset}px)`;
+
+    slideEls.forEach((el,i)=>{
+      const d = Math.abs(i - hIndex);
+      el.className = el.className.replace(/\bplaceholder\b/,'').trim();
+      const isPlaceholder = !hobbySlides[i].src;
+      el.className = 'peek-slide ' + (isPlaceholder ? 'placeholder ' : '') + hDistClass(d);
+    });
+    dotEls.forEach((d,i)=>d.classList.toggle('active', i === hIndex));
+    jumpFirst.classList.toggle('show', hIndex === 0);
+    jumpLast.classList.toggle('show', hIndex === hobbySlides.length - 1);
+  }
+
+  function hGoTo(i){
+    hIndex = (i + hobbySlides.length) % hobbySlides.length;
+    hPosition();
+  }
+
+  viewport.tabIndex = 0;
+  viewport.addEventListener('keydown', (e)=>{
+    if(e.key === 'ArrowLeft') hGoTo(hIndex - 1);
+    if(e.key === 'ArrowRight') hGoTo(hIndex + 1);
+  });
+
+  let hStartX = 0, hDragging = false;
+  viewport.addEventListener('touchstart', (e)=>{
+    hStartX = e.touches[0].clientX;
+    hDragging = true;
+  }, {passive:true});
+  viewport.addEventListener('touchend', (e)=>{
+    if(!hDragging) return;
+    const diff = e.changedTouches[0].clientX - hStartX;
+    if(Math.abs(diff) > 30) diff > 0 ? hGoTo(hIndex - 1) : hGoTo(hIndex + 1);
+    hDragging = false;
+  });
+
+  window.addEventListener('resize', hPosition);
+  hPosition();
+  })();
+</script>
+
+</body>
+</html>
