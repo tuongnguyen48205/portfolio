@@ -62,7 +62,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .deco-blue{color:var(--accent);transition:color .35s ease;}
   .deco-amber{color:var(--accent2);transition:color .35s ease;}
 
-  /* NAV */
   nav{
     position:fixed;top:0;left:0;right:0;z-index:100;
     display:flex;justify-content:space-between;align-items:center;
@@ -93,7 +92,11 @@ Disclaimer: Although majority of the work put into this website was done by me (
       75%  { transform: rotate(-6deg) scale(1.05); }
       100% { transform: rotate(0deg) scale(1); }
   }
-  .nav-links{display:flex;align-items:center;gap:28px;}
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px; 
+  }
   .nav-links a{
     font-size:.92rem;color:var(--text-dim);position:relative;transition:.25s;
   }
@@ -110,13 +113,20 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   .theme-toggle:hover{border-color:var(--accent);transform:translateY(-2px);}
 
+  .controls-group {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    margin-left: -33px;
+    transform: translateX(30px); 
+  }
+
   section{
     position:relative;z-index:1;
     padding:70px 8% 70px;
     max-width:1200px;margin:0 auto;
   }
 
-  /* HERO */
   #home{
     min-height:100vh;
     display:flex;flex-direction:column;justify-content:center;
@@ -190,7 +200,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
   @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-  /* SECTION HEADERS */
   .sec-head{margin-bottom:44px;}
   .sec-tag{color:var(--accent);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;
     display:flex;align-items:center;gap:10px;}
@@ -205,7 +214,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .sec-sub2{color:var(--text-dim);font-size:.90rem;margin-top:10px;margin-bottom:10px;max-width:1000px;}
   .sec-sub3{color:var(--text-dim);font-size:.70rem;margin-top:10px;margin-bottom:20px;max-width:1000px;}
 
-  /* ABOUT */
   .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;}
   .about-text{color:var(--text-dim);font-size:1rem;display:flex;flex-direction:column;}
   .about-text p{margin-bottom:14px;}
@@ -220,7 +228,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   .skill-tag.hi{border-color:var(--accent);color:var(--accent);}
 
-  /* Education marker — electrical single-line-diagram segment */
   .edu-timeline{display:flex;gap:18px;align-items:stretch;}
   .edu-marker-single{flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
   .uni-link:hover{text-decoration:underline;}
@@ -247,7 +254,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .hobbies-wrap h3{
     font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:16px;
   }
-  /* Hobby carousel — center photo large, neighbors peeking on each side */
   .hobby-carousel{margin-top:25px;
     position: relative;
     display:flex;
@@ -336,7 +342,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
           0 0 30px var(--accent),
   }
 
-  /* CARDS: internships / projects */
   .card{
     background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
     padding:28px;margin-bottom:28px;
@@ -365,7 +370,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .card-location{color:var(--text-dim);font-size:.85rem;display:flex;align-items:center;gap:5px;}
   .card-period{color:var(--text-dim);font-size:.85rem;white-space:nowrap;text-align:right;}
 
-  /* expand / collapse */
   .card-toggle-btn{
     margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--accent);
     padding:8px 16px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:.25s;
@@ -410,7 +414,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .lightbox-overlay.active .lightbox-content{transform:scale(1);opacity:1;}
   .lightbox-content img{max-width:100%;max-height:80vh;border-radius:8px;display:block;}
 
-  /* sub-tabs for academic / personal projects */
   .subtabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
   .subtab-btn{
     padding:8px 16px;border-radius:20px;border:1px solid var(--line);
@@ -464,8 +467,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
     padding:8px 14px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:.25s;
   }
   .dl-btn:hover{background:var(--accent);color:#04121a;}
-
-  /* PROJECTS TABS */ 
+ 
   .tabs{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap;}
   .tab-btn{
     padding:10px 20px;border-radius:30px;border:1px solid var(--line);
@@ -476,12 +478,11 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .tab-panel.active{display:block;animation:fadeIn .4s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-  /* CONTACT — heading left, cards centered */
   .contact-links{display:flex;justify-content:center;gap:22px;margin-top:30px;flex-wrap:wrap;}
   .contact-card{
     background:var(--panel);border:1px solid var(--line);border-radius:12px;
     padding:22px 34px;min-width:220px;transition:.35s ease;
-    display:block;text-align:left;
+    display:block;text-align:left;position:relative;
   }
   .contact-card:hover{border-color:var(--accent);transform:translateY(-4px);}
   .contact-icon{font-size:1.6rem;margin-bottom:10px;color:var(--accent);}
@@ -496,14 +497,16 @@ Disclaimer: Although majority of the work put into this website was done by me (
     text-align:center;transition:.35s ease;
   }
   footer .bus{color:var(--accent2);}
-  .footer-views{
+  .footer-meta{
     position:absolute;right:5%;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:flex-end;gap:3px;
+  }
+  .footer-views{
     display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--text-dim);
     background:var(--bg-alt);border:1px solid var(--line);padding:6px 14px;border-radius:20px;
     transition:.35s ease;
   }
 
-  /* BUS RAIL — side scroll nav, source to ground, dashed current flow */
   .bus-rail{
     position:fixed;left:32px;top:50%;transform:translateY(-50%);
     z-index:90;display:flex;flex-direction:column;align-items:center;
@@ -558,6 +561,69 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   .bus-node-wrap.active .bus-letter{color:var(--accent);}
 
+  .reveal{
+    opacity:0;transform:translateY(30px);
+    transition:opacity .6s ease,transform .6s ease;
+  }
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
+
+  .custom-cursor{display:none;}
+  @media(hover:hover) and (pointer:fine){
+    *{cursor:none;}
+    .cursor-crosshair-h,.cursor-crosshair-v{
+      position:fixed;top:0;left:0;background:var(--accent);pointer-events:none;z-index:9999;
+      box-shadow:0 0 6px var(--accent);transition:background .2s ease,box-shadow .2s ease;
+    }
+    .cursor-crosshair-h{width:14px;height:1.5px;transform:translate(-50%,-50%);}
+    .cursor-crosshair-v{width:1.5px;height:14px;transform:translate(-50%,-50%);}
+    .cursor-crosshair-h.hovering,.cursor-crosshair-v.hovering{
+      background:var(--accent2);box-shadow:0 0 8px var(--accent2);
+    }
+    .cursor-dot-center{
+      position:fixed;top:0;left:0;width:3px;height:3px;border-radius:50%;
+      background:var(--accent);pointer-events:none;z-index:9999;
+      transform:translate(-50%,-50%);transition:background .2s ease;
+    }
+    .cursor-dot-center.hovering{background:var(--accent2);}
+    .cursor-readout{
+      position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+      transform:translate(16px,-30px);
+      font-family:'Courier New',monospace;font-size:.68rem;letter-spacing:.5px;
+      background:var(--bg-alt);border:1px solid var(--line);border-radius:4px;
+      padding:2px 7px;color:var(--accent);opacity:.85;
+      box-shadow:0 0 8px -2px var(--accent);transition:color .2s ease,border-color .2s ease,box-shadow .2s ease;
+      white-space:nowrap;
+    }
+    .cursor-readout.hovering{
+      color:var(--accent2);border-color:var(--accent2);box-shadow:0 0 10px -2px var(--accent2);
+    }
+    .cursor-ripple{
+      position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;
+      border:1.5px solid var(--accent);pointer-events:none;z-index:9997;
+      transform:translate(-50%,-50%);
+      animation:cursor-ripple .6s ease-out forwards;
+    }
+  }
+  @keyframes cursor-ripple{
+    from{width:10px;height:10px;opacity:.8;}
+    to{width:70px;height:70px;opacity:0;}
+  }
+
+  .copy-toast{
+    position:absolute;bottom:10px;right:16px;font-size:.72rem;color:var(--accent);
+    opacity:0;transition:opacity .3s ease;pointer-events:none;
+  }
+  .copy-toast.show{opacity:1;}
+
+  .konami-active{animation:konami-spin 1s ease-in-out;}
+  @keyframes konami-spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+  }
+
   @media(max-width:1050px){
     .bus-rail{left:16px;}
   }
@@ -573,12 +639,17 @@ Disclaimer: Although majority of the work put into this website was done by me (
     .dl-btns{margin-left:0;width:100%;}
     .code-window{width:100%;}
     footer{padding-top:70px;}
-    .footer-views{position:static;transform:none;margin:14px auto 0;display:inline-flex;}
+    .footer-meta{position:static;transform:none;margin:14px auto 0;align-items:center;}
     h1.name{white-space:normal;font-size:clamp(1.8rem,8vw,2.6rem);}
   }
 </style>
 </head>
 <body>
+
+<div class="cursor-crosshair-h" id="cursorCrosshairH"></div>
+<div class="cursor-crosshair-v" id="cursorCrosshairV"></div>
+<div class="cursor-dot-center" id="cursorDotCenter"></div>
+<div class="cursor-readout" id="cursorReadout">4.98 V</div>
 
 <svg class="circuit-bg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
   <defs>
@@ -588,7 +659,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   </defs>
   <rect class="grid-bg" x="-80" y="-80" width="1360" height="960" fill="url(#grid)"/>
 
-  <!-- wind turbine, top right -->
   <g class="deco-blue" opacity="0.55">
     <line x1="860" y1="110" x2="860" y2="280" stroke="currentColor" stroke-width="2.5"/>
     <circle cx="860" cy="110" r="4" fill="currentColor"/>
@@ -599,7 +669,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     </g>
   </g>
 
-  <!-- second, smaller wind turbine -->
   <g class="deco-blue" opacity="0.35">
     <line x1="930" y1="165" x2="930" y2="275" stroke="currentColor" stroke-width="2"/>
     <circle cx="930" cy="165" r="3" fill="currentColor"/>
@@ -610,14 +679,12 @@ Disclaimer: Although majority of the work put into this website was done by me (
     </g>
   </g>
 
-  <!-- solar panel array, bottom left -->
   <g class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.55">
     <rect x="70" y="500" width="150" height="90"/>
     <line x1="120" y1="500" x2="120" y2="590"/>
     <line x1="170" y1="500" x2="170" y2="590"/>
     <line x1="70" y1="545" x2="220" y2="545"/>
   </g>
-  <!-- sun above panels (pulses continuously, independent of scroll) -->
   <g id="sunGroup" class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.5">
     <circle cx="145" cy="420" r="22"/>
     <line x1="177" y1="420" x2="189" y2="420"/>
@@ -630,7 +697,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     <line x1="167.56" y1="397.44" x2="176.14" y2="388.86"/>
   </g>
 
-  <!-- transmission line: two poles at different heights -->
   <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3">
     <line x1="900" y1="400" x2="900" y2="620"/>
     <line x1="855" y1="432" x2="945" y2="432"/>
@@ -643,7 +709,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     <line x1="720" y1="534" x2="750" y2="534"/>
   </g>
 
-  <!-- connecting cables, dimmer than the poles themselves -->
   <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.14">
     <path d="M768,462 Q812,478 855,432"/>
     <path d="M758,498 Q800,512 868,478"/>
@@ -662,7 +727,14 @@ Disclaimer: Although majority of the work put into this website was done by me (
     <a href="#experience">Experience</a>
     <a href="#projects">Projects</a>
     <a href="#contact">Contact</a>
-    <button class="theme-toggle" id="themeToggle" title="Toggle light / dark mode">☾</button>
+    <div class="nav-links">
+
+  
+    <div class="controls-group">
+      <button class="theme-toggle" id="themeToggle" title="Toggle Theme">☾</button>
+      <button class="theme-toggle" id="muteToggle" title="Mute/Unmute Audio">🔊</button>
+    </div>
+
   </div>
 </nav>
 
@@ -695,7 +767,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   </div>
 </div>
 
-<!-- HOME -->
 <section id="home">
   <div class="hero-grid">
     <div>
@@ -742,8 +813,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
   </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about">
+<section id="about" class="reveal">
   <div class="sec-head">
     <div class="sec-tag">Get to know me <span class="bus-tag">BUS B</span></div>
     <div class="sec-title">About Me</div>
@@ -767,17 +837,12 @@ Disclaimer: Although majority of the work put into this website was done by me (
               <div class="uni-logo-slot"><img src="MainImages/uni_logo.png" alt="University Logo"></div>
             </a>
             <svg width="30" height="240" viewBox="0 0 30 240">
-              <!-- incoming supply arrow -->
               <path d="M9,0 L21,0 L15,16 Z" fill="#4cc9f0"/>
-              <!-- busbar -->
               <line x1="15" y1="16" x2="15" y2="224" stroke="#8ea0ad" stroke-width="3"/>
-              <!-- breaker tap 1 -->
               <line x1="15" y1="48" x2="27" y2="48" stroke="#4cc9f0" stroke-width="2"/>
               <rect x="11" y="44" width="8" height="8" class="theme-fill" stroke="#f5b942" stroke-width="1.8" transform="rotate(45 15 48)"/>
-              <!-- breaker tap 2 -->
               <line x1="15" y1="196" x2="27" y2="196" stroke="#4cc9f0" stroke-width="2"/>
               <rect x="11" y="192" width="8" height="8" class="theme-fill" stroke="#f5b942" stroke-width="1.8" transform="rotate(45 15 196)"/>
-              <!-- outgoing arrowhead -->
               <path d="M9,224 L21,224 L15,240 Z" fill="#8ea0ad"/>
             </svg>
           </div>
@@ -835,15 +900,13 @@ Disclaimer: Although majority of the work put into this website was done by me (
   <div class="peek-dots" id="hobbyDots"></div>
 </section>
 
-<!-- EXPERIENCE -->
-<section id="experience">
+<section id="experience" class="reveal">
   <div class="sec-head">
     <div class="sec-tag">Where I've worked <span class="bus-tag">BUS C</span></div>
     <div class="sec-title">Experience</div>
     <div class="sec-sub">Building practical engineering experience through internships, research, and industry projects, I've developed the technical skills and practical knowledge needed for a career in electrical and power systems engineering.</div>
   </div>
 
-  <!-- Internships -->
   <div class="card">
     <div class="card-top">
       <div class="card-top-left">
@@ -978,8 +1041,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
   </div>
 </section>
 
-<!-- PROJECTS -->
-<section id="projects">
+<section id="projects" class="reveal">
   <div class="sec-head">
     <div class="sec-tag">What I've built <span class="bus-tag">BUS D</span></div>
     <div class="sec-title">Projects</div>
@@ -992,7 +1054,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     <button class="tab-btn" data-tab="teams">Project Teams</button>
   </div>
 
-  <!-- Academic -->
   <div class="tab-panel" id="academic">
     <div class="subtabs">
       <button class="subtab-btn active" data-subtab="electrical-academic">Electrical Projects</button>
@@ -1240,7 +1301,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     </div>
   </div>
 
-  <!-- Personal -->
   <div class="tab-panel active" id="personal">
     <div class="subtabs">
       <button class="subtab-btn active" data-subtab="electrical-personal">Electrical Projects</button>
@@ -1535,7 +1595,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     </div>
   </div>
 
-  <!-- Teams -->
   <div class="tab-panel" id="teams">
 
     <!--
@@ -1569,18 +1628,17 @@ Disclaimer: Although majority of the work put into this website was done by me (
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
+<section id="contact" class="reveal">
   <div class="sec-head">
     <div class="sec-tag">Let's connect <span class="bus-tag">BUS E</span></div>
     <div class="sec-title">Contact</div>
     <div class="sec-sub">Open to interesting conversations, exciting opportunities, and meaningful collaborations.</div>
   </div>
   <div class="contact-links">
-    <a class="contact-card" href="mailto:tuongnguyen48205@gmail.com">
+    <a class="contact-card" href="mailto:tuongnguyen48205@gmail.com" id="copyEmail" data-email="tuongnguyen48205@gmail.com" title="Click to copy">
       <div class="contact-icon">✉</div>
       <div class="contact-label">Email</div>
-      <div class="contact-val">tuongnguyen48205@gmail.com</div>
+      <div class="contact-val">tuongnguyen48205@gmail.com<span class="copy-toast" id="copyToast">Copied!</span></div>
     </a>
     <a class="contact-card" href="https://linkedin.com/in/tuong-nguyen05" target="_blank">
       <div class="contact-icon">in</div>
@@ -1592,7 +1650,10 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
 <footer>
   <div>© 2026 Tuong Bao Nguyen — built on a single-line diagram, one <span class="bus">bus</span> at a time. Powered, increasingly, by renewables.</div>
-  <div class="footer-views" id="viewCounter">👁 —</div>
+  <div class="footer-meta">
+    <div class="footer-views" id="viewCounter">👁 —</div>
+    <p class="last-updated">Last updated: <time datetime="2026-07-26">July 26, 2026</time></p>
+  </div>
 </footer>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
@@ -1619,7 +1680,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     });
   });
 
-  // Expand / collapse card details
   document.querySelectorAll('.card-toggle-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const card = btn.closest('.card');
@@ -1647,7 +1707,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   },{rootMargin:'-40% 0px -40% 0px',threshold:0});
   sections.forEach(s=>{ if(s) spy.observe(s); });
 
-  // Spin turbines as the page scrolls (sun pulses separately, see below)
   const blades1 = document.getElementById('turbineBlades1');
   const blades2 = document.getElementById('turbineBlades2');
   function onScrollEffects(){
@@ -1660,7 +1719,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   window.addEventListener('scroll', onScrollEffects, {passive:true});
   onScrollEffects();
 
-  // Sun pulses continuously, driven by time, not scroll position
   const sunGroup = document.getElementById('sunGroup');
   function pulseSun(ts){
     const scale = 1 + 0.07 * Math.sin(ts * 0.003);
@@ -1669,9 +1727,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   requestAnimationFrame(pulseSun);
 
-  // Click the source: jump to top, then play a current traveling
-  // from source to ground, lighting each bus yellow as it passes,
-  // while the page auto-scrolls in sync down to the bottom.
   // This was super hard to implement ;-;
   const busSource = document.getElementById('busSource');
   const spark = document.getElementById('travelSpark');
@@ -1748,19 +1803,60 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   busSource.addEventListener('click', playJourney);
 
-  // Light / dark mode toggle
   const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', ()=>{
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
-    themeToggle.textContent = isLight ? '☾' : '☼';
-  });
+  const muteToggle = document.getElementById('muteToggle');
+  let isMuted = localStorage.getItem('portfolio-muted') === 'true';
 
-  // Click any image  to zoom it into a lightbox.
+  (function initPreferences() {
+    try {
+      const savedTheme = localStorage.getItem('theme_preference');
+      if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (themeToggle) themeToggle.textContent = '☼';
+      } else {
+        if (themeToggle) themeToggle.textContent = '☾';
+      }
+      if (muteToggle) {
+        muteToggle.textContent = isMuted ? '🔇' : '🔊';
+      }
+    } catch (e) {
+      // Fail-safe default states (Dark Mode and Sound Unmuted)
+    }
+  })();
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const newTheme = isLight ? 'dark' : 'light';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = isLight ? '☾' : '☼';
+      
+      try {
+        localStorage.setItem('theme_preference', newTheme);
+      } catch (e) {}
+    });
+  }
+
+  if (muteToggle) {
+    muteToggle.addEventListener('click', () => {
+      isMuted = !isMuted;
+      muteToggle.textContent = isMuted ? '🔇' : '🔊';
+      
+      try {
+        localStorage.setItem('portfolio-muted', isMuted);
+      } catch (e) {}
+      
+      if (!isMuted) {
+        playSound('ripple');
+      }
+    });
+  }
+
   const lightboxOverlay = document.getElementById('lightboxOverlay');
   const lightboxContent = document.getElementById('lightboxContent');
   document.querySelectorAll('.img-slot').forEach(slot=>{
-    slot.addEventListener('click', (e)=>{
+    slot.addEventListener('pointerdown', (e)=>{
       e.stopPropagation();
       lightboxContent.innerHTML = slot.innerHTML;
       lightboxOverlay.classList.add('active');
@@ -1773,8 +1869,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     if(e.key === 'Escape') lightboxOverlay.classList.remove('active');
   });
 
-  // View counter — persists via shared storage where available,
-  // falls back to a session-only count if storage isn't reachable.
   (async function(){
     const el = document.getElementById('viewCounter');
     try{
@@ -1895,6 +1989,209 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
   window.addEventListener('resize', hPosition);
   hPosition();
+  })();
+
+  (function(){
+    const revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+  })();
+
+  (function(){
+    const hLine = document.getElementById('cursorCrosshairH');
+    const vLine = document.getElementById('cursorCrosshairV');
+    const centerDot = document.getElementById('cursorDotCenter');
+    const readout = document.getElementById('cursorReadout');
+    if(!hLine || !vLine || !centerDot || !readout || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+    let isHovering = false;
+    let hoverLabel = null; 
+
+    function positionCursor(){
+      hLine.style.left = mouseX + 'px';
+      hLine.style.top = mouseY + 'px';
+      vLine.style.left = mouseX + 'px';
+      vLine.style.top = mouseY + 'px';
+      centerDot.style.left = mouseX + 'px';
+      centerDot.style.top = mouseY + 'px';
+      readout.style.left = mouseX + 'px';
+      readout.style.top = mouseY + 'px';
+    }
+
+    document.addEventListener('mousemove', (e)=>{
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      positionCursor();
+    });
+
+    let activeType = null; 
+    function setHovering(on, label, type = null) {
+      isHovering = on;
+      hoverLabel = label || null;
+      activeType = on ? type : null; 
+      [hLine, vLine, centerDot, readout].forEach(el => {
+        if (el) el.classList.toggle('hovering', on);
+      });
+    }
+
+    let mousetracker = false;
+    let currentVoltage = "0.00"; 
+
+    function playSound(type) {
+      if (isMuted) return;
+
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        if (type === 'ripple') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(200, ctx.currentTime); 
+          
+          gain.gain.setValueAtTime(0.05, ctx.currentTime); // 5% volume
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.04);
+        } else if (type === 'lock') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(280, ctx.currentTime); 
+          osc.frequency.setValueAtTime(140, ctx.currentTime + 0.02); 
+          
+          gain.gain.setValueAtTime(0.07, ctx.currentTime); // 7% volume
+          gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.07);
+          
+          osc.start();
+          osc.stop(ctx.currentTime + 0.07);
+        }
+      } catch (err) {
+        console.warn("Audio Context blocked or unsupported:", err);
+      }
+    }
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        mousetracker = false; 
+        setHovering(true, null, 'logic'); 
+      });
+      el.addEventListener('mouseleave', () => setHovering(false));
+    });
+
+    document.querySelectorAll('.bus-node-wrap').forEach(el => {
+      const letter = el.querySelector('.bus-letter');
+      el.addEventListener('mouseenter', () => {
+        mousetracker = false;
+        setHovering(true, letter ? letter.textContent.trim() : null, 'bus');
+      });
+      el.addEventListener('mouseleave', () => setHovering(false));
+    });
+
+    const busSourceEl = document.querySelector('.bus-source');
+    if (busSourceEl) {
+      busSourceEl.addEventListener('mouseenter', () => {
+        mousetracker = false;
+        setHovering(true, 'SRC', 'source');
+      });
+      busSourceEl.addEventListener('mouseleave', () => setHovering(false));
+    }
+
+    setInterval(() => {
+      if (mousetracker) {
+        readout.textContent = `HOLD: ${currentVoltage}V`;
+        return; 
+      }
+
+      if (isHovering) {
+        let base = 5.0;
+        if (activeType === 'source') base = 12.0;
+        if (activeType === 'logic') base = 5;
+
+        currentVoltage = (base + (Math.random() * 0.2 - 0.1)).toFixed(2);
+
+        if (hoverLabel) {
+          readout.textContent = `BUS ${hoverLabel}: ${currentVoltage}V`;
+        } else {
+          readout.textContent = `SCAN: ${currentVoltage}V`;
+        }
+      } else {
+        currentVoltage = "0.00";
+        readout.textContent = "READY";
+      }
+    }, 180);
+
+    document.addEventListener('mousedown', (e) => {
+      
+      playSound('ripple');
+
+      const ripple = document.createElement('div');
+      ripple.className = 'cursor-ripple';
+      ripple.style.left = e.clientX + 'px';
+      ripple.style.top = e.clientY + 'px';
+      document.body.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+      
+      const isInteractiveTarget = e.target.closest('a, button, .bus-node-wrap, .bus-source');
+      if (isInteractiveTarget) {
+        mousetracker = true; 
+        playSound('lock'); 
+      }
+    });
+
+
+    positionCursor();
+  })();
+
+  (function(){
+    const copyEmail = document.getElementById('copyEmail');
+    const copyToast = document.getElementById('copyToast');
+    if(!copyEmail || !copyToast) return;
+
+    copyEmail.addEventListener('click', async (e)=>{
+      const email = copyEmail.dataset.email;
+      try{
+        await navigator.clipboard.writeText(email);
+      }catch(err){
+        const textarea = document.createElement('textarea');
+        textarea.value = email;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      copyToast.classList.add('show');
+      setTimeout(()=>copyToast.classList.remove('show'), 1500);
+    });
+  })();
+
+  (function(){
+    const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIndex = 0;
+
+    document.addEventListener('keydown', (e)=>{
+      const key = e.key;
+      if(key === konamiCode[konamiIndex]){
+        konamiIndex++;
+        if(konamiIndex === konamiCode.length){
+          document.body.classList.add('konami-active');
+          setTimeout(()=>document.body.classList.remove('konami-active'), 3000);
+          console.log('%⚡︎ You found the secret! ⚡︎', 'font-size:20px;color:#4cc9f0;');
+          konamiIndex = 0;
+        }
+      } else {
+        konamiIndex = (key === konamiCode[0]) ? 1 : 0;
+      }
+    });
   })();
 </script>
 
