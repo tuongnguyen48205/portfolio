@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-cursor="voltmeter">
 <!--  
 Thank you to Nicolai Skogstad for inspiring me to make this website.
 A lot of the design choices behind this site is inspired by his own (nicolai.skogstad.com)
@@ -35,6 +35,66 @@ Disclaimer: Although majority of the work put into this website was done by me (
     --text:#3d3527;
     --text-dim:#8a7d68;
   }
+  html[data-theme="blueprint"]{
+    --bg:#0b2947;
+    --bg-alt:#0f3159;
+    --panel:#123a63;
+    --line:#2c5680;
+    --accent:#8fd3ff;
+    --accent2:#ffd166;
+    --text:#eaf4ff;
+    --text-dim:#9fc3e0;
+  }
+  html[data-theme="terminal"]{
+    --bg:#03110a;
+    --bg-alt:#06180f;
+    --panel:#082014;
+    --line:#163a26;
+    --accent:#3dffa0;
+    --accent2:#ffcc66;
+    --text:#dcffe9;
+    --text-dim:#69a687;
+  }
+  html[data-theme="copper"]{
+    --bg:#1a100a;
+    --bg-alt:#231508;
+    --panel:#2b1a0d;
+    --line:#4a2f18;
+    --accent:#e08a3c;
+    --accent2:#ffce54;
+    --text:#f5e6d3;
+    --text-dim:#c9a37c;
+  }
+  html[data-theme="storm"]{
+    --bg:#12121c;
+    --bg-alt:#181826;
+    --panel:#1e1e30;
+    --line:#33334d;
+    --accent:#a78bfa;
+    --accent2:#f472b6;
+    --text:#eae8f7;
+    --text-dim:#9a94b8;
+  }
+  html[data-theme="ember"]{
+    --bg:#1a0b0b;
+    --bg-alt:#230f0f;
+    --panel:#2b1212;
+    --line:#4a1f1f;
+    --accent:#e0503c;
+    --accent2:#ff8a54;
+    --text:#f5dcd3;
+    --text-dim:#c98d7c;
+  }
+  html[data-theme="solar"]{
+    --bg:#1a1608;
+    --bg-alt:#231d09;
+    --panel:#2b230d;
+    --line:#4a3f18;
+    --accent:#e0c23c;
+    --accent2:#ffe454;
+    --text:#f5f0d3;
+    --text-dim:#c9bc7c;
+  }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
   body{
@@ -46,11 +106,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     transition:background .35s ease,color .35s ease;
   }
   a{color:inherit;text-decoration:none;}
-
-  /*Disclaimer: Although majority of the work was done by me (Tuong Bao Nguyen), 
-  AI assisted in certain parts/functionalities of the site, notably, the animations.
-  
-  Thank you to Nicolai Skogstad (nicolai.skogstad.com) for inspiring me to make this website 2026*/
 
   .circuit-bg{
     position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;
@@ -108,17 +163,80 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .nav-links a:hover::after{width:100%;}
   .theme-toggle{
     border:1px solid var(--line);background:var(--panel);color:var(--text);
-    width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;font-size:1rem;line-height:1;
+    width:36px;height:36px;padding:0;border-radius:50%;font-size:1rem;line-height:1;
     display:flex;align-items:center;justify-content:center;transition:.25s;
   }
   .theme-toggle:hover{border-color:var(--accent);transform:translateY(-2px);}
 
-  .controls-group {
-    display: flex;
-    align-items: center;
-    gap: 8px; 
-    margin-left: -33px;
-    transform: translateX(30px); 
+  .settings-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;
+    opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease;
+  }
+  .settings-overlay.open{opacity:1;visibility:visible;}
+  .settings-panel{
+    position:fixed;top:0;right:0;height:100vh;width:320px;max-width:88vw;
+    background:var(--panel);border-left:1px solid var(--line);
+    z-index:151;padding:18px 22px;overflow-y:auto;
+    transform:translateX(100%);
+    transition:transform .35s ease,background .35s ease,border-color .35s ease;
+    display:flex;flex-direction:column;gap:25px;
+  }
+  .settings-panel.open{transform:translateX(0);}
+  .settings-panel-head{
+    display:flex;justify-content:space-between;align-items:center;
+    font-weight:700;letter-spacing:.5px;color:var(--text);
+    border-bottom:1px solid var(--line);padding-bottom:10px;
+  }
+  .settings-close{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    width:30px;height:30px;padding:0;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    transition:.25s;font-size:.85rem;
+  }
+  .settings-close:hover{border-color:var(--accent);color:var(--accent);}
+  .settings-section-title{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:8px;
+  }
+  .settings-row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;
+  }
+  .settings-row:last-child{margin-bottom:0;}
+  .settings-row-label{font-size:.85rem;color:var(--text-dim);}
+  .cursor-options{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .theme-options{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .cursor-option,.theme-option{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    padding:7px 12px;border-radius:8px;font-size:.85rem;text-align:left;
+    transition:.25s;
+  }
+  .cursor-option:hover,.theme-option:hover{border-color:var(--accent);color:var(--accent);}
+  .cursor-option.active,.theme-option.active{border-color:var(--accent);color:var(--accent);background:rgba(76,201,240,.08);}
+  .theme-option-swatch{
+    display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.2);vertical-align:-1px;
+  }
+  .last-updated{
+    font-size:.78rem;color:var(--text-dim);
+    background:var(--bg-alt);border:1px solid var(--line);
+    padding:6px 14px;border-radius:20px;
+    transition:.35s ease;
+  }
+  .settings-toggle-btn{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text);
+    font-family:inherit;padding:8px 16px;border-radius:20px;font-size:.82rem;
+    width:110px;text-align:center;
+    transition:.25s;
+  }
+  .settings-toggle-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+  .settings-contact-icons{display:flex;gap:10px;justify-content:center;margin-top:15px;}
+  .settings-contact-icon{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    width:32px;height:32px;padding:0;border-radius:50%;font-size:.95rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;transition:.25s;
+  }
+  .settings-contact-icon:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+  @media(max-width:480px){
+    .settings-panel{width:100%;max-width:100%;}
   }
 
   section{
@@ -271,7 +389,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   .peek-slide{
     flex:0 0 calc(20% - 10px);height:78%;border-radius:9px;overflow:hidden;
-    position:relative;cursor:pointer;background:var(--bg-alt);border:1px solid var(--line);
+    position:relative;background:var(--bg-alt);border:1px solid var(--line);
     transition:transform .45s cubic-bezier(.65,0,.35,1),opacity .45s ease,height .45s ease,filter .45s ease,border-color .25s ease;
   }
   .peek-slide img{
@@ -313,7 +431,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     background:transparent;
     color:var(--accent2);
     font-size:28px;
-    cursor:pointer;
     visibility: hidden;
     opacity:0;
     pointer-events:none;
@@ -372,7 +489,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
   .card-toggle-btn{
     margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--accent);
-    padding:8px 16px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:.25s;
+    padding:8px 16px;border-radius:8px;font-size:.82rem;transition:.25s;
     display:inline-flex;align-items:center;gap:6px;
   }
   .card-toggle-btn:hover{border-color:var(--accent);background:rgba(76,201,240,.08);}
@@ -417,7 +534,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .subtabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
   .subtab-btn{
     padding:8px 16px;border-radius:20px;border:1px solid var(--line);
-    background:transparent;color:var(--text-dim);font-size:.82rem;cursor:pointer;transition:.25s;
+    background:transparent;color:var(--text-dim);font-size:.82rem;transition:.25s;
   }
   .subtab-btn.active{background:var(--accent2);color:#1a1206;border-color:var(--accent2);font-weight:600;}
   .subtab-panel{display:none;}
@@ -464,14 +581,14 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .dl-btn{
     display:flex;align-items:center;gap:6px;
     background:transparent;border:1px solid var(--accent);color:var(--accent);
-    padding:8px 14px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:.25s;
+    padding:8px 14px;border-radius:8px;font-size:.82rem;transition:.25s;
   }
   .dl-btn:hover{background:var(--accent);color:#04121a;}
  
   .tabs{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap;}
   .tab-btn{
     padding:10px 20px;border-radius:30px;border:1px solid var(--line);
-    background:transparent;color:var(--text-dim);font-size:.9rem;cursor:pointer;transition:.25s;
+    background:transparent;color:var(--text-dim);font-size:.9rem;transition:.25s;
   }
   .tab-btn.active{background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:600;}
   .tab-panel{display:none;}
@@ -497,29 +614,18 @@ Disclaimer: Although majority of the work put into this website was done by me (
     text-align:center;transition:.35s ease;
   }
   footer .bus{color:var(--accent2);}
-  .footer-meta {
-      position: absolute;
-      right: 5%;                    
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;      
-      align-items: center;           
-      gap: 6px;                       
-    }
-
-    .footer-views {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: .78rem;
-      color: var(--text-dim);
-      background: var(--bg-alt);
-      border: 1px solid var(--line);
-      padding: 6px 14px;
-      border-radius: 20px;
-      transition: .35s ease;
-    }
+  .footer-views {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .78rem;
+    color: var(--text-dim);
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: .35s ease;
+  }
 
   .bus-rail{
     position:fixed;left:32px;top:50%;transform:translateY(-50%);
@@ -540,7 +646,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     display:flex;align-items:center;justify-content:center;position:relative;z-index:2;
     transform-origin:center;color:var(--line);
   }
-  .bus-source{cursor:pointer;}
   .bus-source.pulse-anim{animation:sourcePulse .7s ease;}
   @keyframes sourcePulse{
     0%{transform:scale(1);filter:none;}
@@ -555,7 +660,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
   .bus-node-wrap{
     position:relative;display:flex;align-items:center;justify-content:center;
-    padding:32px 0;cursor:pointer;z-index:2;
+    padding:32px 0;z-index:2;
   }
   .bus-dot{
     width:14px;height:14px;border-radius:50%;background:var(--bg-alt);
@@ -586,7 +691,30 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
   .custom-cursor{display:none;}
   @media(hover:hover) and (pointer:fine){
-    *{cursor:none;}
+    html:not([data-cursor="none"]) *{cursor:none;}
+    html[data-cursor="none"] a,
+    html[data-cursor="none"] button,
+    html[data-cursor="none"] .bus-source,
+    html[data-cursor="none"] .bus-node-wrap,
+    html[data-cursor="none"] .card-toggle-btn,
+    html[data-cursor="none"] .img-slot,
+    html[data-cursor="none"] .tab-btn,
+    html[data-cursor="none"] .subtab-btn,
+    html[data-cursor="none"] .cursor-option{
+      cursor:pointer;
+    }
+
+    #cursorCrosshairH,#cursorCrosshairV,#cursorDotCenter,#cursorReadout,#scopeCursor,#cursorDot,#cursorRing,#cursorBreaker,#cursorFuse{
+      display:none;
+    }
+    html[data-cursor="voltmeter"] #cursorCrosshairH,
+    html[data-cursor="voltmeter"] #cursorCrosshairV,
+    html[data-cursor="voltmeter"] #cursorDotCenter,
+    html[data-cursor="voltmeter"] #cursorReadout,
+    html[data-cursor="oscilloscope"] #cursorCrosshairH,
+    html[data-cursor="oscilloscope"] #cursorCrosshairV{
+      display:block;
+    }
     .cursor-crosshair-h,.cursor-crosshair-v{
       position:fixed;top:0;left:0;background:var(--accent);pointer-events:none;z-index:9999;
       box-shadow:0 0 6px var(--accent);transition:background .2s ease,box-shadow .2s ease;
@@ -597,7 +725,8 @@ Disclaimer: Although majority of the work put into this website was done by me (
       background:var(--accent2);box-shadow:0 0 8px var(--accent2);
     }
     .cursor-dot-center{
-      position:fixed;top:0;left:0;width:3px;height:3px;border-radius:50%;
+      position:fixed;top:0;left:0;
+      width:3px;height:3px;border-radius:50%;
       background:var(--accent);pointer-events:none;z-index:9999;
       transform:translate(-50%,-50%);transition:background .2s ease;
     }
@@ -620,11 +749,141 @@ Disclaimer: Although majority of the work put into this website was done by me (
       transform:translate(-50%,-50%);
       animation:cursor-ripple .6s ease-out forwards;
     }
+
+    html[data-cursor="oscilloscope"] #scopeCursor{display:block;}
+    #scopeCursor{
+      position:fixed;top:0;left:0;width:64px;height:32px;
+      pointer-events:none;z-index:9999;will-change:transform;
+      background:rgba(4,8,12,.55);border:1px solid var(--accent);border-radius:4px;
+      box-shadow:0 0 10px rgba(0,0,0,.35),inset 0 0 8px rgba(0,0,0,.4);
+      transition:border-color .2s ease,opacity .2s ease;
+      overflow:hidden;
+    }
+    html[data-theme="light"] #scopeCursor{background:rgba(255,255,255,.55);}
+    #scopeCursor.active{border-color:var(--accent2);}
+    #scopeCursor.ping .scope-corner{animation:scopePing .35s ease;}
+    @keyframes scopePing{
+      0%{box-shadow:inset 0 0 0 0 currentColor;}
+      35%{box-shadow:inset 0 0 0 3px currentColor;}
+      100%{box-shadow:inset 0 0 0 0 currentColor;}
+    }
+    .scope-corner{position:absolute;inset:0;border-radius:4px;pointer-events:none;color:var(--accent);}
+
+    html[data-cursor="ring"] #cursorDot{display:block;}
+    html[data-cursor="ring"] #cursorRing{display:block;}
+    #cursorDot{
+      position:fixed;top:0;left:0;z-index:9999;
+      width:8px;height:8px;border-radius:50%;
+      background:var(--accent);pointer-events:none;
+      transform:translate(-50%,-50%);
+      box-shadow:0 0 8px var(--accent);
+      transition:width .2s ease,height .2s ease,background .2s ease,opacity .2s ease;
+    }
+    #cursorRing{
+      position:fixed;top:0;left:0;z-index:9999;
+      width:34px;height:34px;border-radius:50%;
+      border:1.5px dashed var(--accent);pointer-events:none;opacity:.6;
+      transform:translate(-50%,-50%);
+      animation:cursor-spin 6s linear infinite;
+      transition:width .3s ease,height .3s ease,border-color .3s ease,opacity .3s ease;
+    }
+    #cursorDot.hovering{width:5px;height:5px;background:var(--accent2);box-shadow:0 0 8px var(--accent2);}
+    #cursorRing.hovering{
+      width:52px;height:52px;border-color:var(--accent2);opacity:1;
+      border-style:solid;animation-duration:2.5s;
+    }
+    #cursorDot.bus-hover{
+      width:6px;height:6px;background:var(--accent2);
+      box-shadow:0 0 12px var(--accent2),0 0 24px var(--accent2);
+      border-radius:2px;transform:translate(-50%,-50%) rotate(45deg);
+    }
+    #cursorRing.bus-hover{
+      width:46px;height:46px;border-radius:6px;border-color:var(--accent2);
+      border-style:solid;opacity:1;animation-duration:1.4s;
+      box-shadow:0 0 16px -4px var(--accent2);
+    }
+
+    html[data-cursor="breaker"] #cursorBreaker{display:block;}
+    #cursorBreaker{
+      position:fixed;top:0;left:0;z-index:9999;
+      width:16px;height:24px;pointer-events:none;
+      transform:translate(-50%,-50%);
+      background:var(--bg-alt);border:1.5px solid var(--accent);border-radius:3px;
+      box-shadow:0 0 8px -1px var(--accent);
+      transition:border-color .2s ease,box-shadow .2s ease;
+    }
+    .breaker-lever{
+      position:absolute;left:50%;bottom:3px;width:4px;height:11px;
+      background:var(--accent);border-radius:2px;
+      transform:translateX(-50%) rotate(0deg);transform-origin:bottom center;
+      transition:transform .2s ease,background .2s ease;
+    }
+    #cursorBreaker.hovering{border-color:var(--accent2);box-shadow:0 0 10px -1px var(--accent2);}
+    #cursorBreaker.hovering .breaker-lever{background:var(--accent2);transform:translateX(-50%) rotate(165deg);}
+    #cursorBreaker.tripped{box-shadow:0 0 16px 2px var(--accent2);}
+    #cursorBreaker.tripped .breaker-lever{animation:breakerTrip .45s ease;}
+    @keyframes breakerTrip{
+      0%{transform:translateX(-50%) rotate(0deg);}
+      45%{transform:translateX(-50%) rotate(200deg);}
+      100%{transform:translateX(-50%) rotate(165deg);}
+    }
+    .breaker-spark-wrap{
+      position:fixed;top:0;left:0;width:0;height:0;pointer-events:none;z-index:9998;
+    }
+    .breaker-spark-line{
+      position:absolute;top:0;left:0;width:2px;height:16px;
+      background:linear-gradient(var(--accent2),transparent);
+      border-radius:1px;box-shadow:0 0 6px var(--accent2);
+      transform-origin:top center;
+      transform:rotate(var(--ang)) translateY(0);
+      animation:sparkFly .45s ease-out forwards;
+    }
+    .breaker-spark-flash{
+      position:absolute;top:0;left:0;width:26px;height:26px;border-radius:50%;
+      transform:translate(-50%,-50%);background:var(--accent2);opacity:.9;
+      box-shadow:0 0 18px var(--accent2);
+      animation:sparkFlash .3s ease-out forwards;
+    }
+    @keyframes sparkFly{
+      0%{opacity:1;transform:rotate(var(--ang)) translateY(0);}
+      100%{opacity:0;transform:rotate(var(--ang)) translateY(-30px);}
+    }
+    @keyframes sparkFlash{
+      0%{opacity:.9;transform:translate(-50%,-50%) scale(.2);}
+      100%{opacity:0;transform:translate(-50%,-50%) scale(1);}
+    }
+
+    html[data-cursor="fuse"] #cursorFuse{display:block;}
+    #cursorFuse{
+      position:fixed;top:0;left:0;z-index:9999;
+      width:26px;height:12px;pointer-events:none;
+      transform:translate(-50%,-50%);
+      background:var(--bg-alt);border:1.5px solid var(--accent);border-radius:8px;
+      box-shadow:0 0 8px -1px var(--accent);
+      transition:border-color .2s ease,box-shadow .2s ease;
+    }
+    .fuse-filament{
+      position:absolute;top:50%;left:4px;right:4px;height:1.5px;
+      background:var(--accent);transform:translateY(-50%);
+      box-shadow:0 0 4px var(--accent);
+      transition:background .2s ease,box-shadow .2s ease;
+    }
+    #cursorFuse.hovering{border-color:var(--accent2);box-shadow:0 0 10px -1px var(--accent2);}
+    #cursorFuse.hovering .fuse-filament{background:var(--accent2);box-shadow:0 0 6px var(--accent2);}
+    #cursorFuse.blown{box-shadow:0 0 16px 2px var(--accent2);}
+    #cursorFuse.blown .fuse-filament{animation:fuseBlow .45s ease;}
+    @keyframes fuseBlow{
+      0%{opacity:1;transform:translateY(-50%) scaleX(1);}
+      35%{opacity:.15;background:var(--accent2);transform:translateY(-50%) scaleX(.4);}
+      60%{opacity:1;transform:translateY(-50%) scaleX(.15);}
+      100%{opacity:.35;transform:translateY(-50%) scaleX(.15);}
+    }
   }
   @keyframes cursor-ripple{
     from{width:10px;height:10px;opacity:.8;}
     to{width:70px;height:70px;opacity:0;}
   }
+  @keyframes cursor-spin{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
 
   .copy-toast{
     position:absolute;bottom:10px;right:16px;font-size:.72rem;color:var(--accent);
@@ -653,7 +912,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     .dl-btns{margin-left:0;width:100%;}
     .code-window{width:100%;}
     footer{padding-top:70px;}
-    .footer-meta{position:static;transform:none;margin:14px auto 0;align-items:center;}
     h1.name{white-space:normal;font-size:clamp(1.8rem,8vw,2.6rem);}
   }
 </style>
@@ -664,6 +922,22 @@ Disclaimer: Although majority of the work put into this website was done by me (
 <div class="cursor-crosshair-v" id="cursorCrosshairV"></div>
 <div class="cursor-dot-center" id="cursorDotCenter"></div>
 <div class="cursor-readout" id="cursorReadout">4.98 V</div>
+
+<div id="scopeCursor">
+  <canvas id="scopeTrace" width="64" height="32"></canvas>
+  <div class="scope-corner" id="scopeCorner"></div>
+</div>
+
+<div id="cursorDot"></div>
+<div id="cursorRing"></div>
+
+<div id="cursorBreaker">
+  <span class="breaker-lever"></span>
+</div>
+
+<div id="cursorFuse">
+  <span class="fuse-filament"></span>
+</div>
 
 <svg class="circuit-bg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
   <defs>
@@ -741,16 +1015,93 @@ Disclaimer: Although majority of the work put into this website was done by me (
     <a href="#experience">Experience</a>
     <a href="#projects">Projects</a>
     <a href="#contact">Contact</a>
-    <div class="nav-links">
-
-  
-    <div class="controls-group">
-      <button class="theme-toggle" id="themeToggle" title="Toggle Theme">☾</button>
-      <button class="theme-toggle" id="muteToggle" title="Mute/Unmute Audio">🔊</button>
-    </div>
-
+    <button class="theme-toggle" id="settingsToggle" title="Settings" aria-label="Open settings" aria-expanded="false">⚙</button>
   </div>
 </nav>
+
+<div class="settings-overlay" id="settingsOverlay"></div>
+<aside class="settings-panel" id="settingsPanel" aria-hidden="true">
+  <div class="settings-panel-head">
+    <span>Settings</span>
+    <button class="settings-close" id="settingsClose" aria-label="Close settings">✕</button>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Appearance</div>
+    <div class="theme-options" role="radiogroup" aria-label="Theme">
+      <button class="theme-option" data-theme-option="dark" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#0f151d"></span>Dark
+      </button>
+      <button class="theme-option" data-theme-option="light" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#f2ebda"></span>Light
+      </button>
+      <button class="theme-option" data-theme-option="ember" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#e0503c"></span>Ember
+      </button>
+      <button class="theme-option" data-theme-option="copper" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#e08a3c"></span>Copper
+      </button>
+      <button class="theme-option" data-theme-option="solar" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#e0c23c"></span>Solar
+      </button>
+      <button class="theme-option" data-theme-option="terminal" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#3dffa0"></span>Terminal
+      </button>
+      <button class="theme-option" data-theme-option="blueprint" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#8fd3ff"></span>Blueprint
+      </button>
+      <button class="theme-option" data-theme-option="storm" role="radio" aria-checked="false">
+        <span class="theme-option-swatch" style="background:#a78bfa"></span>Storm
+      </button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Sound</div>
+    <div class="settings-row">
+      <span class="settings-row-label">Audio</span>
+      <button class="settings-toggle-btn" id="muteToggle" title="Mute/Unmute Audio">Unmuted 🔊</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Cursor</div>
+    <div class="cursor-options" role="radiogroup" aria-label="Cursor style">
+      <button class="cursor-option" data-cursor-option="voltmeter" role="radio" aria-checked="false">Voltmeter</button>
+      <button class="cursor-option" data-cursor-option="oscilloscope" role="radio" aria-checked="false">Oscilloscope</button>
+      <button class="cursor-option" data-cursor-option="ring" role="radio" aria-checked="false">Ring</button>
+      <button class="cursor-option" data-cursor-option="breaker" role="radio" aria-checked="false">Circuit Breaker</button>
+      <button class="cursor-option" data-cursor-option="fuse" role="radio" aria-checked="false">Fuse</button>
+      <button class="cursor-option" data-cursor-option="none" role="radio" aria-checked="false">None</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Site Info</div>
+    <div class="settings-row">
+      <span class="settings-row-label">Views</span>
+      <span class="footer-views" id="viewCounter">👁 —</span>
+    </div>
+    <div class="settings-row">
+      <span class="settings-row-label">Last updated</span>
+      <p class="last-updated"><time datetime="2026-07-27">27 July, 2026</time></p>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Contact</div>
+    <div class="settings-contact-icons">
+      <a class="settings-contact-icon" href="#home" title="Website">🌐</a>
+      <a class="settings-contact-icon" href="mailto:tuongnguyen48205@gmail.com" title="Email">✉</a>
+      <a class="settings-contact-icon" href="https://linkedin.com/in/tuong-nguyen05" target="_blank" rel="noopener" title="LinkedIn">in</a>
+      <a class="settings-contact-icon" href="https://github.com/tuongnguyen48205" target="_blank" rel="noopener" title="GitHub" style="font-size:.78rem;font-weight:700;">
+        <svg height="16" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" style="fill: currentColor;">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82A7.48 7.48 0 0 0 8 3c-.68 0-1.36.09-2 .28-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</aside>
 
 <div class="bus-rail" id="busRail">
   <svg class="rail-line-svg"><line class="bus-line" x1="1" y1="0" x2="1" y2="100%"/><line class="bus-current" x1="1" y1="0" x2="1" y2="100%"/></svg>
@@ -814,6 +1165,12 @@ Disclaimer: Although majority of the work put into this website was done by me (
         <div class="spec-links">
           <a class="pill" href="#contact">✉ Email</a>
           <a class="pill" href="#contact">in LinkedIn</a>
+          <!-- GITHUB PILL: wrap this link element in HTML comment tags to hide it; the flex layout re-centres the rest automatically -->
+          <a class="pill" href="https://github.com/tuongnguyen48205" target="_blank" rel="noopener">
+            <svg height="16" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" style="fill: currentColor;">
+              <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82A7.48 7.48 0 0 0 8 3c-.68 0-1.36.09-2 .28-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+            </svg>
+            GitHub</a>
           <a class="pill" href="#projects">↓ View Work</a>
         </div>
       </div>
@@ -1511,6 +1868,9 @@ Disclaimer: Although majority of the work put into this website was done by me (
             <span class="skill-chip">Front-End Development</span>
             <span class="skill-chip">UI/UX Designt</span>
             <span class="skill-chip">Technical Communication</span>
+            <div class="dl-btns">
+              <a class="dl-btn" href="https://github.com/tuongnguyen48205/portfolio" target="_blank" rel="noopener">View Project ↗</a>
+          </div>
           </div>
         </div>
       </div>
@@ -1555,7 +1915,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
             <span class="skill-chip">Event Driven Programming</span>
             <div class="dl-btns">
               <a class="dl-btn" href="https://github.com/tuongnguyen48205/Login-and-Registration" target="_blank" rel="noopener">View Project ↗</a>
-              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1659,15 +2019,21 @@ Disclaimer: Although majority of the work put into this website was done by me (
       <div class="contact-label">LinkedIn</div>
       <div class="contact-val">linkedin.com/in/tuong-nguyen05</div>
     </a>
+    <!-- GITHUB CONTACT: wrap this link element in HTML comment tags to hide it; the flex layout re-centres the rest automatically -->
+    <a class="contact-card" href="https://github.com/tuongnguyen48205" target="_blank">
+      <div class="contact-icon">
+        <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" style="fill: currentColor;">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82A7.48 7.48 0 0 0 8 3c-.68 0-1.36.09-2 .28-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+      </div>
+      <div class="contact-label">GitHub</div>
+      <div class="contact-val">github.com/tuongnguyen48205</div>
+    </a>
   </div>
 </section>
 
 <footer>
   <div>© 2026 Tuong Bao Nguyen — built on a single-line diagram, one <span class="bus">bus</span> at a time. Powered, increasingly, by renewables.</div>
-  <div class="footer-meta">
-    <div class="footer-views" id="viewCounter">👁 —</div>
-    <p class="last-updated">Last updated: <time datetime="2026-07-26">July 26, 2026</time></p>
-  </div>
 </footer>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
@@ -1817,45 +2183,48 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   busSource.addEventListener('click', playJourney);
 
-  const themeToggle = document.getElementById('themeToggle');
   const muteToggle = document.getElementById('muteToggle');
   let isMuted = localStorage.getItem('portfolio-muted') === 'true';
 
   (function initPreferences() {
     try {
-      const savedTheme = localStorage.getItem('theme_preference');
-      if (savedTheme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        if (themeToggle) themeToggle.textContent = '☼';
-      } else {
-        if (themeToggle) themeToggle.textContent = '☾';
-      }
       if (muteToggle) {
-        muteToggle.textContent = isMuted ? '🔇' : '🔊';
+        muteToggle.textContent = isMuted ? 'Muted 🔇' : 'Unmuted 🔊';
       }
     } catch (e) {
-      // Fail-safe default states (Dark Mode and Sound Unmuted)
+      // Fail-safe default state (Sound Unmuted)
     }
   })();
 
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-      const newTheme = isLight ? 'dark' : 'light';
-      
-      document.documentElement.setAttribute('data-theme', newTheme);
-      themeToggle.textContent = isLight ? '☾' : '☼';
-      
-      try {
-        localStorage.setItem('theme_preference', newTheme);
-      } catch (e) {}
+  const themeOptionBtns = document.querySelectorAll('.theme-option');
+  function setTheme(theme, persist){
+    if (theme === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    themeOptionBtns.forEach(btn => {
+      const active = btn.dataset.themeOption === theme;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-checked', active ? 'true' : 'false');
     });
+    if (persist) {
+      try { localStorage.setItem('theme_preference', theme); } catch (e) {}
+    }
   }
+  themeOptionBtns.forEach(btn => {
+    btn.addEventListener('click', () => setTheme(btn.dataset.themeOption, true));
+  });
+  (function initTheme(){
+    let saved = 'dark';
+    try { saved = localStorage.getItem('theme_preference') || 'dark'; } catch (e) {}
+    setTheme(saved, false);
+  })();
 
   if (muteToggle) {
     muteToggle.addEventListener('click', () => {
       isMuted = !isMuted;
-      muteToggle.textContent = isMuted ? '🔇' : '🔊';
+      muteToggle.textContent = isMuted ? 'Muted 🔇' : 'Unmuted 🔊';
       
       try {
         localStorage.setItem('portfolio-muted', isMuted);
@@ -1866,6 +2235,58 @@ Disclaimer: Although majority of the work put into this website was done by me (
       }
     });
   }
+
+  const settingsToggle = document.getElementById('settingsToggle');
+  const settingsPanel = document.getElementById('settingsPanel');
+  const settingsOverlay = document.getElementById('settingsOverlay');
+  const settingsClose = document.getElementById('settingsClose');
+
+  function openSettings(){
+    settingsPanel.classList.add('open');
+    settingsOverlay.classList.add('open');
+    settingsToggle.setAttribute('aria-expanded', 'true');
+    settingsPanel.setAttribute('aria-hidden', 'false');
+  }
+  function closeSettings(){
+    settingsPanel.classList.remove('open');
+    settingsOverlay.classList.remove('open');
+    settingsToggle.setAttribute('aria-expanded', 'false');
+    settingsPanel.setAttribute('aria-hidden', 'true');
+  }
+  if (settingsToggle) {
+    settingsToggle.addEventListener('click', () => {
+      settingsPanel.classList.contains('open') ? closeSettings() : openSettings();
+    });
+  }
+  if (settingsClose) settingsClose.addEventListener('click', closeSettings);
+  if (settingsOverlay) settingsOverlay.addEventListener('click', closeSettings);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSettings();
+  });
+
+  function getCursorMode(){
+    return document.documentElement.getAttribute('data-cursor') || 'voltmeter';
+  }
+  const cursorOptionBtns = document.querySelectorAll('.cursor-option');
+  function setCursorMode(mode, persist){
+    document.documentElement.setAttribute('data-cursor', mode);
+    cursorOptionBtns.forEach(btn => {
+      const active = btn.dataset.cursorOption === mode;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    if (persist) {
+      try { localStorage.setItem('cursor_preference', mode); } catch (e) {}
+    }
+  }
+  cursorOptionBtns.forEach(btn => {
+    btn.addEventListener('click', () => setCursorMode(btn.dataset.cursorOption, true));
+  });
+  (function initCursorMode(){
+    let saved = 'voltmeter';
+    try { saved = localStorage.getItem('cursor_preference') || 'voltmeter'; } catch (e) {}
+    setCursorMode(saved, false);
+  })();
 
   const lightboxOverlay = document.getElementById('lightboxOverlay');
   const lightboxContent = document.getElementById('lightboxContent');
@@ -2153,7 +2574,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
     }, 180);
 
     document.addEventListener('mousedown', (e) => {
-      
       playSound('ripple');
 
       const ripple = document.createElement('div');
@@ -2172,6 +2592,223 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
 
     positionCursor();
+  })();
+
+  (function(){
+    const scopeCursor = document.getElementById('scopeCursor');
+    const scopeTrace = document.getElementById('scopeTrace');
+    const scopeCorner = document.getElementById('scopeCorner');
+    if(!scopeCursor || !scopeTrace || !scopeCorner || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    const interactiveSelector = 'a, button, .bus-node-wrap, .bus-source';
+
+    const ctx = scopeTrace.getContext('2d');
+    const W = scopeTrace.width, H = scopeTrace.height, MID = H / 2;
+    const SAMPLES = 40;
+    const buffer = new Array(SAMPLES).fill(0);
+
+    let lastX = window.innerWidth / 2, lastY = window.innerHeight / 2;
+    let velocity = 0;
+    let hovering = false;
+
+    function readVar(name, fallback){
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return v || fallback;
+    }
+
+    function drawScope(){
+      ctx.clearRect(0, 0, W, H);
+
+      ctx.strokeStyle = 'rgba(255,255,255,.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, MID); ctx.lineTo(W, MID);
+      ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H);
+      ctx.stroke();
+
+      velocity *= 0.82;
+      const noise = (Math.random() - 0.5) * 0.6;
+      buffer.shift();
+      buffer.push(velocity + noise);
+
+      const color = hovering ? readVar('--accent2', '#f5b942') : readVar('--accent', '#4cc9f0');
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.6;
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = color;
+      ctx.beginPath();
+      const step = W / (SAMPLES - 1);
+      buffer.forEach((v, i)=>{
+        const x = i * step;
+        const y = Math.max(1, Math.min(H - 1, MID - v));
+        if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      requestAnimationFrame(drawScope);
+    }
+    requestAnimationFrame(drawScope);
+
+    window.addEventListener('mousemove', (e)=>{
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      velocity = Math.max(-16, Math.min(16, dy - dx * 0.15));
+      scopeCursor.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 16}px)`;
+      hovering = !!e.target.closest(interactiveSelector);
+      scopeCursor.classList.toggle('active', hovering);
+    }, {passive:true});
+
+    document.addEventListener('mousedown', ()=>{
+      if(getCursorMode() !== 'oscilloscope') return;
+      scopeCursor.classList.remove('ping');
+      void scopeCursor.offsetWidth;
+      scopeCursor.classList.add('ping');
+      for(let i = 0; i < 6; i++) buffer[buffer.length - 1 - i] = (i % 2 === 0 ? 14 : -14);
+    });
+  })();
+
+  (function(){
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    if(!dot || !ring || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+    let ringX = mouseX, ringY = mouseY;
+
+    document.addEventListener('mousemove', (e)=>{
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+    });
+
+    function animateRing(){
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    requestAnimationFrame(animateRing);
+
+    document.querySelectorAll('a, button').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>{
+        dot.classList.add('hovering');
+        ring.classList.add('hovering');
+      });
+      el.addEventListener('mouseleave', ()=>{
+        dot.classList.remove('hovering');
+        ring.classList.remove('hovering');
+      });
+    });
+
+    document.querySelectorAll('.bus-source, .bus-node-wrap').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>{
+        dot.classList.add('bus-hover');
+        ring.classList.add('bus-hover');
+      });
+      el.addEventListener('mouseleave', ()=>{
+        dot.classList.remove('bus-hover');
+        ring.classList.remove('bus-hover');
+      });
+    });
+
+    document.addEventListener('mousedown', (e)=>{
+      if(getCursorMode() !== 'ring') return;
+      const ripple = document.createElement('div');
+      ripple.className = 'cursor-ripple';
+      ripple.style.left = e.clientX + 'px';
+      ripple.style.top = e.clientY + 'px';
+      document.body.appendChild(ripple);
+      ripple.addEventListener('animationend', ()=>ripple.remove());
+    });
+  })();
+
+  (function(){
+    const breaker = document.getElementById('cursorBreaker');
+    if(!breaker || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    document.addEventListener('mousemove', (e)=>{
+      breaker.style.left = e.clientX + 'px';
+      breaker.style.top = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>breaker.classList.add('hovering'));
+      el.addEventListener('mouseleave', ()=>breaker.classList.remove('hovering'));
+    });
+
+    document.addEventListener('mousedown', (e)=>{
+      if(getCursorMode() !== 'breaker') return;
+      breaker.classList.remove('tripped');
+      void breaker.offsetWidth;
+      breaker.classList.add('tripped');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'breaker-spark-wrap';
+      wrap.style.left = e.clientX + 'px';
+      wrap.style.top = e.clientY + 'px';
+
+      const flash = document.createElement('div');
+      flash.className = 'breaker-spark-flash';
+      wrap.appendChild(flash);
+
+      const sparkCount = 7;
+      for(let i = 0; i < sparkCount; i++){
+        const line = document.createElement('div');
+        line.className = 'breaker-spark-line';
+        const angle = (360 / sparkCount) * i + (Math.random() * 20 - 10);
+        line.style.setProperty('--ang', angle + 'deg');
+        wrap.appendChild(line);
+      }
+
+      document.body.appendChild(wrap);
+      setTimeout(()=>wrap.remove(), 500);
+    });
+  })();
+
+  (function(){
+    const fuse = document.getElementById('cursorFuse');
+    if(!fuse || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    document.addEventListener('mousemove', (e)=>{
+      fuse.style.left = e.clientX + 'px';
+      fuse.style.top = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('a, button').forEach(el=>{
+      el.addEventListener('mouseenter', ()=>fuse.classList.add('hovering'));
+      el.addEventListener('mouseleave', ()=>fuse.classList.remove('hovering'));
+    });
+
+    document.addEventListener('mousedown', (e)=>{
+      if(getCursorMode() !== 'fuse') return;
+      fuse.classList.remove('blown');
+      void fuse.offsetWidth;
+      fuse.classList.add('blown');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'breaker-spark-wrap';
+      wrap.style.left = e.clientX + 'px';
+      wrap.style.top = e.clientY + 'px';
+
+      const flash = document.createElement('div');
+      flash.className = 'breaker-spark-flash';
+      wrap.appendChild(flash);
+
+      const sparkCount = 7;
+      for(let i = 0; i < sparkCount; i++){
+        const line = document.createElement('div');
+        line.className = 'breaker-spark-line';
+        const angle = (360 / sparkCount) * i + (Math.random() * 20 - 10);
+        line.style.setProperty('--ang', angle + 'deg');
+        wrap.appendChild(line);
+      }
+
+      document.body.appendChild(wrap);
+      setTimeout(()=>wrap.remove(), 500);
+    });
   })();
 
   (function(){
