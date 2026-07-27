@@ -141,7 +141,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
   }
   html[data-theme="light"] nav{background:rgba(250,246,238,.8);}
   .logo{font-weight:700;letter-spacing:1px;color:var(--accent);font-size:1.1rem;display: flex;
-    align-items: center;}
+    align-items: center; white-space:nowrap;flex-shrink:0;}
   .logo span{color:var(--text-dim);}
   .logo img {
     width: 53px;
@@ -193,7 +193,11 @@ Disclaimer: Although majority of the work put into this website was done by me (
   .nav-toggle.open .nav-toggle-bar:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
   @media(max-width:700px){
+     body{zoom: 80%;}
+    .logo img{width:44px;height:44px;margin-right:8px;}
+    .logo{font-size:1rem;}
     .nav-toggle{display:flex;}
+    .nav-links{gap:12px;}
     .nav-menu{
       position:fixed;top:64px;left:0;right:0;z-index:99;
       flex-direction:column;align-items:stretch;gap:0;
@@ -2703,7 +2707,6 @@ Disclaimer: Although majority of the work put into this website was done by me (
         playSound('lock'); 
       }
     });
-
 
     positionCursor();
   })();
