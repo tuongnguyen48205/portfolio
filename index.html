@@ -268,7 +268,7 @@ Click the source symbol on the left hand side for a surprise :)
     z-index:151;padding:13px 20px;overflow-y:auto;
     transform:translateX(100%);
     transition:transform .35s ease,background .35s ease,border-color .35s ease;
-    display:flex;flex-direction:column;gap:13px;
+    display:flex;flex-direction:column;gap:10px;justify-content:space-between;
   }
   @supports (height:100dvh){
     .settings-panel{height:100dvh;}
@@ -276,7 +276,6 @@ Click the source symbol on the left hand side for a surprise :)
   .settings-panel.open{transform:translateX(0);}
   .settings-bottom-group{
     display:flex;flex-direction:column;gap:13px;
-    margin-top:auto;
   }
   .settings-panel-head{
     display:flex;justify-content:space-between;align-items:center;
@@ -1080,7 +1079,7 @@ Click the source symbol on the left hand side for a surprise :)
   @media(max-width:700px), (hover:none), (pointer:coarse){
     .settings-section-cursor{display:none;}
   }
-  @media(max-width:1024px){
+  @media(max-width:1024px), (hover:none), (pointer:coarse){
     .settings-section-sound{display:none;}
   }
 
