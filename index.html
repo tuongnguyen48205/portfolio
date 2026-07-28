@@ -35,6 +35,7 @@ Click the source symbol on the left hand side for a surprise :)
     --text:#e9eef2;
     --text-dim:#8ea0ad;
     --radius:14px;
+    --text-scale:1;
   }
   html[data-theme="light"]{
     --bg:#faf6ee;
@@ -106,8 +107,11 @@ Click the source symbol on the left hand side for a surprise :)
     --text:#f5f0d3;
     --text-dim:#c9bc7c;
   }
+  html[data-textsize="small"]{--text-scale:0.88;}
+  html[data-textsize="large"]{--text-scale:1.18;}
+
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0);}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;font-size:calc(100% * var(--text-scale));}
   body{
     background:var(--bg);
     color:var(--text);
@@ -129,10 +133,10 @@ Click the source symbol on the left hand side for a surprise :)
   @media(max-width:1024px){
     .circuit-decor-desktop{display:none;}
     .circuit-decor-mobile{display:inline;}
-    html{font-size:92%;}
+    html{font-size:calc(92% * var(--text-scale));}
   }
   @media(max-width:480px){
-    html{font-size:87%;}
+    html{font-size:calc(87% * var(--text-scale));}
   }
 
   .theme-fill{fill:var(--bg);transition:fill .35s ease;}
@@ -261,24 +265,25 @@ Click the source symbol on the left hand side for a surprise :)
   .settings-panel{
     position:fixed;top:0;right:0;height:100vh;width:320px;max-width:88vw;
     background:var(--panel);border-left:1px solid var(--line);
-    z-index:151;padding:18px 22px;overflow-y:auto;
+    z-index:151;padding:13px 20px;overflow-y:auto;
     transform:translateX(100%);
     transition:transform .35s ease,background .35s ease,border-color .35s ease;
-    display:flex;flex-direction:column;gap:25px;
+    display:flex;flex-direction:column;gap:13px;
   }
   @supports (height:100dvh){
     .settings-panel{height:100dvh;}
   }
   .settings-panel.open{transform:translateX(0);}
   .settings-bottom-group{
-    display:flex;flex-direction:column;gap:25px;
+    display:flex;flex-direction:column;gap:13px;
     margin-top:auto;
   }
   .settings-panel-head{
     display:flex;justify-content:space-between;align-items:center;
     font-weight:700;letter-spacing:.5px;color:var(--text);
-    border-bottom:1px solid var(--line);padding-bottom:10px;
+    border-bottom:1px solid var(--line);padding-bottom:7px;
   }
+  .settings-head-actions{display:flex;align-items:center;gap:8px;}
   .settings-close{
     border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
     width:30px;height:30px;padding:0;border-radius:50%;
@@ -286,29 +291,42 @@ Click the source symbol on the left hand side for a surprise :)
     transition:.25s;font-size:.85rem;
   }
   .settings-close:hover{border-color:var(--accent);color:var(--accent);}
-  .settings-section-title{
-    font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:8px;
+  .settings-reset{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    width:30px;height:30px;padding:0;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    transition:.25s;
   }
+  .settings-reset:hover{border-color:var(--accent);color:var(--accent);transform:rotate(-70deg);}
+  .settings-section-title{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:6px;
+  }
+  .settings-subtitle{
+    font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);
+    margin:7px 0 4px;
+  }
+  .settings-subtitle:first-of-type{margin-top:0;}
   .settings-row{
-    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:5px;
   }
   .settings-row:last-child{margin-bottom:0;}
   .settings-row-label{font-size:.85rem;color:var(--text-dim);}
-  .cursor-options{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .cursor-options{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
   .theme-options{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
   .cursor-option, .theme-option {
     border: 1px solid var(--line);
     background: var(--bg-alt);
     color: var(--text-dim);
-    padding: 7px 8px;
+    padding: 7px 6px;
     border-radius: 8px;
-    font-size: .85rem;
+    font-size: .78rem;
     text-align: left;
     transition: .25s;
     display: inline-flex;  
     align-items: center;  
-    gap: 8px;             
-    line-height: 1;       
+    gap: 6px;             
+    line-height: 1;
+    white-space: nowrap;
   }
   .cursor-option:hover, .theme-option:hover {
     border-color: var(--accent);
@@ -324,6 +342,21 @@ Click the source symbol on the left hand side for a surprise :)
     display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:0px;
     box-shadow:0 0 0 1px rgba(0,0,0,.2);vertical-align:-1px;
   }
+  .text-size-options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .text-size-option{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    padding:7px 6px;border-radius:8px;font-size:.82rem;text-align:center;transition:.25s;
+  }
+  .text-size-option:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+  .text-size-option.active{border-color:var(--accent);color:var(--accent);background:rgba(76,201,240,.08);}
+  .text-size-option[data-textsize-option="small"]{font-size:.72rem;}
+  .text-size-option[data-textsize-option="large"]{font-size:.9rem;}
+  .settings-wide-btn{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    padding:7px 6px;border-radius:8px;font-size:.82rem;text-align:center;
+    width:100%;transition:.25s;
+  }
+  .settings-wide-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
   .last-updated {
     font-size: .78rem;
     color: var(--text-dim);
@@ -334,25 +367,17 @@ Click the source symbol on the left hand side for a surprise :)
     left: 10px !important; 
     right: auto !important;
   }
-  .settings-toggle-btn {
-    font-size: .82rem;
-    color: var(--text);
-    width: 110px;
-    text-align: center;
-    cursor: pointer;
-    padding-left: 12px !important;
-    padding-right: 28px !important; 
+  .settings-icon-btn{
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
+    width:32px;height:32px;padding:0;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:.25s;cursor:pointer;
   }
-  .settings-toggle-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    transform: translateY(-2px);
+  .settings-icon-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+  .volume-control{display:flex;align-items:center;gap:10px;}
+  .volume-slider{
+    width:100px;accent-color:var(--accent);cursor:pointer;
   }
-  .settings-toggle-btn svg {
-    right: 12px !important;
-    left: auto !important;  
-  }
-  .settings-contact-icons{display:flex;gap:10px;justify-content:center;margin-top:15px;}
+  .settings-contact-icons{display:flex;gap:10px;justify-content:center;margin-top:0;}
   .settings-contact-icon{
     border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
     width:32px;height:32px;padding:0;border-radius:50%;font-size:.95rem;line-height:1;
@@ -363,7 +388,6 @@ Click the source symbol on the left hand side for a surprise :)
     .settings-panel{width:100%;max-width:100%;}
   }
 
-  .settings-toggle-btn,
   .footer-views,
   .last-updated {
     box-sizing: border-box !important;
@@ -379,7 +403,6 @@ Click the source symbol on the left hand side for a surprise :)
     line-height: 30px !important;   
   }
 
-  .settings-toggle-btn *,
   .footer-views *,
   .last-updated * {
     display: inline !important;
@@ -388,7 +411,6 @@ Click the source symbol on the left hand side for a surprise :)
     white-space: nowrap !important;
   }
 
-  .settings-toggle-btn svg,
   .footer-views svg,
   .last-updated svg {
     position: absolute !important;
@@ -1248,7 +1270,15 @@ Click the source symbol on the left hand side for a surprise :)
 <aside class="settings-panel" id="settingsPanel" aria-hidden="true">
   <div class="settings-panel-head">
     <span>Settings</span>
-    <button class="settings-close" id="settingsClose" aria-label="Close settings">✕</button>
+    <div class="settings-head-actions">
+      <button class="settings-reset" id="settingsReset" title="Reset to default" aria-label="Reset settings to default">
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+          <polyline points="3 3 3 8 8 8"></polyline>
+        </svg>
+      </button>
+      <button class="settings-close" id="settingsClose" aria-label="Close settings">✕</button>
+    </div>
   </div>
 
   <div class="settings-section">
@@ -1279,64 +1309,80 @@ Click the source symbol on the left hand side for a surprise :)
         <span class="theme-option-swatch" style="background:#a78bfa"></span>Power Surge
       </button>
     </div>
+
+    <div class="settings-subtitle">Text Size</div>
+    <div class="text-size-options" role="radiogroup" aria-label="Text size">
+      <button class="text-size-option" data-textsize-option="small" role="radio" aria-checked="false">Small</button>
+      <button class="text-size-option" data-textsize-option="default" role="radio" aria-checked="false">Default</button>
+      <button class="text-size-option" data-textsize-option="large" role="radio" aria-checked="false">Large</button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-section-title">Interface</div>
+    <div class="settings-section-cursor">
+      <div class="settings-subtitle">Cursor Style</div>
+      <div class="cursor-options" role="radiogroup" aria-label="Cursor style">
+        <button class="cursor-option" data-cursor-option="voltmeter" role="radio" aria-checked="false">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="9 10 12 15 15 10"></polyline>
+          </svg>
+          Voltmeter</button>
+        <button class="cursor-option" data-cursor-option="oscilloscope" role="radio" aria-checked="false">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+            <path d="M2 10h4l2.5-5L11.5 15l2-8 2.5 3h6"></path>
+            <circle cx="6" cy="20" r="1"></circle>
+            <circle cx="12" cy="20" r="1"></circle>
+            <circle cx="18" cy="20" r="1"></circle>
+          </svg>
+          Oscilloscope</button>
+        <button class="cursor-option" data-cursor-option="ring" role="radio" aria-checked="false">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 3v5M12 16v5M3 12h5M16 12h5M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8L5.6 18.4"></path>
+          </svg>
+          Toroid</button>
+        <button class="cursor-option" data-cursor-option="breaker" role="radio" aria-checked="false">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12h6M16 12h6"></path>
+            <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
+            <circle cx="16" cy="12" r="1" fill="currentColor"></circle>
+            <line x1="8" y1="12" x2="14" y2="6"></line>
+          </svg>
+          Circuit Breaker</button>
+        <button class="cursor-option" data-cursor-option="fuse" role="radio" aria-checked="false">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="8" width="20" height="8" rx="1"></rect>
+            <line x1="2" y1="12" x2="6" y2="12"></line>
+            <path d="M6 12c2-3 4 3 6 0s4-3 6 0"></path>
+            <line x1="18" y1="12" x2="22" y2="12"></line>
+          </svg>
+          Fuse</button>
+        <button class="cursor-option" data-cursor-option="none" role="radio" aria-checked="false">None</button>
+      </div>
+    </div>
+
+    <div class="settings-subtitle">Page Content</div>
+    <button class="settings-wide-btn" id="expandAllBtn" type="button">Expand All Details</button>
   </div>
 
   <div class="settings-section settings-section-sound">
     <div class="settings-section-title">Sound</div>
     <div class="settings-row">
-      <span class="settings-row-label">Audio</span>
-      <button class="settings-toggle-btn" id="muteToggle" title="Mute/Unmute Audio">Unmuted
-        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="settings-section settings-section-cursor">
-    <div class="settings-section-title">Cursor</div>
-    <div class="cursor-options" role="radiogroup" aria-label="Cursor style">
-      <button class="cursor-option" data-cursor-option="voltmeter" role="radio" aria-checked="false">
-        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="9 10 12 15 15 10"></polyline>
-        </svg>
-        Voltmeter</button>
-      <button class="cursor-option" data-cursor-option="oscilloscope" role="radio" aria-checked="false">
-        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-          <path d="M2 10h4l2.5-5L11.5 15l2-8 2.5 3h6"></path>
-          <circle cx="6" cy="20" r="1"></circle>
-          <circle cx="12" cy="20" r="1"></circle>
-          <circle cx="18" cy="20" r="1"></circle>
-        </svg>
-        Oscilloscope</button>
-      <button class="cursor-option" data-cursor-option="ring" role="radio" aria-checked="false">
-        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"></circle>
-          <circle cx="12" cy="12" r="4"></circle>
-          <path d="M12 3v5M12 16v5M3 12h5M16 12h5M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8L5.6 18.4"></path>
-        </svg>
-        Toroid</button>
-      <button class="cursor-option" data-cursor-option="breaker" role="radio" aria-checked="false">
-        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M2 12h6M16 12h6"></path>
-          <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
-          <circle cx="16" cy="12" r="1" fill="currentColor"></circle>
-          <line x1="8" y1="12" x2="14" y2="6"></line>
-        </svg>
-        Circuit Breaker</button>
-      <button class="cursor-option" data-cursor-option="fuse" role="radio" aria-checked="false">
-        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="8" width="20" height="8" rx="1"></rect>
-          <line x1="2" y1="12" x2="6" y2="12"></line>
-          <path d="M6 12c2-3 4 3 6 0s4-3 6 0"></path>
-          <line x1="18" y1="12" x2="22" y2="12"></line>
-        </svg>
-        Fuse</button>
-      <button class="cursor-option" data-cursor-option="none" role="radio" aria-checked="false">None</button>
+      <span class="settings-row-label">Volume</span>
+      <div class="volume-control">
+        <button class="settings-icon-btn" id="muteToggle" title="Mute/Unmute Audio" aria-label="Mute or unmute audio">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+        </button>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70" aria-label="Volume level">
+      </div>
     </div>
   </div>
 
@@ -2373,6 +2419,7 @@ Click the source symbol on the left hand side for a surprise :)
       const card = btn.closest('.card');
       const nowExpanded = card.classList.toggle('expanded');
       btn.querySelector('.btn-label').textContent = nowExpanded ? 'Less details' : 'More details';
+      if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
     });
   });
 
@@ -2498,16 +2545,24 @@ Click the source symbol on the left hand side for a surprise :)
   busSource.addEventListener('click', playJourney);
 
   const muteToggle = document.getElementById('muteToggle');
+  const volumeSlider = document.getElementById('volumeSlider');
   let isMuted = localStorage.getItem('portfolio-muted') === 'true';
+  let soundVolume = 0.7;
+  try {
+    const savedVolume = localStorage.getItem('portfolio-volume');
+    if (savedVolume !== null) soundVolume = Math.min(1, Math.max(0, parseFloat(savedVolume)));
+  } catch (e) {}
   const unmutedIcon = `<svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
   const mutedIcon = `<svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`;
 
   (function initPreferences() {
     try {
       if (muteToggle) {
-        muteToggle.innerHTML = isMuted 
-        ? `<span>Muted</span> ${mutedIcon}`  
-        : `<span>Unmuted</span> ${unmutedIcon}`;
+        muteToggle.innerHTML = isMuted ? mutedIcon : unmutedIcon;
+        muteToggle.setAttribute('aria-pressed', isMuted ? 'true' : 'false');
+      }
+      if (volumeSlider) {
+        volumeSlider.value = Math.round(soundVolume * 100);
       }
     } catch (e) {
       // Fail-safe default state (Sound Unmuted)
@@ -2539,13 +2594,60 @@ Click the source symbol on the left hand side for a surprise :)
     setTheme(saved, false);
   })();
 
+  const textSizeOptionBtns = document.querySelectorAll('.text-size-option');
+  function setTextSize(size, persist){
+    if (size === 'default') {
+      document.documentElement.removeAttribute('data-textsize');
+    } else {
+      document.documentElement.setAttribute('data-textsize', size);
+    }
+    textSizeOptionBtns.forEach(btn => {
+      const active = btn.dataset.textsizeOption === size;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+    if (persist) {
+      try { localStorage.setItem('textsize_preference', size); } catch (e) {}
+    }
+  }
+  textSizeOptionBtns.forEach(btn => {
+    btn.addEventListener('click', () => setTextSize(btn.dataset.textsizeOption, true));
+  });
+  (function initTextSize(){
+    let saved = 'default';
+    try { saved = localStorage.getItem('textsize_preference') || 'default'; } catch (e) {}
+    setTextSize(saved, false);
+  })();
+
+  const expandAllBtn = document.getElementById('expandAllBtn');
+  if (expandAllBtn) {
+    const getCards = () => [...document.querySelectorAll('.card')];
+    function refreshExpandAllLabel(){
+      const cards = getCards();
+      const allExpanded = cards.length > 0 && cards.every(c => c.classList.contains('expanded'));
+      expandAllBtn.textContent = allExpanded ? 'Collapse All Details' : 'Expand All Details';
+    }
+    window.refreshExpandAllLabel = refreshExpandAllLabel;
+    expandAllBtn.addEventListener('click', () => {
+      const cards = getCards();
+      const allExpanded = cards.length > 0 && cards.every(c => c.classList.contains('expanded'));
+      const shouldExpand = !allExpanded;
+      cards.forEach(card => {
+        card.classList.toggle('expanded', shouldExpand);
+        const label = card.querySelector('.card-toggle-btn .btn-label');
+        if (label) label.textContent = shouldExpand ? 'Less details' : 'More details';
+      });
+      refreshExpandAllLabel();
+    });
+    refreshExpandAllLabel();
+  }
+
   if (muteToggle) {
     muteToggle.addEventListener('click', () => {
       isMuted = !isMuted;
-      muteToggle.innerHTML = isMuted 
-        ? `<span>Muted</span> ${mutedIcon}`  
-        : `<span>Unmuted</span> ${unmutedIcon}`;
-      
+      muteToggle.innerHTML = isMuted ? mutedIcon : unmutedIcon;
+      muteToggle.setAttribute('aria-pressed', isMuted ? 'true' : 'false');
+
       try {
         localStorage.setItem('portfolio-muted', isMuted);
       } catch (e) {}
@@ -2553,6 +2655,16 @@ Click the source symbol on the left hand side for a surprise :)
       if (!isMuted) {
         playSound('ripple');
       }
+    });
+  }
+
+  if (volumeSlider) {
+    volumeSlider.addEventListener('input', () => {
+      soundVolume = Math.min(1, Math.max(0, parseInt(volumeSlider.value, 10) / 100));
+      try { localStorage.setItem('portfolio-volume', soundVolume); } catch (e) {}
+    });
+    volumeSlider.addEventListener('change', () => {
+      if (!isMuted) playSound('ripple');
     });
   }
 
@@ -2583,6 +2695,36 @@ Click the source symbol on the left hand side for a surprise :)
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeSettings();
   });
+
+  const settingsReset = document.getElementById('settingsReset');
+  if (settingsReset) {
+    settingsReset.addEventListener('click', () => {
+      setTheme('dark', true);
+      setTextSize('default', true);
+      setCursorMode('voltmeter', true);
+
+      isMuted = false;
+      soundVolume = 0.7;
+      if (muteToggle) {
+        muteToggle.innerHTML = unmutedIcon;
+        muteToggle.setAttribute('aria-pressed', 'false');
+      }
+      if (volumeSlider) volumeSlider.value = 70;
+      try {
+        localStorage.setItem('portfolio-muted', 'false');
+        localStorage.setItem('portfolio-volume', '0.7');
+      } catch (e) {}
+
+      if (expandAllBtn) {
+        document.querySelectorAll('.card').forEach(card => {
+          card.classList.remove('expanded');
+          const label = card.querySelector('.card-toggle-btn .btn-label');
+          if (label) label.textContent = 'More details';
+        });
+        if (window.refreshExpandAllLabel) window.refreshExpandAllLabel();
+      }
+    });
+  }
 
   (function(){
     const navToggle = document.getElementById('navToggle');
@@ -2879,7 +3021,7 @@ Click the source symbol on the left hand side for a surprise :)
     let audioCtx = null;
 
     function playSound(type) {
-      if (isMuted) return;
+      if (isMuted || soundVolume <= 0) return;
       try {
           if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2898,7 +3040,7 @@ Click the source symbol on the left hand side for a surprise :)
         if (type === 'ripple') {
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(200, audioCtx.currentTime); 
-          gain.gain.setValueAtTime(0.05, audioCtx.currentTime); 
+          gain.gain.setValueAtTime(0.05 * soundVolume, audioCtx.currentTime); 
           gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
           
           osc.start();
@@ -2909,7 +3051,7 @@ Click the source symbol on the left hand side for a surprise :)
           osc.frequency.setValueAtTime(280, audioCtx.currentTime); 
           osc.frequency.setValueAtTime(140, audioCtx.currentTime + 0.02); 
           
-          gain.gain.setValueAtTime(0.07, audioCtx.currentTime); 
+          gain.gain.setValueAtTime(0.07 * soundVolume, audioCtx.currentTime); 
           gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.07);
           
           osc.start();
