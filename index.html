@@ -15,7 +15,7 @@ Click the source symbol on the left hand side for a surprise :)
 <meta property="og:type" content="website">
 <meta property="og:title" content="Tuong N | EE Portfolio">
 <meta property="og:description" content="Electrical Engineering portfolio featuring power systems, renewable energy, and embedded systems projects, internship experience, and technical skills.">
-<meta property="og:image" content="https://www.tuongbn.com/MainImages/pfp.png">
+<meta property="og:image" content="MainImages/pfp.png">
 <meta property="og:url" content="https://www.tuongbn.com/">
 
 <meta name="twitter:card" content="summary">
@@ -106,7 +106,7 @@ Click the source symbol on the left hand side for a surprise :)
     --text:#f5f0d3;
     --text-dim:#c9bc7c;
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0);}
   html{scroll-behavior:smooth;}
   body{
     background:var(--bg);
@@ -194,8 +194,10 @@ Click the source symbol on the left hand side for a surprise :)
     transition:.25s;
   }
   .nav-toggle:hover{border-color:var(--accent);}
+  .nav-toggle:hover .nav-toggle-bar{color:var(--accent);}
   .nav-toggle-bar{
     width:16px;height:2px;background:currentColor;border-radius:2px;transition:.25s ease;
+    color: var(--text-dim);
   }
   .nav-toggle.open .nav-toggle-bar:nth-child(1){transform:translateY(6px) rotate(45deg);}
   .nav-toggle.open .nav-toggle-bar:nth-child(2){opacity:0;}
@@ -219,13 +221,38 @@ Click the source symbol on the left hand side for a surprise :)
     .nav-menu a::after{display:none;}
     .nav-menu.open{max-height:320px;}
   }
-  .theme-toggle{
-    border:1px solid var(--line);background:var(--panel);color:var(--text);
-    width:36px;height:36px;padding:0;border-radius:50%;font-size:1rem;line-height:1;
-    display:flex;align-items:center;justify-content:center;transition:.25s;
+  .theme-toggle {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--text-dim); 
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .25s ease;
+    cursor: pointer;
   }
-  .theme-toggle:hover{border-color:var(--accent);transform:translateY(-2px);}
-
+  .theme-toggle:hover {
+    color: var(--accent);       
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .theme-toggle svg {
+    display: block;
+    flex-shrink: 0 !important;
+    width: 16px !important;     
+    height: 16px !important;
+    transform: rotate(0deg);
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), fill 0.25s ease;
+  }
+  .theme-toggle:hover svg {
+    transform: rotate(360deg);
+  }
   .settings-overlay{
     position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;
     opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease;
@@ -268,31 +295,63 @@ Click the source symbol on the left hand side for a surprise :)
   .settings-row:last-child{margin-bottom:0;}
   .settings-row-label{font-size:.85rem;color:var(--text-dim);}
   .cursor-options{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-  .theme-options{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-  .cursor-option,.theme-option{
-    border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
-    padding:7px 12px;border-radius:8px;font-size:.85rem;text-align:left;
-    transition:.25s;
+  .theme-options{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+  .cursor-option, .theme-option {
+    border: 1px solid var(--line);
+    background: var(--bg-alt);
+    color: var(--text-dim);
+    padding: 7px 8px;
+    border-radius: 8px;
+    font-size: .85rem;
+    text-align: left;
+    transition: .25s;
+    display: inline-flex;  
+    align-items: center;  
+    gap: 8px;             
+    line-height: 1;       
   }
-  .cursor-option:hover,.theme-option:hover{border-color:var(--accent);color:var(--accent);}
+  .cursor-option:hover, .theme-option:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .cursor-option svg, .theme-option svg {
+    display: block;
+    flex-shrink: 0;       
+  }
   .cursor-option.active,.theme-option.active{border-color:var(--accent);color:var(--accent);background:rgba(76,201,240,.08);}
   .theme-option-swatch{
-    display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;
+    display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:0px;
     box-shadow:0 0 0 1px rgba(0,0,0,.2);vertical-align:-1px;
   }
-  .last-updated{
-    font-size:.78rem;color:var(--text-dim);
-    background:var(--bg-alt);border:1px solid var(--line);
-    padding:6px 14px;border-radius:20px;
-    transition:.35s ease;
+  .last-updated {
+    font-size: .78rem;
+    color: var(--text-dim);
+    padding-left: 28px !important;
+    padding-right: 14px !important;
   }
-  .settings-toggle-btn{
-    border:1px solid var(--line);background:var(--bg-alt);color:var(--text);
-    font-family:inherit;padding:8px 16px;border-radius:20px;font-size:.82rem;
-    width:110px;text-align:center;
-    transition:.25s;
+  .last-updated svg {
+    left: 10px !important; 
+    right: auto !important;
   }
-  .settings-toggle-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+  .settings-toggle-btn {
+    font-size: .82rem;
+    color: var(--text);
+    width: 110px;
+    text-align: center;
+    cursor: pointer;
+    padding-left: 12px !important;
+    padding-right: 28px !important; 
+  }
+  .settings-toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .settings-toggle-btn svg {
+    right: 12px !important;
+    left: auto !important;  
+  }
   .settings-contact-icons{display:flex;gap:10px;justify-content:center;margin-top:15px;}
   .settings-contact-icon{
     border:1px solid var(--line);background:var(--bg-alt);color:var(--text-dim);
@@ -302,6 +361,41 @@ Click the source symbol on the left hand side for a surprise :)
   .settings-contact-icon:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
   @media(max-width:480px){
     .settings-panel{width:100%;max-width:100%;}
+  }
+
+  .settings-toggle-btn,
+  .footer-views,
+  .last-updated {
+    box-sizing: border-box !important;
+    height: 32px !important;
+    display: inline-block !important;
+    position: relative !important;   
+    
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    white-space: nowrap !important;
+    transition: .25s ease;
+    line-height: 30px !important;   
+  }
+
+  .settings-toggle-btn *,
+  .footer-views *,
+  .last-updated * {
+    display: inline !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .settings-toggle-btn svg,
+  .footer-views svg,
+  .last-updated svg {
+    position: absolute !important;
+    top: 50% !important;           
+    transform: translateY(-50%) !important; 
+    width: 14px !important;
+    height: 14px !important;
   }
 
   section{
@@ -415,8 +509,6 @@ Click the source symbol on the left hand side for a surprise :)
   .edu-timeline{display:flex;gap:18px;align-items:stretch;}
   .edu-marker-single{flex-shrink:0;display:flex;flex-direction:column;align-items:center;}
   .uni-link:hover{text-decoration:underline;}
-  .uni-logo-link{flex-shrink:0;}
-  .uni-logo-link:hover .uni-logo-slot{border-color:var(--accent);color:var(--accent);}
   .uni-logo-slot{
     width:46px;height:46px;border:1px dashed var(--line);border-radius:8px;
     display:flex;align-items:center;justify-content:center;text-align:center;
@@ -429,11 +521,6 @@ Click the source symbol on the left hand side for a surprise :)
   .edu-meta{color:var(--text-dim);font-size:.85rem;margin-top:2px;}
   .edu-desc{color:var(--text-dim);font-size:.85rem;margin-top:8px;line-height:1.55;}
 
-  .hobbies-wrap{margin-top:24px;}
-  .hobbies-wrap h3{
-    font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:16px;
-  }
-  
   .hobbies-wrap{margin-top:24px;}
   .hobbies-wrap h3{
     font-size:1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:16px;
@@ -600,6 +687,10 @@ Click the source symbol on the left hand side for a surprise :)
   }
   .lightbox-overlay.active .lightbox-content{transform:scale(1);opacity:1;}
   .lightbox-content img{max-width:100%;max-height:80vh;border-radius:8px;display:block;}
+  @media(max-width:700px){
+    .lightbox-overlay{padding:16px;}
+    .lightbox-content{padding:10px;border-width:1px;border-radius:8px;}
+  }
 
   .subtabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
   .subtab-btn{
@@ -686,18 +777,15 @@ Click the source symbol on the left hand side for a surprise :)
   }
   footer .bus{color:var(--accent2);}
   .footer-views {
-    display: flex;
-    align-items: center;
-    gap: 6px;
     font-size: .78rem;
     color: var(--text-dim);
-    background: var(--bg-alt);
-    border: 1px solid var(--line);
-    padding: 6px 14px;
-    border-radius: 20px;
-    transition: .35s ease;
+    padding-left: 28px !important;
+    padding-right: 14px !important;
   }
-
+  .footer-views svg {
+    left: 10px !important;  
+    right: auto !important;
+  }
   .bus-rail{
     position:fixed;left:32px;top:50%;transform:translateY(-50%);
     z-index:90;display:flex;flex-direction:column;align-items:center;
@@ -760,7 +848,6 @@ Click the source symbol on the left hand side for a surprise :)
     .reveal{opacity:1;transform:none;transition:none;}
   }
 
-  .custom-cursor{display:none;}
   @media(hover:hover) and (pointer:fine){
     html:not([data-cursor="none"]) *{cursor:none;}
     html[data-cursor="none"] a,
@@ -1090,12 +1177,6 @@ Click the source symbol on the left hand side for a surprise :)
     </g>
   </g>
 
-  <!-- Mobile layout: same icons, repositioned so the turbine sits in the clear zone
-       near the top (behind/around the avatar), and the solar panel + sun are shrunk and
-       pushed down below the hero heading/paragraph so they don't collide with the text
-       or with each other. The secondary wire-ladder/curve traces are dropped on mobile
-       since there isn't enough clear vertical space to place them without overlapping
-       either the text or the other icons. -->
   <g class="circuit-decor-mobile">
     <g class="deco-blue" opacity="0.4" transform="translate(-222,0)">
       <line x1="860" y1="110" x2="860" y2="280" stroke="currentColor" stroke-width="2.5"/>
@@ -1204,18 +1285,57 @@ Click the source symbol on the left hand side for a surprise :)
     <div class="settings-section-title">Sound</div>
     <div class="settings-row">
       <span class="settings-row-label">Audio</span>
-      <button class="settings-toggle-btn" id="muteToggle" title="Mute/Unmute Audio">Unmuted 🔊</button>
+      <button class="settings-toggle-btn" id="muteToggle" title="Mute/Unmute Audio">Unmuted
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+      </button>
     </div>
   </div>
 
   <div class="settings-section settings-section-cursor">
     <div class="settings-section-title">Cursor</div>
     <div class="cursor-options" role="radiogroup" aria-label="Cursor style">
-      <button class="cursor-option" data-cursor-option="voltmeter" role="radio" aria-checked="false">Voltmeter</button>
-      <button class="cursor-option" data-cursor-option="oscilloscope" role="radio" aria-checked="false">Oscilloscope</button>
-      <button class="cursor-option" data-cursor-option="ring" role="radio" aria-checked="false">Toroid</button>
-      <button class="cursor-option" data-cursor-option="breaker" role="radio" aria-checked="false">Circuit Breaker</button>
-      <button class="cursor-option" data-cursor-option="fuse" role="radio" aria-checked="false">Fuse</button>
+      <button class="cursor-option" data-cursor-option="voltmeter" role="radio" aria-checked="false">
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="9 10 12 15 15 10"></polyline>
+        </svg>
+        Voltmeter</button>
+      <button class="cursor-option" data-cursor-option="oscilloscope" role="radio" aria-checked="false">
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+          <path d="M2 10h4l2.5-5L11.5 15l2-8 2.5 3h6"></path>
+          <circle cx="6" cy="20" r="1"></circle>
+          <circle cx="12" cy="20" r="1"></circle>
+          <circle cx="18" cy="20" r="1"></circle>
+        </svg>
+        Oscilloscope</button>
+      <button class="cursor-option" data-cursor-option="ring" role="radio" aria-checked="false">
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"></circle>
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 3v5M12 16v5M3 12h5M16 12h5M5.6 5.6l3.6 3.6M14.8 14.8l3.6 3.6M18.4 5.6l-3.6 3.6M9.2 14.8L5.6 18.4"></path>
+        </svg>
+        Toroid</button>
+      <button class="cursor-option" data-cursor-option="breaker" role="radio" aria-checked="false">
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12h6M16 12h6"></path>
+          <circle cx="8" cy="12" r="1" fill="currentColor"></circle>
+          <circle cx="16" cy="12" r="1" fill="currentColor"></circle>
+          <line x1="8" y1="12" x2="14" y2="6"></line>
+        </svg>
+        Circuit Breaker</button>
+      <button class="cursor-option" data-cursor-option="fuse" role="radio" aria-checked="false">
+        <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="8" width="20" height="8" rx="1"></rect>
+          <line x1="2" y1="12" x2="6" y2="12"></line>
+          <path d="M6 12c2-3 4 3 6 0s4-3 6 0"></path>
+          <line x1="18" y1="12" x2="22" y2="12"></line>
+        </svg>
+        Fuse</button>
       <button class="cursor-option" data-cursor-option="none" role="radio" aria-checked="false">None</button>
     </div>
   </div>
@@ -1225,11 +1345,20 @@ Click the source symbol on the left hand side for a surprise :)
       <div class="settings-section-title">Site Info</div>
       <div class="settings-row">
         <span class="settings-row-label">Views</span>
-        <span class="footer-views" id="viewCounter">—</span>
+        <span class="footer-views" id="viewCounter">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          —</span>
       </div>
       <div class="settings-row">
         <span class="settings-row-label">Last updated</span>
-        <p class="last-updated"><time datetime="2026-07-28">28 July, 2026</time></p>
+        <p class="last-updated"><time datetime="2026-07-28">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <polyline points="3 3 3 8 8 8"></polyline>
+          </svg>28 July, 2026</time></p>
       </div>
     </div>
 
@@ -2370,11 +2499,15 @@ Click the source symbol on the left hand side for a surprise :)
 
   const muteToggle = document.getElementById('muteToggle');
   let isMuted = localStorage.getItem('portfolio-muted') === 'true';
+  const unmutedIcon = `<svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+  const mutedIcon = `<svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="22" y1="9" x2="16" y2="15"></line><line x1="16" y1="9" x2="22" y2="15"></line></svg>`;
 
   (function initPreferences() {
     try {
       if (muteToggle) {
-        muteToggle.textContent = isMuted ? 'Muted 🔇' : 'Unmuted 🔊';
+        muteToggle.innerHTML = isMuted 
+        ? `<span>Muted</span> ${mutedIcon}`  
+        : `<span>Unmuted</span> ${unmutedIcon}`;
       }
     } catch (e) {
       // Fail-safe default state (Sound Unmuted)
@@ -2409,7 +2542,9 @@ Click the source symbol on the left hand side for a surprise :)
   if (muteToggle) {
     muteToggle.addEventListener('click', () => {
       isMuted = !isMuted;
-      muteToggle.textContent = isMuted ? 'Muted 🔇' : 'Unmuted 🔊';
+      muteToggle.innerHTML = isMuted 
+        ? `<span>Muted</span> ${mutedIcon}`  
+        : `<span>Unmuted</span> ${unmutedIcon}`;
       
       try {
         localStorage.setItem('portfolio-muted', isMuted);
@@ -2468,7 +2603,16 @@ Click the source symbol on the left hand side for a surprise :)
       navMenu.classList.contains('open') ? closeNav() : openNav();
     });
     navMenu.querySelectorAll('a').forEach(link=>{
-      link.addEventListener('click', closeNav);
+      link.addEventListener('click', ()=>{
+        const usingHamburger = navMenu.classList.contains('open');
+        if(!usingHamburger && window.revealNow){
+          const href = link.getAttribute('href');
+          if(href && href.startsWith('#')){
+            window.revealNow(document.querySelector(href));
+          }
+        }
+        closeNav();
+      });
     });
     document.addEventListener('keydown', (e)=>{
       if(e.key === 'Escape') closeNav();
@@ -2501,28 +2645,65 @@ Click the source symbol on the left hand side for a surprise :)
 
   const lightboxOverlay = document.getElementById('lightboxOverlay');
   const lightboxContent = document.getElementById('lightboxContent');
-  document.querySelectorAll('.img-slot').forEach(slot=>{
-    slot.addEventListener('pointerdown', (e)=>{
-      e.stopPropagation();
-      lightboxContent.innerHTML = slot.innerHTML;
-      lightboxOverlay.classList.add('active');
-    });
-  });
-    lightboxOverlay.addEventListener('click', ()=>{
+
+  const TAP_MOVE_LIMIT = 10;
+  const CLOSE_GUARD_MS = 350;
+  let lightboxOpenedAt = 0;
+
+  function openLightbox(html){
+    lightboxContent.innerHTML = html;
+    lightboxOverlay.classList.add('active');
+    lightboxOpenedAt = Date.now();
+  }
+  function closeLightbox(){
     lightboxOverlay.classList.remove('active');
+  }
+
+  function makeTappable(el, getHtml){
+    let startX = 0, startY = 0, down = false;
+    el.addEventListener('pointerdown', (e)=>{
+      down = true;
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+    el.addEventListener('pointermove', (e)=>{
+      if(!down) return;
+      if(Math.abs(e.clientX - startX) > TAP_MOVE_LIMIT || Math.abs(e.clientY - startY) > TAP_MOVE_LIMIT){
+        down = false;
+      }
+    });
+    el.addEventListener('pointerup', ()=>{
+      if(down){
+        down = false;
+        const html = getHtml();
+        if(html) openLightbox(html);
+      }
+    });
+    el.addEventListener('pointercancel', ()=>{ down = false; });
+  }
+
+  document.querySelectorAll('.img-slot').forEach(slot=>{
+    makeTappable(slot, ()=>slot.innerHTML);
   });
-    document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape') lightboxOverlay.classList.remove('active');
+
+  lightboxOverlay.addEventListener('click', ()=>{
+    if(Date.now() - lightboxOpenedAt < CLOSE_GUARD_MS) return;
+    closeLightbox();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeLightbox();
   });
 
   (async function(){
     const el = document.getElementById('viewCounter');
+    const viewsIcon = `<svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    
     try{
       const res = await fetch('/.netlify/functions/view-counter');
       const data = await res.json();
-      el.textContent = `${data.count} views`;
+      el.innerHTML = `${viewsIcon} <span>${data.count.toLocaleString()} views</span>`;
     }catch(e){
-      el.textContent = `1 view (this session)`;
+      el.innerHTML = `${viewsIcon} <span>1 view (this session)</span>`;
     }
   })();
 
@@ -2559,8 +2740,7 @@ Click the source symbol on the left hand side for a surprise :)
     slide.addEventListener('click', ()=>{
       if(i === hIndex){
         if(s.src){
-          lightboxContent.innerHTML = `<img src="${s.src}" alt="${s.label}" loading="lazy" decoding="async">`;
-          lightboxOverlay.classList.add('active');
+          openLightbox(`<img src="${s.src}" alt="${s.label}" loading="lazy" decoding="async">`);
         }
       } else {
         hGoTo(i);
@@ -2647,6 +2827,12 @@ Click the source symbol on the left hand side for a surprise :)
       });
     }, { threshold: 0.15 });
     document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+
+    window.revealNow = function(el){
+      if(!el) return;
+      el.classList.add('visible');
+      revealObserver.unobserve(el);
+    };
   })();
 
   (function(){
@@ -2935,109 +3121,75 @@ Click the source symbol on the left hand side for a surprise :)
     });
   })();
 
-  (function(){
-    const breaker = document.getElementById('cursorBreaker');
-    if(!breaker || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  function spawnSparkBurst(x, y){
+    const wrap = document.createElement('div');
+    wrap.className = 'breaker-spark-wrap';
+    wrap.style.left = x + 'px';
+    wrap.style.top = y + 'px';
+
+    const flash = document.createElement('div');
+    flash.className = 'breaker-spark-flash';
+    wrap.appendChild(flash);
+
+    const sparkCount = 7;
+    for(let i = 0; i < sparkCount; i++){
+      const line = document.createElement('div');
+      line.className = 'breaker-spark-line';
+      const angle = (360 / sparkCount) * i + (Math.random() * 20 - 10);
+      line.style.setProperty('--ang', angle + 'deg');
+      wrap.appendChild(line);
+    }
+
+    document.body.appendChild(wrap);
+    setTimeout(()=>wrap.remove(), 500);
+  }
+
+  function setupSparkCursor(elId, mode, activeClass){
+    const el = document.getElementById(elId);
+    if(!el || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
     document.addEventListener('mousemove', (e)=>{
-      breaker.style.left = e.clientX + 'px';
-      breaker.style.top = e.clientY + 'px';
+      el.style.left = e.clientX + 'px';
+      el.style.top = e.clientY + 'px';
     });
 
-    document.querySelectorAll('a, button').forEach(el=>{
-      el.addEventListener('mouseenter', ()=>breaker.classList.add('hovering'));
-      el.addEventListener('mouseleave', ()=>breaker.classList.remove('hovering'));
+    document.querySelectorAll('a, button').forEach(t=>{
+      t.addEventListener('mouseenter', ()=>el.classList.add('hovering'));
+      t.addEventListener('mouseleave', ()=>el.classList.remove('hovering'));
     });
 
     document.addEventListener('mousedown', (e)=>{
-      if(getCursorMode() !== 'breaker') return;
-      breaker.classList.remove('tripped');
-      void breaker.offsetWidth;
-      breaker.classList.add('tripped');
-
-      const wrap = document.createElement('div');
-      wrap.className = 'breaker-spark-wrap';
-      wrap.style.left = e.clientX + 'px';
-      wrap.style.top = e.clientY + 'px';
-
-      const flash = document.createElement('div');
-      flash.className = 'breaker-spark-flash';
-      wrap.appendChild(flash);
-
-      const sparkCount = 7;
-      for(let i = 0; i < sparkCount; i++){
-        const line = document.createElement('div');
-        line.className = 'breaker-spark-line';
-        const angle = (360 / sparkCount) * i + (Math.random() * 20 - 10);
-        line.style.setProperty('--ang', angle + 'deg');
-        wrap.appendChild(line);
-      }
-
-      document.body.appendChild(wrap);
-      setTimeout(()=>wrap.remove(), 500);
+      if(getCursorMode() !== mode) return;
+      el.classList.remove(activeClass);
+      void el.offsetWidth;
+      el.classList.add(activeClass);
+      spawnSparkBurst(e.clientX, e.clientY);
     });
-  })();
+  }
 
-  (function(){
-    const fuse = document.getElementById('cursorFuse');
-    if(!fuse || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  setupSparkCursor('cursorBreaker', 'breaker', 'tripped');
+  setupSparkCursor('cursorFuse', 'fuse', 'blown');
 
-    document.addEventListener('mousemove', (e)=>{
-      fuse.style.left = e.clientX + 'px';
-      fuse.style.top = e.clientY + 'px';
-    });
-
-    document.querySelectorAll('a, button').forEach(el=>{
-      el.addEventListener('mouseenter', ()=>fuse.classList.add('hovering'));
-      el.addEventListener('mouseleave', ()=>fuse.classList.remove('hovering'));
-    });
-
-    document.addEventListener('mousedown', (e)=>{
-      if(getCursorMode() !== 'fuse') return;
-      fuse.classList.remove('blown');
-      void fuse.offsetWidth;
-      fuse.classList.add('blown');
-
-      const wrap = document.createElement('div');
-      wrap.className = 'breaker-spark-wrap';
-      wrap.style.left = e.clientX + 'px';
-      wrap.style.top = e.clientY + 'px';
-
-      const flash = document.createElement('div');
-      flash.className = 'breaker-spark-flash';
-      wrap.appendChild(flash);
-
-      const sparkCount = 7;
-      for(let i = 0; i < sparkCount; i++){
-        const line = document.createElement('div');
-        line.className = 'breaker-spark-line';
-        const angle = (360 / sparkCount) * i + (Math.random() * 20 - 10);
-        line.style.setProperty('--ang', angle + 'deg');
-        wrap.appendChild(line);
-      }
-
-      document.body.appendChild(wrap);
-      setTimeout(()=>wrap.remove(), 500);
-    });
-  })();
+  async function copyTextToClipboard(text){
+    try{
+      await navigator.clipboard.writeText(text);
+    }catch(err){
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
+  }
 
   (function(){
     const copyEmail = document.getElementById('copyEmail');
     const copyToast = document.getElementById('copyToast');
     if(!copyEmail || !copyToast) return;
 
-    copyEmail.addEventListener('click', async (e)=>{
-      const email = copyEmail.dataset.email;
-      try{
-        await navigator.clipboard.writeText(email);
-      }catch(err){
-        const textarea = document.createElement('textarea');
-        textarea.value = email;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      }
+    copyEmail.addEventListener('click', async ()=>{
+      await copyTextToClipboard(copyEmail.dataset.email);
       copyToast.classList.add('show');
       setTimeout(()=>copyToast.classList.remove('show'), 1500);
     });
@@ -3052,17 +3204,7 @@ Click the source symbol on the left hand side for a surprise :)
     let resetTimer = null;
 
     heroCopyEmail.addEventListener('click', async ()=>{
-      const email = heroCopyEmail.dataset.email;
-      try{
-        await navigator.clipboard.writeText(email);
-      }catch(err){
-        const textarea = document.createElement('textarea');
-        textarea.value = email;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      }
+      await copyTextToClipboard(heroCopyEmail.dataset.email);
       heroCopyEmailText.textContent = 'Copied!';
       heroCopyEmail.classList.add('copied');
       clearTimeout(resetTimer);
