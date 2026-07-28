@@ -6,8 +6,7 @@ A lot of the design choices behind this site is inspired by his own (nicolai.sko
 Thank you to Emily Wong for creating the icon for the site!
 
 Click the source symbol on the left hand side for a surprise :)
-
-Disclaimer: Although majority of the work put into this website was done by me (Tuong Bao Nguyen, 2026), AI assisted in certain parts/functionalities of the site, notably, part of the animation scripts.
+Hit up, up, down, down, left, right, left, right, b, a, for another surprise :)
 -->
 <head>
 <meta charset="UTF-8">
@@ -121,10 +120,21 @@ Disclaimer: Although majority of the work put into this website was done by me (
   a{color:inherit;text-decoration:none;}
 
   .circuit-bg{
-    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;
+    position:fixed;top:0;left:0;z-index:0;pointer-events:none;opacity:.7;
+    width:100vw;height:100vh;
+    width:100dvw;height:100dvh;
     transition:opacity .35s ease;
   }
   html[data-theme="light"] .circuit-bg{opacity:.3;}
+  .circuit-decor-mobile{display:none;}
+  @media(max-width:760px){
+    .circuit-decor-desktop{display:none;}
+    .circuit-decor-mobile{display:inline;}
+    html{font-size:90%;}
+  }
+  @media(max-width:480px){
+    html{font-size:80%;}
+  }
 
   .theme-fill{fill:var(--bg);transition:fill .35s ease;}
   .deco-blue{color:var(--accent);transition:color .35s ease;}
@@ -1007,7 +1017,7 @@ Disclaimer: Although majority of the work put into this website was done by me (
   <span class="fuse-filament"></span>
 </div>
 
-<svg class="circuit-bg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+<svg class="circuit-bg" viewBox="0 -57.5 1200 800" preserveAspectRatio="xMidYMid slice">
   <defs>
     <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
       <path d="M60 0H0V60" fill="none" stroke="#16202c" stroke-width="1"/>
@@ -1015,60 +1025,102 @@ Disclaimer: Although majority of the work put into this website was done by me (
   </defs>
   <rect class="grid-bg" x="-80" y="-80" width="1360" height="960" fill="url(#grid)"/>
 
-  <g class="deco-blue" opacity="0.55">
-    <line x1="860" y1="110" x2="860" y2="280" stroke="currentColor" stroke-width="2.5"/>
-    <circle cx="860" cy="110" r="4" fill="currentColor"/>
-    <g id="turbineBlades1" stroke="currentColor" stroke-width="2.5" fill="none">
-      <line x1="860" y1="110" x2="860" y2="65"/>
-      <line x1="860" y1="110" x2="898.97" y2="132.5"/>
-      <line x1="860" y1="110" x2="821.03" y2="132.5"/>
+  <g class="circuit-decor-desktop" transform="translate(0,30)">
+    <g class="deco-blue" opacity="0.55">
+      <line x1="860" y1="110" x2="860" y2="280" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="860" cy="110" r="4" fill="currentColor"/>
+      <g id="turbineBlades1" stroke="currentColor" stroke-width="2.5" fill="none">
+        <line x1="860" y1="110" x2="860" y2="65"/>
+        <line x1="860" y1="110" x2="898.97" y2="132.5"/>
+        <line x1="860" y1="110" x2="821.03" y2="132.5"/>
+      </g>
+    </g>
+
+    <g class="deco-blue" opacity="0.35">
+      <line x1="930" y1="165" x2="930" y2="275" stroke="currentColor" stroke-width="2"/>
+      <circle cx="930" cy="165" r="3" fill="currentColor"/>
+      <g id="turbineBlades2" stroke="currentColor" stroke-width="2" fill="none">
+        <line x1="930" y1="165" x2="930" y2="130"/>
+        <line x1="930" y1="165" x2="960.31" y2="182.5"/>
+        <line x1="930" y1="165" x2="899.69" y2="182.5"/>
+      </g>
+    </g>
+
+    <g class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.55">
+      <rect x="70" y="500" width="150" height="90"/>
+      <line x1="120" y1="500" x2="120" y2="590"/>
+      <line x1="170" y1="500" x2="170" y2="590"/>
+      <line x1="70" y1="545" x2="220" y2="545"/>
+    </g>
+    <g id="sunGroup" class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.5">
+      <circle cx="145" cy="420" r="22"/>
+      <line x1="177" y1="420" x2="189" y2="420"/>
+      <line x1="167.56" y1="442.56" x2="176.14" y2="451.14"/>
+      <line x1="145" y1="452" x2="145" y2="464"/>
+      <line x1="122.44" y1="442.56" x2="113.86" y2="451.14"/>
+      <line x1="113" y1="420" x2="101" y2="420"/>
+      <line x1="122.44" y1="397.44" x2="113.86" y2="388.86"/>
+      <line x1="145" y1="388" x2="145" y2="376"/>
+      <line x1="167.56" y1="397.44" x2="176.14" y2="388.86"/>
+    </g>
+
+    <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3">
+      <line x1="900" y1="400" x2="900" y2="620"/>
+      <line x1="855" y1="432" x2="945" y2="432"/>
+      <line x1="868" y1="478" x2="932" y2="478"/>
+      <line x1="880" y1="524" x2="920" y2="524"/>
+
+      <line x1="735" y1="440" x2="735" y2="600"/>
+      <line x1="702" y1="462" x2="768" y2="462"/>
+      <line x1="712" y1="498" x2="758" y2="498"/>
+      <line x1="720" y1="534" x2="750" y2="534"/>
+    </g>
+
+    <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.14">
+      <path d="M768,462 Q812,478 855,432"/>
+      <path d="M758,498 Q800,512 868,478"/>
+      <path d="M750,534 Q800,545 880,524"/>
     </g>
   </g>
 
-  <g class="deco-blue" opacity="0.35">
-    <line x1="930" y1="165" x2="930" y2="275" stroke="currentColor" stroke-width="2"/>
-    <circle cx="930" cy="165" r="3" fill="currentColor"/>
-    <g id="turbineBlades2" stroke="currentColor" stroke-width="2" fill="none">
-      <line x1="930" y1="165" x2="930" y2="130"/>
-      <line x1="930" y1="165" x2="960.31" y2="182.5"/>
-      <line x1="930" y1="165" x2="899.69" y2="182.5"/>
+  <g class="circuit-decor-mobile">
+    <g class="deco-blue" opacity="0.4" transform="translate(-222,0)">
+      <line x1="860" y1="110" x2="860" y2="280" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="860" cy="110" r="4" fill="currentColor"/>
+      <g id="turbineBlades1Mobile" stroke="currentColor" stroke-width="2.5" fill="none">
+        <line x1="860" y1="110" x2="860" y2="65"/>
+        <line x1="860" y1="110" x2="898.97" y2="132.5"/>
+        <line x1="860" y1="110" x2="821.03" y2="132.5"/>
+      </g>
     </g>
-  </g>
 
-  <g class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.55">
-    <rect x="70" y="500" width="150" height="90"/>
-    <line x1="120" y1="500" x2="120" y2="590"/>
-    <line x1="170" y1="500" x2="170" y2="590"/>
-    <line x1="70" y1="545" x2="220" y2="545"/>
-  </g>
-  <g id="sunGroup" class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.5">
-    <circle cx="145" cy="420" r="22"/>
-    <line x1="177" y1="420" x2="189" y2="420"/>
-    <line x1="167.56" y1="442.56" x2="176.14" y2="451.14"/>
-    <line x1="145" y1="452" x2="145" y2="464"/>
-    <line x1="122.44" y1="442.56" x2="113.86" y2="451.14"/>
-    <line x1="113" y1="420" x2="101" y2="420"/>
-    <line x1="122.44" y1="397.44" x2="113.86" y2="388.86"/>
-    <line x1="145" y1="388" x2="145" y2="376"/>
-    <line x1="167.56" y1="397.44" x2="176.14" y2="388.86"/>
-  </g>
+    <g class="deco-blue" opacity="0.25" transform="translate(-222,0)">
+      <line x1="930" y1="165" x2="930" y2="275" stroke="currentColor" stroke-width="2"/>
+      <circle cx="930" cy="165" r="3" fill="currentColor"/>
+      <g id="turbineBlades2Mobile" stroke="currentColor" stroke-width="2" fill="none">
+        <line x1="930" y1="165" x2="930" y2="130"/>
+        <line x1="930" y1="165" x2="960.31" y2="182.5"/>
+        <line x1="930" y1="165" x2="899.69" y2="182.5"/>
+      </g>
+    </g>
 
-  <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.3">
-    <line x1="900" y1="400" x2="900" y2="620"/>
-    <line x1="855" y1="432" x2="945" y2="432"/>
-    <line x1="868" y1="478" x2="932" y2="478"/>
-    <line x1="880" y1="524" x2="920" y2="524"/>
-
-    <line x1="735" y1="440" x2="735" y2="600"/>
-    <line x1="702" y1="462" x2="768" y2="462"/>
-    <line x1="712" y1="498" x2="758" y2="498"/>
-    <line x1="720" y1="534" x2="750" y2="534"/>
-  </g>
-
-  <g class="deco-blue" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.14">
-    <path d="M768,462 Q812,478 855,432"/>
-    <path d="M758,498 Q800,512 868,478"/>
-    <path d="M750,534 Q800,545 880,524"/>
+    <g class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.4" transform="translate(491,150) scale(0.75)">
+      <rect x="70" y="500" width="150" height="90"/>
+      <line x1="120" y1="500" x2="120" y2="590"/>
+      <line x1="170" y1="500" x2="170" y2="590"/>
+      <line x1="70" y1="545" x2="220" y2="545"/>
+    </g>
+    <g class="deco-amber" stroke="currentColor" stroke-width="1.8" fill="none" opacity="0.35" transform="translate(491,150) scale(0.75)">
+      <circle cx="145" cy="420" r="22"/>
+      <line x1="177" y1="420" x2="189" y2="420"/>
+      <line x1="167.56" y1="442.56" x2="176.14" y2="451.14"/>
+      <line x1="145" y1="452" x2="145" y2="464"/>
+      <line x1="122.44" y1="442.56" x2="113.86" y2="451.14"/>
+      <line x1="113" y1="420" x2="101" y2="420"/>
+      <line x1="122.44" y1="397.44" x2="113.86" y2="388.86"/>
+      <line x1="145" y1="388" x2="145" y2="376"/>
+      <line x1="167.56" y1="397.44" x2="176.14" y2="388.86"/>
+    </g>
   </g>
 </svg>
 
@@ -2181,12 +2233,16 @@ Disclaimer: Although majority of the work put into this website was done by me (
 
   const blades1 = document.getElementById('turbineBlades1');
   const blades2 = document.getElementById('turbineBlades2');
+  const blades1Mobile = document.getElementById('turbineBlades1Mobile');
+  const blades2Mobile = document.getElementById('turbineBlades2Mobile');
   function onScrollEffects(){
     const y = window.scrollY || window.pageYOffset || 0;
     const angle1 = (y * 0.5) % 360;
     const angle2 = (y * 0.7) % 360;
     if(blades1) blades1.setAttribute('transform', `rotate(${angle1} 860 110)`);
     if(blades2) blades2.setAttribute('transform', `rotate(${angle2} 930 165)`);
+    if(blades1Mobile) blades1Mobile.setAttribute('transform', `rotate(${angle1} 860 110)`);
+    if(blades2Mobile) blades2Mobile.setAttribute('transform', `rotate(${angle2} 930 165)`);
   }
   window.addEventListener('scroll', onScrollEffects, {passive:true});
   onScrollEffects();
