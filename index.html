@@ -667,6 +667,14 @@ Click the source symbol on the left hand side for a surprise :)
   .card-location{color:var(--text-dim);font-size:.85rem;display:flex;align-items:center;gap:5px;}
   .card-period{color:var(--text-dim);font-size:.85rem;white-space:nowrap;text-align:right;}
 
+  .card{position:relative;}
+  @keyframes cardHighlightFlash{
+    0%{box-shadow:0 0 0 0 rgba(76,201,240,0);border-color:var(--line);}
+    15%{box-shadow:0 0 0 4px rgba(76,201,240,.35);border-color:var(--accent);}
+    100%{box-shadow:0 0 0 0 rgba(76,201,240,0);border-color:var(--line);}
+  }
+  .card.link-highlight{animation:cardHighlightFlash 1.8s ease-out;}
+
   .card-toggle-btn{
     margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--accent);
     padding:8px 16px;border-radius:8px;font-size:.82rem;transition:.25s;
@@ -1620,7 +1628,7 @@ Click the source symbol on the left hand side for a surprise :)
     <div class="sec-sub">Building practical engineering experience through internships, research, and industry projects, I've developed the technical skills and practical knowledge needed for a career in electrical and power systems engineering.</div>
   </div>
 
-  <div class="card">
+  <div class="card" id="exp-proa-energy">
     <div class="card-top">
       <div class="card-top-left">
         <a class="company-logo-link" href="https://proa.energy" target="_blank" rel="noopener" title="Visit company website">
@@ -1691,7 +1699,7 @@ Click the source symbol on the left hand side for a surprise :)
     </div>
   </div>
   
-  <div class="card">
+  <div class="card" id="exp-kai-scientific">
     <div class="card-top">
     <div class="card-top-left">
       <a class="company-logo-link" href="https://www.kai-scientific.com" target="_blank" rel="noopener" title="Visit company website">
@@ -1789,7 +1797,7 @@ Click the source symbol on the left hand side for a surprise :)
       All trademarks, logos, software, and third-party content remain the property of their respective owners. If you believe any material in this portfolio has been included in error or infringes copyright, please <a class="uni-link" href="#contact">contact me</a> and it will be reviewed promptly.</i></div>
 
     <div class="subtab-panel active" id="electrical-academic">
-      <div class="card">
+      <div class="card" id="proj-inverted-pendulum">
         <div class="card-top">
           <div>
             <div class="card-title">Inverted Pendulum Stabilisation and Control System</div>
@@ -1850,7 +1858,7 @@ Click the source symbol on the left hand side for a surprise :)
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="proj-speaker-equaliser">
         <div class="card-top">
           <div>
             <div class="card-title">Custom Speaker System with Integrated Equaliser</div>
@@ -1910,7 +1918,7 @@ Click the source symbol on the left hand side for a surprise :)
         </div>
       </div>
     
-      <div class="card">
+      <div class="card" id="proj-fpga-clock">
         <div class="card-top">
           <div>
             <div class="card-title">FPGA Clock</div>
@@ -2031,7 +2039,7 @@ Click the source symbol on the left hand side for a surprise :)
     </div>
 
     <div class="subtab-panel active" id="electrical-personal">
-      <div class="card">
+      <div class="card" id="proj-power-flow-analysis">
         <div class="card-top">
           <div><div class="card-title">Power Flow Analysis and Voltage Stability Assessment of a Transmission Network</div><div class="card-sub">Self-directed · Power Systems</div></div>
           <div class="card-period">Nov 2025 – Feb 2026</div>
@@ -2080,7 +2088,7 @@ Click the source symbol on the left hand side for a surprise :)
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="proj-seed-planter">
         <div class="card-top">
           <div><div class="card-title">Solar Powered Autonomous Seed Planter</div><div class="card-sub">Team-based · Embedded Systems</div></div>
           <div class="card-period">Jul 2025 – Oct 2025</div>
@@ -2130,7 +2138,7 @@ Click the source symbol on the left hand side for a surprise :)
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="proj-pet-feeder">
         <div class="card-top">
           <div><div class="card-title">Automatic Pet Feeder</div><div class="card-sub">Team-based · Embedded Systems</div></div>
           <div class="card-period">Sep 2025 – Oct 2025</div>
@@ -2188,7 +2196,7 @@ Click the source symbol on the left hand side for a surprise :)
 
     <div class="subtab-panel" id="software-personal">
 
-      <div class="card">
+      <div class="card" id="proj-portfolio-website">
         <div class="card-top">
           <div><div class="card-title">Online Personal Portfolio</div><div class="card-sub">Self-directed · Web-Dev</div></div>
           <div class="card-period">Jun 2026 – Jul 2026</div>
@@ -2227,7 +2235,7 @@ Click the source symbol on the left hand side for a surprise :)
         </div>
       </div>
       
-      <div class="card">
+      <div class="card" id="proj-login-system">
         <div class="card-top">
           <div><div class="card-title">Login and Registration System</div><div class="card-sub">Self-directed · Python</div></div>
           <div class="card-period">Feb 2024 – Mar 2024</div>
@@ -2272,7 +2280,7 @@ Click the source symbol on the left hand side for a surprise :)
         </div>
       </div>
     
-      <div class="card">
+      <div class="card" id="proj-image-editor">
         <div class="card-top">
           <div><div class="card-title">Image Editor</div><div class="card-sub">Self-directed · Python</div></div>
           <div class="card-period">Dec 2023 – Jan 2024</div>
@@ -2424,6 +2432,56 @@ Click the source symbol on the left hand side for a surprise :)
       btn.querySelector('.btn-label').textContent = nowExpanded ? 'Less details' : 'More details';
       if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
     });
+  });
+
+  // Deep-linking: #card-id in the URL opens the right tab/subtab, expands
+  // that card's details, scrolls to it, and gives it a brief highlight.
+  function goToLinkedCard(id){
+    if(!id) return;
+    const card = document.getElementById(id);
+    if(!card || !card.classList.contains('card')) return;
+
+    const tabPanel = card.closest('.tab-panel');
+    if(tabPanel){
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      const tabBtn = document.querySelector('.tab-btn[data-tab="'+tabPanel.id+'"]');
+      if(tabBtn) tabBtn.classList.add('active');
+      tabPanel.classList.add('active');
+    }
+
+    const subtabPanel = card.closest('.subtab-panel');
+    if(subtabPanel){
+      const scope = subtabPanel.closest('.tab-panel');
+      scope.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+      scope.querySelectorAll('.subtab-panel').forEach(p=>p.classList.remove('active'));
+      const subtabBtn = scope.querySelector('.subtab-btn[data-subtab="'+subtabPanel.id+'"]');
+      if(subtabBtn) subtabBtn.classList.add('active');
+      subtabPanel.classList.add('active');
+    }
+
+    if(!card.classList.contains('expanded')){
+      card.classList.add('expanded');
+      const label = card.querySelector('.card-toggle-btn .btn-label');
+      if(label) label.textContent = 'Less details';
+      if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
+    }
+
+    // Let the tab switch / expand transition lay out before scrolling.
+    setTimeout(()=>{
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.classList.remove('link-highlight');
+      // restart animation
+      void card.offsetWidth;
+      card.classList.add('link-highlight');
+    }, 60);
+  }
+
+  window.addEventListener('DOMContentLoaded', ()=>{
+    if(location.hash) goToLinkedCard(location.hash.slice(1));
+  });
+  window.addEventListener('hashchange', ()=>{
+    if(location.hash) goToLinkedCard(location.hash.slice(1));
   });
 
   const busNodes = [...document.querySelectorAll('.bus-node-wrap')];
