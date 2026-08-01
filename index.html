@@ -6,6 +6,7 @@ A lot of the design choices behind this site is inspired by his own (nicolai.sko
 Thank you to Emily Wong for creating the icon for the site!
 
 Click the source symbol on the left hand side for a surprise :)
+Click up up down down left right left right b a for another surprise.
 -->
 <head>
 <meta charset="UTF-8">
@@ -110,8 +111,10 @@ Click the source symbol on the left hand side for a surprise :)
   html[data-textsize="small"]{--text-scale:0.88;}
   html[data-textsize="large"]{--text-scale:1.18;}
 
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0);}
-  html{scroll-behavior:smooth;font-size:calc(100% * var(--text-scale));}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0);scrollbar-width:none;-ms-overflow-style:none;}
+  *::-webkit-scrollbar{display:none;width:0;height:0;}
+  html{scroll-behavior:smooth;font-size:calc(100% * var(--text-scale));scrollbar-width:none;-ms-overflow-style:none;}
+  html::-webkit-scrollbar{display:none;width:0;height:0;}
   body{
     background:var(--bg);
     color:var(--text);
@@ -119,8 +122,202 @@ Click the source symbol on the left hand side for a surprise :)
     line-height:1.6;
     overflow-x:hidden;
     transition:background .35s ease,color .35s ease;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
   }
+  body::-webkit-scrollbar{display:none;width:0;height:0;}
   a{color:inherit;text-decoration:none;}
+
+  #customScrollbar{
+    position:fixed;top:0;right:0;height:100dvh;width:16px;z-index:998;
+    display:flex;justify-content:flex-end;
+    -webkit-tap-highlight-color:transparent;
+    opacity:0;pointer-events:none;
+    transition:opacity .3s ease;
+  }
+  #customScrollbar.visible{opacity:1;pointer-events:auto;}
+  #customScrollbar .scroll-track{
+    position:relative;width:3px;height:calc(100% - 24px);margin:12px 5px 12px 0;
+    background:linear-gradient(to bottom,
+      transparent 0%, var(--line) 8%, var(--line) 92%, transparent 100%);
+    border-radius:3px;
+    transition:width .18s ease,background-color .35s ease,border-color .35s ease;
+    cursor:pointer;
+    overflow:visible;
+  }
+  #customScrollbar .scroll-track::before,
+  #customScrollbar .scroll-track::after{
+    content:'';position:absolute;left:50%;width:7px;height:7px;
+    transform:translateX(-50%);border-radius:50%;
+    background:var(--line);
+    transition:background .15s linear,box-shadow .15s linear;
+  }
+  #customScrollbar .scroll-track::before{
+    top:-9px;
+    background:color-mix(in srgb, color-mix(in srgb, var(--accent) 85%, white 15%) var(--top-glow,0%), var(--line));
+    box-shadow:0 0 9px 1px color-mix(in srgb, var(--accent) var(--top-glow,0%), transparent),
+      0 0 3px color-mix(in srgb, white var(--top-glow,0%), transparent);
+  }
+  #customScrollbar .scroll-track::after{
+    bottom:-9px;
+    background:color-mix(in srgb, color-mix(in srgb, var(--accent2) 85%, white 15%) var(--bottom-glow,0%), var(--line));
+    box-shadow:0 0 9px 1px color-mix(in srgb, var(--accent2) var(--bottom-glow,0%), transparent),
+      0 0 3px color-mix(in srgb, white var(--bottom-glow,0%), transparent);
+  }
+  #customScrollbar:hover .scroll-track,
+  #customScrollbar.dragging .scroll-track{width:4px;}
+  #scrollThumb{
+    position:absolute;left:50%;top:0;z-index:2;
+    width:6px;min-height:38px;border-radius:5px;
+    transform:translateX(-50%);
+    background:linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 92%, white 8%) 0%,
+      var(--accent) 50%,
+      color-mix(in srgb, var(--accent) 85%, black 15%) 100%);
+    box-shadow:0 0 8px color-mix(in srgb, var(--accent) 60%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+    transition:width .18s ease,box-shadow .18s ease,background .2s ease;
+    will-change:transform,height;
+  }
+  .track-fill{
+    position:absolute;left:50%;top:0;width:5px;height:0;
+    transform:translateX(-50%);
+    background:
+      repeating-linear-gradient(to bottom,
+        transparent 0, transparent 6px,
+        var(--bg) 6px, var(--bg) 8px),
+      linear-gradient(to bottom, var(--accent), var(--accent2));
+    border-radius:2.5px;opacity:.95;overflow:hidden;
+    box-shadow:0 0 5px color-mix(in srgb, var(--accent2) 45%, transparent);
+    transition:opacity .3s ease;
+    will-change:height;
+  }
+  .track-fill.charging::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(to top,
+      transparent 0%, rgba(255,255,255,.7) 45%, transparent 88%);
+    background-size:100% 220%;
+    animation:chargeShimmer 850ms linear infinite;
+  }
+  @keyframes chargeShimmer{
+    0%{background-position:0 120%;}
+    100%{background-position:0 -100%;}
+  }
+  .scroll-trail{
+    position:absolute;left:50%;top:0;width:6px;border-radius:5px;
+    transform:translateX(-50%);
+    pointer-events:none;opacity:0;z-index:1;
+    filter:blur(.4px);
+    transition:opacity .35s ease;
+    will-change:opacity,transform,height;
+  }
+  #customScrollbar:hover .scroll-trail,
+  #customScrollbar.dragging .scroll-trail{width:9px;}
+  #scrollThumb::after{
+    content:'';position:absolute;left:50%;top:6px;bottom:6px;width:1px;
+    transform:translateX(-50%);
+    background:color-mix(in srgb, var(--bg) 55%, transparent);
+    border-radius:1px;
+  }
+  #customScrollbar:hover #scrollThumb,
+  #customScrollbar.dragging #scrollThumb{
+    width:9px;
+    box-shadow:0 0 14px color-mix(in srgb, var(--accent) 80%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+  #customScrollbar.dragging #scrollThumb{
+    background:linear-gradient(180deg,
+      color-mix(in srgb, var(--accent2) 92%, white 8%) 0%,
+      var(--accent2) 50%,
+      color-mix(in srgb, var(--accent2) 85%, black 15%) 100%);
+    box-shadow:0 0 16px color-mix(in srgb, var(--accent2) 85%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, var(--accent2) 55%, transparent);
+  }
+  .scroll-readout{
+    position:absolute;top:0;right:calc(100% + 8px);
+    transform:translateY(0);
+    font-family:'Courier New',monospace;font-size:.66rem;letter-spacing:.5px;
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:4px;
+    padding:2px 6px;color:var(--accent);
+    box-shadow:0 0 8px -2px var(--accent);
+    white-space:nowrap;pointer-events:none;
+    opacity:0;transition:opacity .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;
+  }
+  .scroll-readout::after{
+    content:'';position:absolute;right:-5px;top:50%;
+    width:0;height:0;transform:translateY(-50%);
+    border-top:4px solid transparent;border-bottom:4px solid transparent;
+    border-left:5px solid var(--line);
+  }
+  #customScrollbar.visible .scroll-readout{opacity:.9;}
+  #customScrollbar.dragging .scroll-readout{
+    opacity:1;color:var(--accent2);border-color:var(--accent2);
+    box-shadow:0 0 10px -2px var(--accent2);
+  }
+  .scroll-readout.label-mode{
+    text-transform:uppercase;
+  }
+  .section-notch{
+    position:absolute;left:50%;top:0;z-index:2;
+    width:9px;height:2px;border-radius:2px;
+    transform:translate(-50%,-50%);
+    background:var(--line);
+    cursor:pointer;pointer-events:auto;
+    transition:background .2s ease,box-shadow .2s ease,width .18s ease;
+  }
+  .section-notch.passed{
+    background:color-mix(in srgb, var(--accent) 65%, var(--line));
+  }
+  .section-notch.current{
+    width:13px;
+    background:var(--accent2);
+    box-shadow:0 0 7px color-mix(in srgb, var(--accent2) 75%, transparent);
+  }
+  .section-notch:hover{
+    width:13px;
+    background:var(--accent2);
+    box-shadow:0 0 8px color-mix(in srgb, var(--accent2) 80%, transparent);
+  }
+  .section-notch-label{
+    position:absolute;top:50%;right:calc(100% + 8px);
+    transform:translateY(-50%);
+    font-family:'Courier New',monospace;font-size:.62rem;letter-spacing:.5px;
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:4px;
+    padding:2px 6px;color:var(--text-dim);
+    white-space:nowrap;pointer-events:none;
+    opacity:0;transition:opacity .15s ease,color .15s ease,border-color .15s ease;
+  }
+  .section-notch:hover .section-notch-label{
+    opacity:1;color:var(--accent2);border-color:var(--accent2);
+  }
+  @media(max-width:700px){
+    #customScrollbar{width:12px;}
+    #customScrollbar .scroll-track{
+      width:3px;margin:10px 0;
+      border-radius:2px 0 0 2px;border-right:none;
+    }
+    #scrollThumb{width:5px;border-radius:2px 0 0 2px;}
+    #customScrollbar .scroll-track::before,
+    #customScrollbar .scroll-track::after{right:0;left:auto;transform:none;width:7px;height:7px;border-radius:2px 0 0 2px;}
+    #customScrollbar:hover .scroll-track,
+    #customScrollbar.dragging .scroll-track{width:5px;}
+    #customScrollbar:hover #scrollThumb,
+    #customScrollbar.dragging #scrollThumb{width:7px;}
+    .scroll-readout{font-size:.6rem;padding:2px 5px;right:calc(100% + 6px);}
+    .section-notch{right:0;left:auto;transform:translateY(-50%);border-radius:2px 0 0 2px;}
+    .section-notch-label{display:none;}
+  }
+  html.scrollbar-dragging #cursorCrosshairH,
+  html.scrollbar-dragging #cursorCrosshairV,
+  html.scrollbar-dragging #cursorDotCenter,
+  html.scrollbar-dragging #cursorReadout,
+  html.scrollbar-dragging #scopeCursor,
+  html.scrollbar-dragging #cursorDot,
+  html.scrollbar-dragging #cursorRing,
+  html.scrollbar-dragging #cursorBreaker,
+  html.scrollbar-dragging #cursorFuse{
+    display:none !important;
+  }
 
   .circuit-bg{
     position:fixed;top:0;left:0;z-index:0;pointer-events:none;opacity:.7;
@@ -265,7 +462,7 @@ Click the source symbol on the left hand side for a surprise :)
   .settings-panel{
     position:fixed;top:0;right:0;height:100vh;width:320px;max-width:88vw;
     background:var(--panel);border-left:1px solid var(--line);
-    z-index:151;padding:13px 20px;overflow-y:auto;
+    z-index:151;padding:13px 20px;overflow-y:auto;overscroll-behavior:contain;
     transform:translateX(100%);
     transition:transform .35s ease,background .35s ease,border-color .35s ease;
     display:flex;flex-direction:column;gap:10px;justify-content:space-between;
@@ -858,11 +1055,11 @@ Click the source symbol on the left hand side for a surprise :)
   }
   .bus-node-wrap.active .bus-dot{
     border-color:var(--accent);background:var(--accent);
-    box-shadow:0 0 0 5px rgba(76,201,240,.15),0 0 14px rgba(76,201,240,.6);
+    box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 15%, transparent),0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
   }
   .bus-dot.lit{
     border-color:var(--accent2) !important;background:var(--accent2) !important;
-    box-shadow:0 0 0 6px rgba(245,185,66,.25),0 0 16px rgba(245,185,66,.8) !important;
+    box-shadow:0 0 0 6px color-mix(in srgb, var(--accent2) 25%, transparent),0 0 16px color-mix(in srgb, var(--accent2) 80%, transparent) !important;
   }
   .bus-letter{
     position:absolute;left:24px;top:50%;transform:translateY(-50%);
@@ -1136,6 +1333,15 @@ Click the source symbol on the left hand side for a surprise :)
 
 <div id="cursorBreaker">
   <span class="breaker-lever"></span>
+</div>
+
+<div id="customScrollbar" aria-hidden="true">
+  <div class="scroll-track" id="scrollTrack">
+    <div id="trackFill" class="track-fill"></div>
+    <div id="scrollTrail" class="scroll-trail"></div>
+    <div id="scrollThumb"></div>
+  </div>
+  <div class="scroll-readout" id="scrollReadout">0%</div>
 </div>
 
 <div id="cursorFuse">
@@ -2434,8 +2640,6 @@ Click the source symbol on the left hand side for a surprise :)
     });
   });
 
-  // Deep-linking: #card-id in the URL opens the right tab/subtab, expands
-  // that card's details, scrolls to it, and gives it a brief highlight.
   function goToLinkedCard(id){
     if(!id) return;
     const card = document.getElementById(id);
@@ -2467,11 +2671,9 @@ Click the source symbol on the left hand side for a surprise :)
       if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
     }
 
-    // Let the tab switch / expand transition lay out before scrolling.
     setTimeout(()=>{
       card.scrollIntoView({behavior:'smooth', block:'center'});
       card.classList.remove('link-highlight');
-      // restart animation
       void card.offsetWidth;
       card.classList.add('link-highlight');
     }, 60);
@@ -2518,6 +2720,337 @@ Click the source symbol on the left hand side for a surprise :)
   }
   window.addEventListener('scroll', onScrollEffects, {passive:true});
   onScrollEffects();
+
+  (function(){
+    const bar = document.getElementById('customScrollbar');
+    const track = document.getElementById('scrollTrack');
+    const thumb = document.getElementById('scrollThumb');
+    const trackFill = document.getElementById('trackFill');
+    const trail = document.getElementById('scrollTrail');
+    const readout = document.getElementById('scrollReadout');
+    const settingsPanelEl = document.getElementById('settingsPanel');
+    if(!bar || !track || !thumb) return;
+
+    let dragging = false;
+    let hideTimer = null;
+    let ticking = false;
+    let trackRect = track.getBoundingClientRect();
+    let lastThumbY = 0;
+    let lastThumbH = 34;
+    let lastTrailTime = performance.now();
+    let trailFadeTimer = null;
+    let flowSpeed = 0;
+    let lastFlowY = window.scrollY || document.documentElement.scrollTop || 0;
+    let lastFlowTime = performance.now();
+    let flowLoopRunning = false;
+    let sectionNotchEls = [];
+
+    function settingsOpen(){
+      return !!(settingsPanelEl && settingsPanelEl.classList.contains('open'));
+    }
+
+    function maxScroll(){
+      return Math.max(1,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
+    }
+
+    function buildSectionNotches(){
+      track.querySelectorAll('.section-notch').forEach(el => el.remove());
+      sectionNotchEls = [];
+
+      const sections = document.querySelectorAll('section[id]');
+      const max = maxScroll();
+      const y0 = window.scrollY || document.documentElement.scrollTop || 0;
+
+      sections.forEach(sec => {
+        const top = sec.getBoundingClientRect().top + y0;
+        const ratio = Math.min(1, Math.max(0, top / max));
+        if(ratio <= 0.01 || ratio >= 0.995) return;
+
+        const notch = document.createElement('div');
+        notch.className = 'section-notch';
+        notch.style.top = (ratio * 100) + '%';
+
+        const label = document.createElement('span');
+        label.className = 'section-notch-label';
+        label.textContent = sec.id.charAt(0).toUpperCase() + sec.id.slice(1);
+        notch.appendChild(label);
+
+        notch.addEventListener('pointerdown', (e) => e.stopPropagation());
+        notch.addEventListener('click', (e) => {
+          e.stopPropagation();
+          scrollToRatio(ratio);
+        });
+
+        track.appendChild(notch);
+        sectionNotchEls.push({ratio, el: notch, label: label.textContent});
+      });
+    }
+
+    function paint(){
+      ticking = false;
+      const trackH = trackRect.height;
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const ratio = Math.min(1, Math.max(0, y / maxScroll()));
+
+      const thumbH = Math.max(34, (window.innerHeight / document.documentElement.scrollHeight) * trackH);
+      const thumbTravel = trackH - thumbH;
+      const thumbY = ratio * thumbTravel;
+
+      thumb.style.height = thumbH + 'px';
+      thumb.style.transform = `translate(-50%, ${thumbY}px)`;
+
+      if(trail){
+        const now = performance.now();
+        const dt = Math.max(1, now - lastTrailTime);
+        const movingDown = thumbY >= lastThumbY;
+        const speed = Math.abs(thumbY - lastThumbY) / dt;
+        const trailLen = Math.min(80, speed * 110);
+        const trailOpacity = Math.min(1, speed * 3.4);
+
+        if(trailLen > 2){
+          trail.style.opacity = trailOpacity.toFixed(2);
+          trail.style.height = trailLen.toFixed(1) + 'px';
+          if(movingDown){
+            trail.style.transform = `translate(-50%, ${(thumbY - trailLen).toFixed(1)}px)`;
+            trail.style.background = 'linear-gradient(to top, color-mix(in srgb, var(--accent2) 75%, transparent), transparent)';
+          } else {
+            trail.style.transform = `translate(-50%, ${(thumbY + thumbH).toFixed(1)}px)`;
+            trail.style.background = 'linear-gradient(to bottom, color-mix(in srgb, var(--accent) 75%, transparent), transparent)';
+          }
+        }
+
+        clearTimeout(trailFadeTimer);
+        trailFadeTimer = setTimeout(()=>{ trail.style.opacity = '0'; }, 140);
+
+        lastTrailTime = now;
+      }
+
+      lastThumbY = thumbY;
+      lastThumbH = thumbH;
+
+      track.style.setProperty('--top-glow', ((1 - ratio) * 100).toFixed(1) + '%');
+      track.style.setProperty('--bottom-glow', (ratio * 100).toFixed(1) + '%');
+
+      if(trackFill){
+        trackFill.style.height = (ratio * trackH).toFixed(1) + 'px';
+      }
+
+      if(readout){
+        const readoutH = readout.offsetHeight || 20;
+        const readoutY = thumbY + thumbH / 2 - readoutH / 2;
+        readout.style.transform = `translateY(${readoutY}px)`;
+        readout.textContent = Math.round(ratio * 100) + '%';
+      }
+
+      if(sectionNotchEls.length){
+        let activeIdx = -1;
+        sectionNotchEls.forEach((m, i) => {
+          if(ratio >= m.ratio - 0.0008){
+            m.el.classList.add('passed');
+            activeIdx = i;
+          } else {
+            m.el.classList.remove('passed');
+          }
+        });
+        sectionNotchEls.forEach((m, i) => {
+          m.el.classList.toggle('current', i === activeIdx);
+        });
+
+        if(dragging && readout){
+          const overlapping = sectionNotchEls.find(m => {
+            const notchY = m.ratio * trackH;
+            return notchY >= thumbY && notchY <= thumbY + thumbH;
+          });
+          if(overlapping){
+            readout.textContent = overlapping.label;
+            readout.classList.add('label-mode');
+          } else {
+            readout.classList.remove('label-mode');
+          }
+        } else if(readout){
+          readout.classList.remove('label-mode');
+        }
+      }
+    }
+
+    function ensureFlowLoop(){
+      if(flowLoopRunning) return;
+      flowLoopRunning = true;
+      lastFlowTime = performance.now();
+      requestAnimationFrame(flowTick);
+    }
+
+    function updateFlowSpeed(){
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const dy = y - lastFlowY;
+      lastFlowY = y;
+      const deltaFrac = dy / maxScroll();
+      flowSpeed = flowSpeed * 0.5 + deltaFrac * 0.5;
+      ensureFlowLoop();
+    }
+
+    function flowTick(now){
+      const dt = Math.min(48, now - lastFlowTime);
+      lastFlowTime = now;
+      flowSpeed *= 0.9;
+
+      const speedAbs = Math.abs(flowSpeed);
+      const active = speedAbs > 0.00002;
+
+      if(trackFill){
+        trackFill.classList.toggle('charging', active);
+        trackFill.style.opacity = active ? Math.min(1, 0.9 + speedAbs * 120).toFixed(2) : '0.95';
+      }
+
+      if(active){
+        requestAnimationFrame(flowTick);
+      } else {
+        flowLoopRunning = false;
+      }
+    }
+
+    function requestPaint(){
+      if(!ticking){
+        ticking = true;
+        requestAnimationFrame(paint);
+      }
+    }
+
+    function showBar(){
+      if(settingsOpen()) return;
+      bar.classList.add('visible');
+      clearTimeout(hideTimer);
+      if(!dragging && !bar.matches(':hover')){
+        hideTimer = setTimeout(()=>{
+          if(!dragging) bar.classList.remove('visible');
+        }, 1200);
+      }
+    }
+
+    function hideBarNow(){
+      clearTimeout(hideTimer);
+      bar.classList.remove('visible');
+    }
+
+    function refreshRect(){
+      trackRect = track.getBoundingClientRect();
+      buildSectionNotches();
+      requestPaint();
+    }
+
+    function checkScrollable(){
+      if(maxScroll() > 4){
+        bar.style.display = 'flex';
+      } else {
+        bar.style.display = 'none';
+      }
+    }
+
+    window.addEventListener('scroll', ()=>{
+      requestPaint();
+      showBar();
+      updateFlowSpeed();
+    }, {passive:true});
+
+    window.addEventListener('resize', ()=>{
+      refreshRect();
+      checkScrollable();
+    });
+
+    if(window.matchMedia('(hover: hover) and (pointer: fine)').matches){
+      const EDGE_ZONE = 56;
+      window.addEventListener('mousemove', (e)=>{
+        if(window.innerWidth - e.clientX <= EDGE_ZONE){
+          showBar();
+        }
+      }, {passive:true});
+    }
+
+    const ro = new ResizeObserver(()=>{ refreshRect(); checkScrollable(); });
+    ro.observe(document.body);
+
+    if(settingsPanelEl){
+      const settingsObserver = new MutationObserver(()=>{
+        if(settingsOpen()) hideBarNow();
+      });
+      settingsObserver.observe(settingsPanelEl, {attributes:true, attributeFilter:['class']});
+    }
+
+    bar.addEventListener('mouseenter', ()=>{
+      if(settingsOpen()) return;
+      clearTimeout(hideTimer);
+      bar.classList.add('visible');
+    });
+    bar.addEventListener('mouseleave', ()=>{
+      if(!dragging) showBar();
+    });
+
+    function scrollToRatio(ratio){
+      const y = ratio * maxScroll();
+      document.documentElement.style.scrollBehavior = 'auto';
+      document.body.style.scrollBehavior = 'auto';
+      window.scrollTo(0, y);
+    }
+
+    function ratioFromClientY(clientY){
+      const thumbH = parseFloat(thumb.style.height) || 34;
+      const usable = trackRect.height - thumbH;
+      const rel = clientY - trackRect.top - thumbH / 2;
+      return Math.min(1, Math.max(0, rel / Math.max(1, usable)));
+    }
+
+    function startDrag(){
+      dragging = true;
+      trackRect = track.getBoundingClientRect();
+      bar.classList.add('dragging', 'visible');
+      document.documentElement.classList.add('scrollbar-dragging');
+    }
+
+    function endDrag(){
+      if(!dragging) return;
+      dragging = false;
+      bar.classList.remove('dragging');
+      document.documentElement.classList.remove('scrollbar-dragging');
+      document.documentElement.style.scrollBehavior = '';
+      document.body.style.scrollBehavior = '';
+      showBar();
+    }
+
+    thumb.addEventListener('pointerdown', (e)=>{
+      e.preventDefault();
+      startDrag();
+      thumb.setPointerCapture(e.pointerId);
+      if(typeof spawnSparkBurst === 'function'){
+        spawnSparkBurst(e.clientX, e.clientY);
+      }
+    });
+
+    thumb.addEventListener('pointermove', (e)=>{
+      if(!dragging) return;
+      scrollToRatio(ratioFromClientY(e.clientY));
+      requestPaint();
+    });
+
+    thumb.addEventListener('pointerup', endDrag);
+    thumb.addEventListener('pointercancel', endDrag);
+
+    track.addEventListener('pointerdown', (e)=>{
+      if(e.target === thumb) return;
+      trackRect = track.getBoundingClientRect();
+      const thumbH = parseFloat(thumb.style.height) || 34;
+      const ratio = Math.min(1, Math.max(0, (e.clientY - trackRect.top - thumbH / 2) / Math.max(1, trackRect.height - thumbH)));
+      scrollToRatio(ratio);
+      requestPaint();
+      showBar();
+    });
+
+    checkScrollable();
+    refreshRect();
+    paint();
+    if(!settingsOpen()) showBar();
+  })();
 
   const sunGroup = document.getElementById('sunGroup');
   const sunGroupMobile = document.getElementById('sunGroupMobile');
