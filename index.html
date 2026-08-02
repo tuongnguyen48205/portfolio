@@ -28,6 +28,11 @@ Click up up down down left right left right b a for another surprise.
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Preload the two above-the-fold, eagerly-loaded images so the browser
+     discovers them immediately instead of waiting on CSSOM/DOM construction.
+     This directly improves Largest Contentful Paint (LCP). -->
+<link rel="preload" as="image" href="MainImages/pfp.png" fetchpriority="high">
+<link rel="preload" as="image" href="MainImages/titleiconbar.png">
 <style>
   :root{
     --bg:#0a0e14;
@@ -167,6 +172,9 @@ Click up up down down left right left right b a for another surprise.
     .theme-surge-ring,.theme-surge-core,#powerFlicker.active,#powerScanline.active{animation:none;display:none;}
     .avatar-ring::after{animation:none;opacity:.7;}
     h1.name{animation:none;}
+    .footer-spark{display:none;}
+    .footer-ticker-fade{animation:none;}
+    .footer-led{animation:none;opacity:.8;}
   }
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0);scrollbar-width:none;-ms-overflow-style:none;}
@@ -174,7 +182,11 @@ Click up up down down left right left right b a for another surprise.
   html{scroll-behavior:smooth;font-size:calc(100% * var(--text-scale));scrollbar-width:none;-ms-overflow-style:none;}
   html::-webkit-scrollbar{display:none;width:0;height:0;}
   body{
-    background:var(--bg);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent),
+      var(--bg);
+    background-color:var(--bg);
+    background-attachment:fixed;
     color:var(--text);
     font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
     line-height:1.6;
@@ -689,6 +701,11 @@ Click up up down down left right left right b a for another surprise.
     padding:70px 8% 70px;
     max-width:1200px;margin:0 auto;
   }
+  section:not(#home)::before{
+    content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:min(640px,60%);height:1px;
+    background:linear-gradient(90deg,transparent,color-mix(in srgb, var(--accent) 35%, var(--line)),transparent);
+  }
 
   #home{
     min-height:100vh;
@@ -724,7 +741,12 @@ Click up up down down left right left right b a for another surprise.
     display:flex;gap:26px;margin-top:26px;flex-wrap:wrap;
   }
   .impact-item{font-size:.82rem;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
-  .impact-item .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);}
+  .impact-item .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:impactPulse 2.4s ease-in-out infinite;box-shadow:0 0 0 0 color-mix(in srgb, var(--accent2) 60%, transparent);}
+  @keyframes impactPulse{
+    0%,100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--accent2) 45%, transparent);}
+    50%{box-shadow:0 0 0 4px color-mix(in srgb, var(--accent2) 0%, transparent);}
+  }
+  @media(prefers-reduced-motion:reduce){.impact-item .dot{animation:none;}}
   .specs{
     margin-top:30px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:560px;
   }
@@ -754,7 +776,14 @@ Click up up down down left right left right b a for another surprise.
   .pill-primary{
     background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600;
     box-shadow:0 4px 18px -6px color-mix(in srgb, var(--accent) 55%, transparent);
+    position:relative;overflow:hidden;
   }
+  .pill-primary::after{
+    content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,color-mix(in srgb, white 45%, transparent),transparent);
+    transform:skewX(-20deg);transition:left .55s ease;pointer-events:none;
+  }
+  .pill-primary:hover::after{left:130%;}
   .pill-primary:hover{
     background:color-mix(in srgb, var(--accent) 85%, white 15%);
     border-color:color-mix(in srgb, var(--accent) 85%, white 15%);
@@ -773,7 +802,9 @@ Click up up down down left right left right b a for another surprise.
     display:flex;align-items:center;justify-content:center;
     position:relative;
     animation:float 5s ease-in-out infinite;
-    transition:background .35s ease,border-color .35s ease;
+    transition:background .35s ease,border-color .35s ease,box-shadow .35s ease;
+    box-shadow:0 30px 60px -25px color-mix(in srgb, var(--accent) 35%, transparent),
+      inset 0 0 40px -10px color-mix(in srgb, var(--accent) 12%, transparent);
   }
   .avatar-ring::before{
     content:'';position:absolute;inset:-8px;border-radius:50%;
@@ -798,7 +829,7 @@ Click up up down down left right left right b a for another surprise.
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
   @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
-  .sec-head{margin-bottom:44px;}
+  .sec-head{margin-bottom:44px;position:relative;}
   .sec-tag{color:var(--accent);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;
     display:flex;align-items:center;gap:10px;}
   .sec-tag::before{content:'';width:30px;height:2px;background:var(--accent);display:inline-block;}
@@ -1073,8 +1104,10 @@ Click up up down down left right left right b a for another surprise.
     padding:28px;margin-bottom:28px;
     transition:.35s ease;
     position:relative;
+    content-visibility:auto;
+    contain-intrinsic-size:auto 420px;
   }
-  .card:hover{border-color:var(--accent);box-shadow:0 10px 30px -15px color-mix(in srgb, var(--accent) 25%, transparent);}
+  .card:hover{border-color:var(--accent);box-shadow:0 14px 34px -15px color-mix(in srgb, var(--accent) 25%, transparent);transform:translateY(-2px);}
   .card::before,.card::after{
     content:'';position:absolute;width:16px;height:16px;pointer-events:none;
     transition:border-color .3s ease,opacity .3s ease;opacity:0;
@@ -1170,6 +1203,12 @@ Click up up down down left right left right b a for another surprise.
   .subtab-btn.active{
     background:var(--accent2);color:#1a1206;border-color:var(--accent2);font-weight:600;
     box-shadow:0 4px 16px -6px color-mix(in srgb, var(--accent2) 55%, transparent);
+    position:relative;overflow:hidden;
+  }
+  .subtab-btn.active::after{
+    content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,color-mix(in srgb, white 45%, transparent),transparent);
+    transform:skewX(-20deg);animation:tabShine 2.6s ease-in-out .3s 1;
   }
   .subtab-panel{display:none;}
   .subtab-panel.active{display:block;animation:fadeIn .4s ease;}
@@ -1218,7 +1257,13 @@ Click up up down down left right left right b a for another surprise.
     padding:8px 14px;border-radius:8px;font-size:.82rem;transition:.25s;
   }
   .dl-btn:hover{background:var(--accent);color:#04121a;}
-  .dl-btn-primary{background:var(--accent);border-color:var(--accent);color:#04121a;font-weight:600;}
+  .dl-btn-primary{background:var(--accent);border-color:var(--accent);color:#04121a;font-weight:600;position:relative;overflow:hidden;}
+  .dl-btn-primary::after{
+    content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,color-mix(in srgb, white 45%, transparent),transparent);
+    transform:skewX(-20deg);transition:left .55s ease;pointer-events:none;
+  }
+  .dl-btn-primary:hover::after{left:130%;}
   .dl-btn-primary:hover{background:color-mix(in srgb, var(--accent) 85%, white 15%);border-color:color-mix(in srgb, var(--accent) 85%, white 15%);color:#04121a;}
  
   .tabs{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap;}
@@ -1230,7 +1275,14 @@ Click up up down down left right left right b a for another surprise.
   .tab-btn.active{
     background:var(--accent);color:#04121a;border-color:var(--accent);font-weight:600;
     box-shadow:0 4px 16px -6px color-mix(in srgb, var(--accent) 55%, transparent);
+    position:relative;overflow:hidden;
   }
+  .tab-btn.active::after{
+    content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
+    background:linear-gradient(100deg,transparent,color-mix(in srgb, white 45%, transparent),transparent);
+    transform:skewX(-20deg);animation:tabShine 2.6s ease-in-out .3s 1;
+  }
+  @keyframes tabShine{0%{left:-60%;}100%{left:130%;}}
   .tab-panel{display:none;}
   .tab-panel.active{display:block;animation:fadeIn .4s ease;}
 
@@ -1241,7 +1293,14 @@ Click up up down down left right left right b a for another surprise.
     background:var(--panel);border:1px solid var(--line);border-radius:12px;
     padding:34px 34px;width:300px;max-width:100%;min-height:132px;transition:.35s ease;
     display:flex;flex-direction:column;justify-content:center;text-align:left;position:relative;
+    overflow:hidden;
   }
+  .contact-card::before{
+    content:'';position:absolute;top:0;left:0;width:100%;height:3px;
+    background:var(--accent);
+    transform:scaleX(0);transform-origin:left;transition:transform .35s ease;
+  }
+  .contact-card:hover::before{transform:scaleX(1);}
   .contact-card:hover{
     border-color:var(--accent);transform:translateY(-4px);
     box-shadow:0 12px 28px -16px color-mix(in srgb, var(--accent) 40%, transparent);
@@ -1253,12 +1312,69 @@ Click up up down down left right left right b a for another surprise.
 
   footer{
     position:relative;
-    padding:26px 5%;color:var(--text-dim);font-size:.82rem;
+    padding:14px 5%;color:var(--text-dim);font-size:.82rem;
     border-top:1px solid var(--line);
     background:var(--panel);
     text-align:center;transition:.35s ease;
   }
   footer .bus{color:var(--accent2);}
+  .footer-trace{
+    position:absolute;top:-6px;left:0;width:100%;height:12px;
+    overflow:visible;display:block;pointer-events:none;z-index:1;
+  }
+  .footer-trace-line{stroke:var(--line);stroke-width:1;transition:stroke .35s ease;}
+  .footer-spark{
+    position:absolute;top:0;left:0;width:6px;height:6px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 6px var(--accent);
+    transform:translate(-50%,-50%);pointer-events:none;z-index:1;
+    animation:footerSparkMove 5s linear infinite,footerSparkFade 5s linear infinite;
+  }
+  @keyframes footerSparkMove{0%{left:0%;}100%{left:100%;}}
+  @keyframes footerSparkFade{0%,100%{opacity:0;}5%,95%{opacity:1;}}
+  .footer-row{
+    display:grid;grid-template-columns:1fr auto 1fr;
+    align-items:center;gap:10px 20px;
+  }
+  .footer-copy{grid-column:2;text-align:center;}
+  .local-time-corner{
+    position:fixed;left:10px;bottom:10px;z-index:90;
+    display:flex;align-items:center;gap:5px;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:.5px;
+    color:var(--text-dim);opacity:0;pointer-events:none;
+    transition:opacity .4s ease;
+  }
+  .local-time-corner.visible{opacity:.6;}
+  .local-time-corner .footer-led{width:4px;height:4px;}
+  .footer-right{
+    grid-column:3;justify-self:end;
+    display:flex;flex-direction:column;align-items:flex-end;gap:7px;
+  }
+  .footer-status{
+    display:flex;align-items:center;gap:9px;
+    font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--text-dim);font-family:var(--mono);
+    white-space:nowrap;
+  }
+  .footer-status-val{color:var(--accent);font-variant-numeric:tabular-nums;}
+  .footer-led{
+    width:6px;height:6px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 6px 1px var(--accent);
+    animation:footerLedPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes footerLedPulse{
+    0%,100%{opacity:.4;box-shadow:0 0 4px 0 var(--accent);}
+    50%{opacity:1;box-shadow:0 0 8px 2px var(--accent);}
+  }
+  .footer-ticker{
+    font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--text-dim);font-family:var(--mono);
+    min-height:14px;
+  }
+  .footer-ticker-fade{animation:footerTickerFade .5s ease;}
+  @keyframes footerTickerFade{
+    from{opacity:0;transform:translateY(3px);}
+    to{opacity:1;transform:translateY(0);}
+  }
   .footer-views {
     font-size: .78rem;
     color: var(--text-dim);
@@ -1563,7 +1679,11 @@ Click up up down down left right left right b a for another surprise.
     .avatar-ring{width:200px;height:200px;}
     .dl-btns{margin-left:0;width:100%;}
     .code-window{width:100%;}
-    footer{padding-top:26px;}
+    footer{padding-top:14px;}
+    .footer-row{grid-template-columns:1fr;justify-items:center;}
+    .footer-copy{grid-column:1;}
+    .footer-right{display:none;}
+    .local-time-corner{display:none;}
     h1.name{white-space:normal;font-size:clamp(1.8rem,8vw,2.6rem);}
   }
 </style>
@@ -1572,6 +1692,10 @@ Click up up down down left right left right b a for another surprise.
         async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
+
+<div class="local-time-corner" id="localTimeBadge" aria-hidden="true">
+  <span class="footer-led"></span><span id="localTimeVal">00:00:00</span>
+</div>
 
 <div class="cursor-crosshair-h" id="cursorCrosshairH"></div>
 <div class="cursor-crosshair-v" id="cursorCrosshairV"></div>
@@ -2012,7 +2136,7 @@ Click up up down down left right left right b a for another surprise.
     </svg>
     <span class="bus-link-chip">BUS B</span>
   </div>
-  <div class="bus-link-status"><span class="bl-status-text">LINK OPEN</span></div>
+  <div class="bus-link-status"><span class="bl-status-text">SWITCH OPEN</span></div>
 </div>
 
 <section id="about" class="reveal">
@@ -2941,7 +3065,17 @@ Click up up down down left right left right b a for another surprise.
 </section>
 
 <footer>
-  <div>© 2026 Tuong Bao Nguyen – built on a single-line diagram, one <span class="bus">bus</span> at a time. Powered, increasingly, by renewables.</div>
+  <svg class="footer-trace" viewBox="0 0 1200 12" preserveAspectRatio="none" aria-hidden="true">
+    <line x1="0" y1="6" x2="1200" y2="6" class="footer-trace-line"/>
+  </svg>
+  <div class="footer-spark" aria-hidden="true"></div>
+  <div class="footer-row">
+    <div class="footer-copy">© 2026 Tuong Bao Nguyen – built on a single-line diagram, one <span class="bus">bus</span> at a time. Powered, increasingly, by renewables.</div>
+    <div class="footer-right">
+      <div class="footer-status"><span class="footer-led"></span><span>Uptime</span><span class="footer-status-val js-uptime-val" id="footerUptime">00:00:00</span></div>
+      <div class="footer-ticker" id="footerTicker" aria-hidden="true"></div>
+    </div>
+  </div>
 </footer>
 
 <div class="lightbox-overlay" id="lightboxOverlay">
@@ -3826,6 +3960,12 @@ Click up up down down left right left right b a for another surprise.
       }
     });
     el.addEventListener('pointercancel', ()=>{ down = false; });
+    el.addEventListener('contextmenu', (e)=>{
+      e.preventDefault();
+      down = false;
+      const html = getHtml();
+      if(html) openLightbox(html);
+    });
   }
 
   document.querySelectorAll('.img-slot').forEach(slot=>{
@@ -4007,7 +4147,7 @@ Click up up down down left right left right b a for another surprise.
             } else if(type === 'inductor'){
               statusText.textContent = ind ? `L LOCKED: ${ind}` : 'FLUX: STABLE';
             } else {
-              statusText.textContent = 'LINK CLOSED';
+              statusText.textContent = 'SWITCH CLOSED';
             }
           }
           if(typeof window.playSound === 'function') window.playSound('lock');
@@ -4400,6 +4540,62 @@ Click up up down down left right left right b a for another surprise.
         heroCopyEmail.classList.remove('copied');
       }, 1500);
     });
+  })();
+
+  (function(){
+    const els = document.querySelectorAll('.js-uptime-val');
+    if(!els.length) return;
+    const start = Date.now();
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function tick(){
+      const diff = Math.floor((Date.now() - start) / 1000);
+      const h = Math.floor(diff / 3600);
+      const m = Math.floor((diff % 3600) / 60);
+      const s = diff % 60;
+      const text = `${pad(h)}:${pad(m)}:${pad(s)}`;
+      els.forEach(el => { el.textContent = text; });
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  (function(){
+    const footerEl = document.querySelector('footer');
+    const localTimeBadge = document.getElementById('localTimeBadge');
+    if(!footerEl || !localTimeBadge || !('IntersectionObserver' in window)) return;
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        localTimeBadge.classList.toggle('visible', entry.isIntersecting);
+      });
+    }, { threshold: 0.05 });
+    observer.observe(footerEl);
+  })();
+
+  (function(){
+    const el = document.getElementById('localTimeVal');
+    if(!el) return;
+    function pad(n){ return String(n).padStart(2,'0'); }
+    function tick(){
+      const now = new Date();
+      el.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+  (function(){
+    const el = document.getElementById('footerTicker');
+    if(!el) return;
+    const phrases = ['All buses closed','No faults detected','Load balanced','Standing by','Telemetry nominal'];
+    let i = 0;
+    function show(){
+      el.textContent = phrases[i];
+      el.classList.remove('footer-ticker-fade');
+      void el.offsetWidth;
+      el.classList.add('footer-ticker-fade');
+      i = (i + 1) % phrases.length;
+    }
+    show();
+    setInterval(show, 3200);
   })();
 
   (function(){
