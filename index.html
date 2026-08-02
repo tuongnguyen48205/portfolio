@@ -414,7 +414,7 @@ Click up up down down left right left right b a for another surprise.
   nav{
     position:fixed;top:0;left:0;right:0;z-index:100;
     display:flex;justify-content:space-between;align-items:center;
-    padding:10px 5%;
+    padding:10px 8%;
     background:rgba(10,14,20,.75);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
@@ -482,6 +482,7 @@ Click up up down down left right left right b a for another surprise.
   .nav-toggle.open .nav-toggle-bar:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
   @media(max-width:700px){
+    nav{padding-left:6%;padding-right:6%;}
     .logo img{width:44px;height:44px;margin-right:8px;}
     .logo{font-size:1rem;}
     .nav-toggle{display:flex;}
@@ -774,7 +775,6 @@ Click up up down down left right left right b a for another surprise.
   .pill.copied{border-color:var(--accent);color:var(--accent);}
   .pill-primary{
     background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600;
-    box-shadow:0 4px 18px -6px color-mix(in srgb, var(--accent) 55%, transparent);
     position:relative;overflow:hidden;
   }
   .pill-primary::after{
@@ -787,7 +787,6 @@ Click up up down down left right left right b a for another surprise.
     background:color-mix(in srgb, var(--accent) 85%, white 15%);
     border-color:color-mix(in srgb, var(--accent) 85%, white 15%);
     color:var(--bg);
-    box-shadow:0 6px 22px -6px color-mix(in srgb, var(--accent) 70%, transparent);
   }
 
   .hero-visual{
@@ -947,6 +946,7 @@ Click up up down down left right left right b a for another surprise.
   .bus-link[data-type="inductor"].visible .bl-flash{animation:blFlash .5s ease-out 1.05s 1;}
 
   @media(max-width:700px){
+    footer{padding-left:6%;padding-right:6%;}
     .bus-link{padding:4px 6% 4px;}
     .bus-link-inner{gap:10px;}
     .bus-link-chip{font-size:.30rem;padding:2px 6px;}
@@ -1311,7 +1311,7 @@ Click up up down down left right left right b a for another surprise.
 
   footer{
     position:relative;
-    padding:14px 5%;color:var(--text-dim);font-size:.82rem;
+    padding:14px 8%;color:var(--text-dim);font-size:.82rem;
     border-top:1px solid var(--line);
     background:var(--panel);
     text-align:center;transition:.35s ease;
@@ -2101,7 +2101,6 @@ Click up up down down left right left right b a for another surprise.
             <span id="heroCopyEmailText">Email</span>
           </a>
           <a class="pill" href="https://linkedin.com/in/tuong-nguyen05" target="_blank" rel="noopener">in LinkedIn</a>
-          <!-- GITHUB PILL: wrap this link element in HTML comment tags to hide it; the flex layout re-centres the rest automatically -->
           <a class="pill" href="https://github.com/tuongnguyen48205" target="_blank" rel="noopener">
             <svg height="16" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" style="fill: currentColor;">
               <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82A7.48 7.48 0 0 0 8 3c-.68 0-1.36.09-2 .28-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
@@ -2287,42 +2286,6 @@ Click up up down down left right left right b a for another surprise.
         <p>Still completing internship – check back soon!</p>
         <div class="progress-track"><div class="progress-fill"></div></div>
       </div>
-
-      <!--
-      <div class="card-imgs">
-        <div class="img-slot">Add photo of workspace/setup</div>
-        <div class="img-slot">Add photo of hardware built</div>
-      </div>
-
-      <div class="card-cols">
-        <div>
-          <div class="col-label acc">Accomplishments</div>
-          <ul class="plain">
-            <li>Key result or deliverable #1</li>
-            <li>Key result or deliverable #2</li>
-          </ul>
-        </div>
-        <div>
-          <div class="col-label">Responsibilities</div>
-          <ul class="plain">
-            <li>Core task or duty #1</li>
-            <li>Core task or duty #2</li>
-          </ul>
-        </div>
-        <div>
-          <div class="col-label">Learnings</div>
-          <ul class="plain">
-            <li>Technical or professional lesson #1</li>
-            <li>Technical or professional lesson #2</li>
-          </ul>
-        </div>
-      </div>
-      <div class="card-footer">
-        <span class="skill-chip">Skill/Tool #1</span>
-        <span class="skill-chip">Skill/Tool #2</span>
-        <span class="skill-chip">Skill/Tool #3</span>
-      </div>
-    -->
     </div>
   </div>
   
@@ -2623,53 +2586,6 @@ Click up up down down left right left right b a for another surprise.
 
     <div class="subtab-panel" id="software-academic">
       
-      <!--
-      <div class="card">
-        <div class="card-top">
-          <div>
-            <div class="card-title">COMING SOON</div>
-            <div class="card-sub">Course / Unit Code</div>
-          </div>
-          <div class="card-period">Semester, Year</div>
-        </div>
-        
-        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
-        <div class="card-details">
-          <div class="sec-sub2">Project description</div>
-
-          <div class="code-window">
-            <div class="code-window-bar">
-              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-              <span class="code-filename">forecast_model.py</span>
-            </div>
-            <div class="code-window-body">
-              <div class="code-line" style="width:55%"></div>
-              <div class="code-line hi" style="width:80%"></div>
-              <div class="code-line" style="width:40%"></div>
-              <div class="code-line" style="width:65%"></div>
-              <div class="code-line hi" style="width:35%"></div>
-              <div class="code-line" style="width:70%"></div>
-            </div>
-          </div>
-          <div class="sec-sub2">Project description</div>
-          <div class="card-cols">
-            <div><div class="col-label acc">Accomplishments</div><ul class="plain"><li>Outcome #1</li></ul></div>
-            <div><div class="col-label">Responsibilities</div><ul class="plain"><li>Responsibility #1</li></ul></div>
-            <div><div class="col-label">Learnings</div><ul class="plain"><li>Learning #1</li></ul></div>
-          </div>
-          <div class="card-footer">
-            <span class="skill-chip">Skill 1</span>
-            <span class="skill-chip">Skill 2</span>
-            <div class="dl-btns">
-              <button class="dl-btn dl-btn-primary">View Project ↗</button>
-              <button class="dl-btn">↓ Presentation</button>
-              <button class="dl-btn">↓ Report</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    -->
-
       <div class="card coming-soon-card">
         <div class="coming-soon-icon">🌣</div>
         <h4>Coming Soon</h4>
@@ -2978,28 +2894,6 @@ Click up up down down left right left right b a for another surprise.
 
   <div class="tab-panel" id="teams">
 
-    <!--
-    <div class="card">
-      <div class="card-top">
-        <div><div class="card-title">Team/Club Project Title #1</div><div class="card-sub">Team or Society Name</div></div>
-        <div class="card-period">Year – Year</div>
-      </div>
-      <div class="sec-sub2">Project description</div>
-      <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
-      <div class="card-details">
-        <div class="card-imgs"><div class="img-slot">Add team photo</div></div>
-        <div class="card-cols">
-          <div><div class="col-label acc">Accomplishments</div><ul class="plain"><li>Team outcome #1</li></ul></div>
-          <div><div class="col-label">Responsibilities</div><ul class="plain"><li>Your role in the team</li></ul></div>
-          <div><div class="col-label">Learnings</div><ul class="plain"><li>Teamwork or technical lesson</li></ul></div>
-        </div>
-        <div class="card-footer">
-          <span class="skill-chip">Collaboration</span>
-          <div class="dl-btns"><button class="dl-btn">↓ Presentation</button><button class="dl-btn">↓ Report</button></div>
-        </div>
-      </div>
-    </div>
-  -->
     <div class="card coming-soon-card">
         <div class="coming-soon-icon">🌣</div>
         <h4>Coming Soon</h4>
@@ -3050,7 +2944,6 @@ Click up up down down left right left right b a for another surprise.
       <div class="contact-label">LinkedIn</div>
       <div class="contact-val">linkedin.com/in/tuong-nguyen05</div>
     </a>
-    <!-- GITHUB CONTACT: wrap this link element in HTML comment tags to hide it; the flex layout re-centres the rest automatically -->
     <a class="contact-card" href="https://github.com/tuongnguyen48205" target="_blank">
       <div class="contact-icon">
         <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" style="fill: currentColor;">
