@@ -428,8 +428,27 @@ Click up up down down left right left right b a for another surprise.
   }
   html[data-theme="light"] nav{background:rgba(250,246,238,.8);}
   .logo{font-weight:700;letter-spacing:1px;color:var(--accent);font-size:1.1rem;display: flex;
+    position:relative;
     align-items: center; white-space:nowrap;flex-shrink:0;}
-  .logo span{color:var(--text-dim);}
+  .logo-path{transition:opacity .3s ease;}
+  .logo-path.path-fade{opacity:0;}
+  .logo-path,.logo-slash{color:var(--text-dim);}
+  .logo-tooltip{
+    position:absolute;right:100%;top:25%;margin-right: 12px;
+    display:flex;align-items:center;gap:6px;
+    font-family:var(--mono);font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--accent);background:var(--panel);border:1px solid var(--line);border-radius:6px;
+    padding:5px 9px;white-space:nowrap;
+    opacity:0;pointer-events:none;transform:translateY(-4px);
+    transition:opacity .2s ease,transform .2s ease;
+  }
+  .logo-tooltip::before{
+    content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;
+    background:var(--accent);box-shadow:0 0 6px 1px var(--accent);
+  }
+  @media(hover:hover) and (pointer:fine){
+    .logo:hover .logo-tooltip{opacity:1;transform:translateY(0);}
+  }
   .logo img {
     width: 53px;
     height: 53px;
@@ -1246,6 +1265,115 @@ Click up up down down left right left right b a for another surprise.
     100%{left:100%;}
   }
 
+  .career-timeline{margin:0 0 40px;position:relative;}
+  .ct-wrap{position:relative;}
+  .ct-wrap::before,.ct-wrap::after{
+    content:'';position:absolute;top:0;bottom:14px;width:28px;z-index:2;pointer-events:none;
+  }
+  .ct-wrap::before{left:0;background:linear-gradient(90deg,var(--bg) 15%,transparent);}
+  .ct-wrap::after{right:0;background:linear-gradient(270deg,var(--bg) 15%,transparent);}
+  .ct-scroll{
+    overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;padding:2px 4px 12px;margin:0 -4px;
+    scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+  }
+  .ct-scroll::-webkit-scrollbar{height:6px;}
+  .ct-scroll::-webkit-scrollbar-track{background:transparent;}
+  .ct-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+  .ct-scroll::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+  .ct-inner{position:relative;width:max-content;min-width:100%;padding:0 6px;}
+  .ct-line-track{position:absolute;top:8px;left:12px;right:12px;height:2px;background:var(--line);border-radius:2px;}
+  .ct-line-fill{
+    position:absolute;top:0;left:0;height:2px;width:0;border-radius:2px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width 1.8s cubic-bezier(.16,1,.3,1) .25s;
+  }
+  .reveal.visible .ct-line-fill{width:100%;}
+  .ct-nodes{display:flex;position:relative;z-index:1;}
+  .ct-node{
+    width:142px;flex:0 0 142px;display:flex;flex-direction:column;align-items:center;
+    text-align:center;cursor:pointer;padding:0 6px;scroll-snap-align:start;
+  }
+  .ct-dot{
+    width:14px;height:14px;border-radius:50%;background:var(--bg-alt);
+    border:2px solid var(--line);margin-bottom:14px;flex-shrink:0;
+    transition:.3s ease;position:relative;z-index:2;
+  }
+  .ct-node.ct-past .ct-dot{border-color:var(--text-dim);}
+  .ct-node.ct-current .ct-dot{
+    border-color:var(--accent);background:var(--accent);
+    box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent),0 0 14px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+  .ct-node.ct-future .ct-dot{border-style:dashed;border-color:var(--accent2);}
+  .ct-node:hover .ct-dot{border-color:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 15%, transparent);}
+  .ct-node:hover .ct-title{color:var(--accent);}
+  .ct-badge{
+    display:inline-flex;align-items:center;gap:6px;font-size:.62rem;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:6px;
+  }
+  .ct-badge .footer-led{width:5px;height:5px;}
+  .ct-title{font-weight:700;font-size:.86rem;line-height:1.35;transition:.25s;}
+  .ct-meta{color:var(--text-dim);font-size:.72rem;margin-top:7px;font-family:var(--mono);}
+  .ct-meta-tag{text-transform:uppercase;letter-spacing:1px;font-size:.64rem;}
+  .ct-node[data-type="proj"] .ct-meta-tag{color:var(--accent2);}
+  .ct-node[data-type="exp"] .ct-meta-tag{color:var(--accent);}
+  .ct-node[data-type="edu"] .ct-meta-tag{color:var(--text-dim);}
+
+  .ct-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:22px;color:var(--text-dim);font-size:.78rem;}
+  .ct-legend-item{display:flex;align-items:center;gap:7px;}
+  .ct-legend-dot{width:10px;height:10px;border-radius:50%;background:var(--bg-alt);border:2px solid var(--line);flex-shrink:0;}
+  .ct-legend-dot.is-past{border-color:var(--text-dim);}
+  .ct-legend-dot.is-current{border-color:var(--accent);background:var(--accent);box-shadow:0 0 8px color-mix(in srgb, var(--accent) 55%, transparent);}
+  .ct-legend-dot.is-future{border-style:dashed;border-color:var(--accent2);}
+  .ct-arrow{
+    position:absolute;top:6px;width:30px;height:30px;border-radius:50%;
+    border:1px solid var(--line);background:var(--bg-alt);color:var(--accent2);
+    display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;
+    cursor:pointer;transition:.25s;z-index:3;padding:0;
+  }
+  .ct-arrow:hover{border-color:var(--accent2);color:var(--accent);}
+  .ct-arrow-left{left:-4px;}
+  .ct-arrow-right{right:-4px;}
+  @media(max-width:820px){
+    .ct-wrap::before,.ct-wrap::after,.ct-arrow{display:none;}
+    .ct-scroll{overflow:visible;padding:0;margin:0;}
+    .ct-inner{width:auto;min-width:0;padding:0;}
+    .ct-line-track{display:none;}
+    .ct-nodes{flex-direction:column;align-items:stretch;gap:0;}
+    .ct-node{
+      width:auto;flex:1 1 auto;flex-direction:row;align-items:flex-start;text-align:left;
+      gap:16px;padding:0 0 26px 0;position:relative;
+    }
+    .ct-node:last-child{padding-bottom:0;}
+    .ct-node:not(:last-child)::before{
+      content:'';position:absolute;left:6px;top:20px;bottom:-12px;width:2px;background:var(--line);
+    }
+    .ct-dot{margin-bottom:0;margin-top:2px;}
+  }
+
+  .testimonials-wrap{margin-top:44px;}
+  .testimonials-wrap h3{font-size:1.1rem;font-weight:700;margin-bottom:6px;}
+  .testimonials-wrap .sec-sub{margin-top:0;margin-bottom:24px;}
+  .testimonial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;}
+  .testimonial-card{
+    background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);
+    padding:24px;transition:.3s ease;position:relative;
+  }
+  .testimonial-card:hover{border-color:var(--accent2);}
+  .testimonial-quote-mark{
+    font-family:Georgia,serif;font-size:2.4rem;line-height:1;color:var(--accent2);
+    opacity:.5;margin-bottom:6px;display:block;
+  }
+  .testimonial-text{color:var(--text-dim);font-size:.88rem;line-height:1.6;font-style:italic;min-height:66px;}
+  .testimonial-author{display:flex;align-items:center;gap:12px;margin-top:20px;}
+  .testimonial-avatar{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;
+    border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;
+    color:var(--text-dim);font-size:.6rem;text-align:center;background:var(--bg-alt);
+  }
+  .testimonial-name{font-weight:700;font-size:.85rem;}
+  .testimonial-role{color:var(--text-dim);font-size:.76rem;margin-top:1px;}
+
   .card-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .col-label{
     font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:8px;
@@ -1345,6 +1473,10 @@ Click up up down down left right left right b a for another surprise.
     align-items:center;gap:10px 20px;
   }
   .footer-copy{grid-column:2;text-align:center;}
+  .footer-left{
+    grid-column:1;justify-self:start;
+    display:flex;align-items:center;
+  }
   .local-time-corner{
     position:fixed;left:10px;bottom:10px;z-index:90;
     display:flex;align-items:center;gap:5px;
@@ -1364,6 +1496,18 @@ Click up up down down left right left right b a for another surprise.
     color:var(--text-dim);font-family:var(--mono);
     white-space:nowrap;
   }
+  .footer-cv-link{
+    font-size:.72rem;letter-spacing:1px;text-transform:uppercase;
+    color:var(--text-dim);font-family:var(--mono);
+    white-space:nowrap;
+    border:1px solid var(--line);border-radius:6px;
+    padding:4px 10px;
+    transition:color .2s ease,border-color .2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .footer-cv-link:hover{color:var(--accent);border-color:var(--accent);}
   .footer-status-val{color:var(--accent);font-variant-numeric:tabular-nums;}
   .footer-led{
     width:6px;height:6px;border-radius:50%;background:var(--accent);
@@ -1686,6 +1830,7 @@ Click up up down down left right left right b a for another surprise.
     footer{padding-top:14px;}
     .footer-row{grid-template-columns:1fr;justify-items:center;}
     .footer-copy{grid-column:1;}
+    .footer-left{grid-column:1;justify-self:center;order:2;}
     .footer-right{display:none;}
     .local-time-corner{display:none;}
     h1.name{white-space:normal;font-size:clamp(1.8rem,8vw,2.6rem);}
@@ -1844,7 +1989,8 @@ Click up up down down left right left right b a for another surprise.
 <nav>
   <a href="#home" class="logo">
     <img src="MainImages/titleiconbar.png" alt="Logo" loading="eager" decoding="async" fetchpriority="high">
-    EE<span>/portfolio</span>
+    EE<span class="logo-slash">/</span><span class="logo-path">portfolio</span>
+    <span class="logo-tooltip">Bus A</span>
   </a>
   <div class="nav-links">
     <div class="nav-menu" id="navMenu">
@@ -2365,6 +2511,48 @@ Click up up down down left right left right b a for another surprise.
       </div>
     </div>
   </div>
+
+  <!--
+  <div class="testimonials-wrap">
+    <h3>What people say</h3>
+    <div class="sec-sub">A few words from supervisors and collaborators I've worked with.</div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">&#8220;</span>
+        <div class="testimonial-text">Add a short quote here from Kai Scientific supervisor about working together.</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">Photo</div>
+          <div>
+            <div class="testimonial-name">Name</div>
+            <div class="testimonial-role">Role · Kai Scientific</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">&#8220;</span>
+        <div class="testimonial-text">Add a short quote here from a Proa Energy colleague or supervisor.</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">Photo</div>
+          <div>
+            <div class="testimonial-name">Name</div>
+            <div class="testimonial-role">Role · Proa Energy</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="testimonial-quote-mark">&#8220;</span>
+        <div class="testimonial-text">Add a short quote here from a university project collaborator or lecturer.</div>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">Photo</div>
+          <div>
+            <div class="testimonial-name">Name</div>
+            <div class="testimonial-role">Role · University of Melbourne</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+-->
 </section>
 
 <div class="bus-link" aria-hidden="true" data-type="capacitor" data-cap="220&#181;F">
@@ -2967,6 +3155,16 @@ Click up up down down left right left right b a for another surprise.
   </svg>
   <div class="footer-spark" aria-hidden="true"></div>
   <div class="footer-row">
+    <div class="footer-left">
+      <a class="footer-cv-link" href="cv.html" target="_blank" rel="noopener">
+        <svg xmlns="http://w3.org" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+        View CV</a>
+    </div>
     <div class="footer-copy">© 2026 Tuong Bao Nguyen – built on a single-line diagram, one <span class="bus">bus</span> at a time. Powered, increasingly, by renewables.</div>
     <div class="footer-right">
       <div class="footer-status"><span class="footer-led"></span><span>Uptime</span><span class="footer-status-val js-uptime-val" id="footerUptime">00:00:00</span></div>
@@ -3047,6 +3245,31 @@ Click up up down down left right left right b a for another surprise.
     }, 60);
   }
 
+  (function(){
+    const scroller = document.getElementById('ctScroll');
+    const leftBtn = document.getElementById('ctScrollLeft');
+    const rightBtn = document.getElementById('ctScrollRight');
+    if(!scroller || !leftBtn || !rightBtn) return;
+    const scrollByAmount = ()=> Math.max(scroller.clientWidth * 0.7, 200);
+    leftBtn.addEventListener('click', ()=> scroller.scrollBy({left:-scrollByAmount(), behavior:'smooth'}));
+    rightBtn.addEventListener('click', ()=> scroller.scrollBy({left:scrollByAmount(), behavior:'smooth'}));
+  })();
+
+  document.querySelectorAll('.ct-node').forEach(node=>{
+    const target = node.dataset.target;
+    const activate = ()=>{
+      if(target === 'about'){
+        document.getElementById('about').scrollIntoView({behavior:'smooth', block:'start'});
+      } else {
+        goToLinkedCard(target);
+      }
+    };
+    node.addEventListener('click', activate);
+    node.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); }
+    });
+  });
+
   window.addEventListener('DOMContentLoaded', ()=>{
     if(location.hash) goToLinkedCard(location.hash.slice(1));
   });
@@ -3062,12 +3285,42 @@ Click up up down down left right left right b a for another surprise.
   });
 
   const sections = busNodes.map(n=>document.getElementById(n.dataset.target));
+
+  const logoPathSpan = document.querySelector('.logo-path');
+  const logoToolTip = document.querySelector('.logo-tooltip');
+  const navPathMap = {
+    home:'portfolio',
+    about:'about me',
+    experience:'experience',
+    projects:'projects',
+    contact:'contact'
+  };
+  const toolTipMap = {
+    home:'Bus A',
+    about:'Bus B',
+    experience:'Bus C',
+    projects:'Bus D',
+    contact:'Bus E'
+  }
+  function updateLogoPath(sectionId){
+    if(!logoPathSpan || !window.matchMedia('(min-width: 701px)').matches) return;
+    const path = navPathMap[sectionId];
+    const path2 = toolTipMap[sectionId];
+    if(!path || logoPathSpan.textContent === path) return;
+    logoPathSpan.classList.add('path-fade');
+    logoToolTip.textContent = path2;
+    setTimeout(()=>{
+      logoPathSpan.textContent = path;
+      logoPathSpan.classList.remove('path-fade');
+    }, 300);
+  }
   const spy = new IntersectionObserver((entries)=>{
     entries.forEach(entry=>{
       if(entry.isIntersecting){
         busNodes.forEach(n=>n.classList.remove('active'));
         const match = document.querySelector(`.bus-node-wrap[data-target="${entry.target.id}"]`);
         if(match) match.classList.add('active');
+        updateLogoPath(entry.target.id);
       }
     });
   },{rootMargin:'-40% 0px -40% 0px',threshold:0});
@@ -4485,10 +4738,16 @@ Click up up down down left right left right b a for another surprise.
   (function(){
     const el = document.getElementById('footerTicker');
     if(!el) return;
-    const phrases = ['All buses closed','No faults detected','Load balanced','Standing by','Telemetry nominal'];
+    const phrases = ['All buses closed','No faults detected','Load balanced','Standing by','Telemetry nominal','GRID FREQ.'];
     let i = 0;
+    function randomFreq(){ return (50 + (Math.random() - 0.5) * 0.12).toFixed(2); }
     function show(){
-      el.textContent = phrases[i];
+      const phrase = phrases[i];
+      if(phrase === 'GRID FREQ.'){
+        el.innerHTML = `GRID FREQ. <span style="color:var(--accent2)">${randomFreq()} Hz</span>`;
+      } else {
+        el.textContent = phrase;
+      }
       el.classList.remove('footer-ticker-fade');
       void el.offsetWidth;
       el.classList.add('footer-ticker-fade');
