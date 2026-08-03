@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuong Nguyen | CV</title>
+<meta name="description" content="Tuong Nguyen — Electrical Engineering CV: education, experience, skills, and projects at a glance.">
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<style>
+  :root{
+    --bg:#0a0e14;
+    --bg-alt:#0f151d;
+    --panel:#131a24;
+    --line:#22303f;
+    --accent:#4cc9f0;
+    --accent2:#f5b942;
+    --text:#e9eef2;
+    --text-dim:#8ea0ad;
+    --radius:14px;
+    --mono:Calibri,'Segoe UI',sans-serif;
+  }
+  html[data-theme="light"]{
+    --bg:#faf6ee; --bg-alt:#f2ebda; --panel:#fffdf7; --line:#e4d8c0;
+    --accent:#6fa3c7; --accent2:#e2a366; --text:#3d3527; --text-dim:#8a7d68;
+  }
+  html[data-theme="blueprint"]{
+    --bg:#0b2947; --bg-alt:#0f3159; --panel:#123a63; --line:#2c5680;
+    --accent:#8fd3ff; --accent2:#ffd166; --text:#eaf4ff; --text-dim:#9fc3e0;
+  }
+  html[data-theme="terminal"]{
+    --bg:#03110a; --bg-alt:#06180f; --panel:#082014; --line:#163a26;
+    --accent:#3dffa0; --accent2:#ffcc66; --text:#dcffe9; --text-dim:#69a687;
+  }
+  html[data-theme="copper"]{
+    --bg:#1a100a; --bg-alt:#231508; --panel:#2b1a0d; --line:#4a2f18;
+    --accent:#e08a3c; --accent2:#ffce54; --text:#f5e6d3; --text-dim:#c9a37c;
+  }
+  html[data-theme="storm"]{
+    --bg:#12121c; --bg-alt:#181826; --panel:#1e1e30; --line:#33334d;
+    --accent:#a78bfa; --accent2:#f472b6; --text:#eae8f7; --text-dim:#9a94b8;
+  }
+  html[data-theme="ember"]{
+    --bg:#1a0b0b; --bg-alt:#230f0f; --panel:#2b1212; --line:#4a1f1f;
+    --accent:#e0503c; --accent2:#ff8a54; --text:#f5dcd3; --text-dim:#c98d7c;
+  }
+  html[data-theme="solar"]{
+    --bg:#1a1608; --bg-alt:#231d09; --panel:#2b230d; --line:#4a3f18;
+    --accent:#e0c23c; --accent2:#ff8c3c; --text:#f5f0d3; --text-dim:#c9bc7c;
+  }
+
+  html{font-size:17px;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{overflow-x:hidden;max-width:100%;}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:Calibri,'Segoe UI',system-ui,-apple-system,sans-serif;
+    line-height:1.6;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  .wrap{max-width:840px;margin:0 auto;padding:48px 24px 90px;}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:40px;}
+  .back-link{color:var(--text-dim);font-size:.9rem;display:flex;align-items:center;gap:6px;transition:.2s;}
+  .back-link:hover{color:var(--accent);}
+  .print-btn{
+    border:1px solid var(--line);background:transparent;color:var(--text-dim);
+    padding:8px 16px;border-radius:20px;font-size:.85rem;cursor:pointer;transition:.2s;
+    font-family:inherit;
+  }
+  .print-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  header.cv-header{
+    display:flex;justify-content:center;align-items:flex-start;gap:3px;
+    flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:30px;
+  }
+  .cv-identity{flex:1;min-width:220px;text-align:center;}
+  .cv-name{font-size:2rem;font-weight:700;letter-spacing:-.5px;}
+  .cv-tagline{color:var(--accent);font-size:1rem;margin-top:6px;}
+  .cv-loc{color:var(--text-dim);font-size:.88rem;margin-top:10px;}
+  .cv-contacts{
+    display:flex;flex-wrap:nowrap;align-items:center;gap:16px;
+    font-size:.85rem;
+  }
+  .cv-contact-item{
+    display:flex;align-items:center;gap:6px;color:var(--text-dim);
+    transition:.2s;white-space:nowrap;
+  }
+  .cv-contact-item svg{flex-shrink:0;}
+  a.cv-contact-item:hover{color:var(--accent);}
+  .cv-badge{cursor:default;}
+  @media(max-width:900px){
+    .cv-contacts{flex-wrap:wrap;justify-content:flex-start;}
+  }
+
+  section.cv-section{margin-bottom:30px;}
+  .cv-h{
+    font-size:.78rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);
+    font-family:var(--mono);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--line);
+  }
+
+  .cv-summary{color:var(--text-dim);font-size:.95rem;max-width:100%;}
+
+  /* Timeline (carried over from the main site, simplified) */
+  .ct-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:18px;color:var(--text-dim);font-size:.78rem;}
+  .ct-legend-item{display:flex;align-items:center;gap:7px;}
+  .ct-legend-dot{width:10px;height:10px;border-radius:50%;background:var(--bg-alt);border:2px solid var(--line);flex-shrink:0;}
+  .ct-legend-dot.is-past{border-color:var(--text-dim);}
+  .ct-legend-dot.is-current{border-color:var(--accent);background:var(--accent);}
+  .ct-legend-dot.is-future{border-style:dashed;border-color:var(--accent2);}
+
+  .ct-wrap{position:relative;}
+  .ct-scroll{overflow-x:auto;overflow-y:visible;padding:10px 4px 14px;margin:0 -4px;scrollbar-width:thin;scrollbar-color:var(--line) transparent;-webkit-overflow-scrolling:touch;}
+  .ct-inner{position:relative;width:max-content;min-width:100%;padding:0 6px;}
+  .ct-nodes{display:flex;position:relative;z-index:1;}
+  .ct-node{
+    width:138px;flex:0 0 138px;display:flex;flex-direction:column;align-items:center;
+    text-align:center;padding:0;
+  }
+  .ct-dot{width:14px;height:14px;border-radius:50%;background:var(--bg-alt);border:2px solid var(--line);margin:0 auto 12px;flex-shrink:0;position:relative;}
+  .ct-dot::before{
+    content:'';position:absolute;top:50%;left:50%;width:138px;height:2px;
+    background:var(--line);
+    transform:translateY(-50%);z-index:-1;
+  }
+  .ct-node:last-child .ct-dot::before{display:none;}
+  .ct-node.ct-past .ct-dot{border-color:var(--text-dim);}
+  .ct-node.ct-current .ct-dot{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb, var(--accent) 18%, transparent);}
+  .ct-node.ct-future .ct-dot{border-style:dashed;border-color:var(--accent2);}
+  .ct-badge{display:inline-flex;align-items:center;gap:6px;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-family:var(--mono);margin-bottom:5px;}
+  .ct-title{font-weight:700;font-size:.84rem;line-height:1.35;}
+  .ct-meta{color:var(--text-dim);font-size:.7rem;margin-top:6px;font-family:var(--mono);}
+  .ct-meta-tag{text-transform:uppercase;letter-spacing:1px;font-size:.62rem;}
+  .ct-node[data-type="proj"] .ct-meta-tag{color:var(--accent2);}
+  .ct-node[data-type="exp"] .ct-meta-tag{color:var(--accent);}
+  .ct-node[data-type="edu"] .ct-meta-tag{color:var(--text-dim);}
+  .ct-node a{display:block;}
+  .ct-node a:hover .ct-title{color:var(--accent);}
+
+  .edu-item, .exp-item{margin-bottom:26px;}
+  .edu-item:last-child, .exp-item:last-child{margin-bottom:0;}
+  .item-link{color:inherit;text-decoration:none;transition:.2s;}
+  .item-link:hover{color:var(--accent);}
+  .row-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline;}
+  .item-title{font-weight:700;font-size:1.02rem;}
+  .item-title-sub{font-weight:400;}
+  .item-period{color:var(--text-dim);font-size:.82rem;font-family:var(--mono);white-space:nowrap;}
+  .item-sub{color:var(--accent);font-size:.88rem;margin-top:2px;}
+  .item-loc{color:var(--text-dim);font-size:.82rem;margin-top:2px;}
+  .item-desc{color:var(--text-dim);font-size:.88rem;margin-top:8px;}
+  ul.cv-bullets{list-style:none;margin-top:10px;color:var(--text-dim);font-size:.88rem;}
+  ul.cv-bullets li{padding-left:16px;position:relative;margin-bottom:5px;}
+  ul.cv-bullets li::before{content:'▹';position:absolute;left:0;color:var(--accent);}
+
+  .skill-tags{color:var(--text-dim);font-size:.88rem;line-height:1.7;}
+  .skill-sep{color:var(--text-dim);}
+  .skill-cat{margin-bottom:10px;}
+  .skill-cat:last-child{margin-bottom:0;}
+  .skill-cat-label{font-weight:700;color:var(--text);font-size:1.02rem;}
+
+  .proj-grid{display:flex;flex-direction:column;gap:20px;}
+  .proj-row-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline;}
+  .proj-title{font-weight:700;font-size:1.02rem;}
+  .proj-period{color:var(--text-dim);font-size:.82rem;font-family:var(--mono);white-space:nowrap;}
+  .proj-desc{color:var(--text-dim);font-size:.82rem;margin-top:6px;}
+
+  footer.cv-footer{border-top:1px solid var(--line);padding-top:22px;margin-top:10px;color:var(--text-dim);font-size:.82rem;text-align:center;}
+
+  @media print{
+    .topbar{display:none;}
+    body{background:#fff;color:#111;}
+    .cv-h{color:#555;border-color:#ccc;}
+    .item-sub{color:#333;}
+    a{color:inherit;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <a class="back-link" href="index.html">&#8592; Back to portfolio</a>
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+
+  <header class="cv-header">
+    <div class="cv-identity">
+      <div class="cv-name">Tuong Bao Nguyen</div>
+    </div>
+    <div class="cv-contacts">
+      <a class="cv-contact-item" href="mailto:tuongnguyen48205@gmail.com">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        tuongnguyen48205@gmail.com
+      </a>
+      <a class="cv-contact-item" href="tel:+61422254311">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        (+61) 0422 254 311
+      </a>
+      <a class="cv-contact-item" href="https://linkedin.com/in/tuong-nguyen05" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.15 1.45-2.15 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        linkedin.com/in/tuong-nguyen05
+      </a>
+      <a class="cv-contact-item" href="https://www.tuongbn.com/" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        tuongbn.com
+      </a>
+      <span class="cv-contact-item cv-badge">
+        <svg xmlns="http://w3.org" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor">
+          <path d="M5 3h1v18H4v-2h1V3zm2 2v8h13l-2-4 2-4H7z"/>
+        </svg>
+        Australian Citizen</span>
+    </div>
+  </header>
+
+  <section class="cv-section">
+    <div class="cv-summary">Electrical engineering student at the University of Melbourne focused on power systems, renewable energy integration, and grid modernisation. Experience spans internships in power systems engineering and R&amp;D electronics, alongside self-directed projects in power system analysis, embedded systems, and control.</div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-h">At a Glance</div>
+    <div class="ct-legend" aria-hidden="true">
+      <span class="ct-legend-item"><span class="ct-legend-dot is-past"></span>Past</span>
+      <span class="ct-legend-item"><span class="ct-legend-dot is-current"></span>Current</span>
+      <span class="ct-legend-item"><span class="ct-legend-dot is-future"></span>Upcoming</span>
+    </div>
+    <div class="ct-wrap">
+      <div class="ct-scroll">
+        <div class="ct-inner">
+          <div class="ct-nodes">
+
+            <div class="ct-node ct-past" data-type="edu">
+              <a href="index.html#about">
+                <div class="ct-dot"></div>
+                <div class="ct-title">Bachelor of Science</div>
+                <div class="ct-meta"><span class="ct-meta-tag">Degree</span> · Nov 2025</div>
+              </a>
+            </div>
+
+            <div class="ct-node ct-past" data-type="proj">
+              <a href="index.html#proj-seed-planter">
+                <div class="ct-dot"></div>
+                <div class="ct-title">Autonomous Seed Planter</div>
+                <div class="ct-meta"><span class="ct-meta-tag">Project</span> · Jul – Oct 2025</div>
+              </a>
+            </div>
+
+            <div class="ct-node ct-past" data-type="proj">
+              <a href="index.html#proj-power-flow-analysis">
+                <div class="ct-dot"></div>
+                <div class="ct-title">Power Flow Analysis</div>
+                <div class="ct-meta"><span class="ct-meta-tag">Project</span> · Nov 2025 – Feb 2026</div>
+              </a>
+            </div>
+
+            <div class="ct-node ct-past" data-type="exp">
+              <a href="index.html#exp-kai-scientific">
+                <div class="ct-dot"></div>
+                <div class="ct-title">Kai Scientific</div>
+                <div class="ct-meta"><span class="ct-meta-tag">Role</span> · Jun – Aug 2026</div>
+              </a>
+            </div>
+
+            <div class="ct-node ct-current" data-type="exp">
+              <a href="index.html#exp-proa-energy">
+                <div class="ct-dot"></div>
+                <div class="ct-badge">Ongoing</div>
+                <div class="ct-title">Proa Energy</div>
+                <div class="ct-meta"><span class="ct-meta-tag">Role</span> · Aug 2026 – Present</div>
+              </a>
+            </div>
+
+            <div class="ct-node ct-future" data-type="edu">
+              <a href="index.html#about">
+                <div class="ct-dot"></div>
+                <div class="ct-title">Master of Electrical Engineering</div>
+                <div class="ct-meta"><span class="ct-meta-tag">Degree</span> · Expected Nov 2027</div>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-h">Education</div>
+
+    <div class="edu-item">
+      <div class="row-top">
+        <div class="item-title"><a class="item-link" href="index.html#about">Master of Electrical Engineering <span class="item-title-sub">— Low-Carbon Power Systems</span></a></div>
+        <div class="item-period">Expected Nov 2027</div>
+      </div>
+      <div class="item-sub">The University of Melbourne</div>
+    </div>
+
+    <div class="edu-item">
+      <div class="row-top">
+        <div class="item-title"><a class="item-link" href="index.html#about">Bachelor of Science <span class="item-title-sub">— Electrical Engineering Systems</span></a></div>
+        <div class="item-period">Nov 2025</div>
+      </div>
+      <div class="item-sub">The University of Melbourne</div>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-h">Experience</div>
+
+    <div class="exp-item">
+      <div class="row-top">
+        <div class="item-title"><a class="item-link" href="index.html#exp-proa-energy">Power Systems Engineering Intern <span class="item-title-sub">— Proa Energy</span></a></div>
+        <div class="item-period">Aug 2026 – Present</div>
+      </div>
+      <div class="item-loc">Melbourne, Australia</div>
+    </div>
+
+    <div class="exp-item">
+      <div class="row-top">
+        <div class="item-title"><a class="item-link" href="index.html#exp-kai-scientific">Electrical Engineering Intern <span class="item-title-sub">— Kai Scientific Limited</span></a></div>
+        <div class="item-period">Jun 2026 – Aug 2026</div>
+      </div>
+      <div class="item-loc">Tatsuno, Japan</div>
+      <ul class="cv-bullets">
+        <li>Reduced power consumption of electronic hardware to minimise heat and improve reliability in high-vacuum environments</li>
+        <li>Built a Python tool to analyse 45GB+ of sensor noise data, supporting signal integrity validation</li>
+        <li>Investigated wide-bandgap semiconductor technology for radiation-tolerant electronic devices</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-h">Projects</div>
+    <div class="proj-grid">
+
+      <div class="proj-item">
+        <div class="proj-row-top">
+          <div class="proj-title"><a class="item-link" href="index.html#proj-power-flow-analysis">Power Flow Analysis &amp; Voltage Stability Assessment</a></div>
+          <div class="proj-period">Nov 2025 – Feb 2026</div>
+        </div>
+        <ul class="cv-bullets">
+          <li>Observed 62%–253% power flow redistribution by evaluating network reliability and system security under contingency events through modeling line outages (N-1 scenarios) and radial network reconfiguration</li>
+          <li>Identified critical voltage regulation issues with 5–10% drops at heavily loaded buses by modelling transformer loading limits, assessing risks to equipment reliability and safe network operation, under increased demand</li>
+          <li>Maintained bus voltage accuracy within &lt;2% deviation under equivalent operating conditions by validating power generation and transmission network performance against pandapower benchmarks</li>
+          <li>Executed stable convergence within 4–5 Newton-Raphson iterations by developing a Python based solver for steady state analysis of multi-bus systems (WSCC 9-bus network) including fault response scenarios</li>
+        </ul>
+      </div>
+
+      <div class="proj-item">
+        <div class="proj-row-top">
+          <div class="proj-title"><a class="item-link" href="index.html#proj-seed-planter">Solar Powered Autonomous Seed Planter</a></div>
+          <div class="proj-period">Jul – Oct 2025</div>
+        </div>
+        <ul class="cv-bullets">
+          <li>Reduced energy losses by 36% while maintaining ±10% voltage regulation under variable solar irradiance by developing adaptive load control strategies for a low-voltage DC electrical network in MATLAB</li>
+          <li>Extended battery runtime by 47%, enabling 6+ hours of off-grid operation, by designing a 3-tier hysteresis-based load shedding algorithm that dynamically balanced power demand with battery capacity</li>
+          <li>Improved renewable power system reliability across 30+ simulated irradiance cycles by optimising power distribution, load balancing, and energy management under fluctuating generation conditions</li>
+          <li>Led a team of 4 to develop a solar-powered embedded system achieving 11+ seeds/minute by integrating battery storage, voltage regulation, and Arduino-based electromechanical control</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cv-section">
+    <div class="cv-h">Skills</div>
+    <div class="skill-cat">
+      <span class="skill-cat-label">Electrical &amp; Power Systems:</span>
+      <span class="skill-tags"><span class="skill-tag">Power System Analysis</span> · <span class="skill-tag">Circuit Analysis</span> · <span class="skill-tag">Power Distribution Fundamentals</span> · <span class="skill-tag">Renewable Energy</span></span>
+    </div>
+    <div class="skill-cat">
+      <span class="skill-cat-label">Programming Languages:</span>
+      <span class="skill-tags"><span class="skill-tag">Python</span> · <span class="skill-tag">C</span> · <span class="skill-tag">Verilog</span></span>
+    </div>
+    <div class="skill-cat">
+      <span class="skill-cat-label">Engineering Tools:</span>
+      <span class="skill-tags"><span class="skill-tag">MATLAB</span> · <span class="skill-tag">Simulink</span> · <span class="skill-tag">LTSpice</span> · <span class="skill-tag">PowerWorld</span> · <span class="skill-tag">Microcontrollers</span> · <span class="skill-tag">KiCad</span> · <span class="skill-tag">Quartus</span> · <span class="skill-tag">Git</span> · <span class="skill-tag">FPGAs</span></span>
+    </div>
+    <div class="skill-cat">
+      <span class="skill-cat-label">Testing &amp; Instrumentation:</span>
+      <span class="skill-tags"><span class="skill-tag">Circuit Debugging</span> · <span class="skill-tag">Electrical Fault Diagnosis</span> · <span class="skill-tag">Oscilloscope</span> · <span class="skill-tag">Multimeter</span> · <span class="skill-tag">Signal/Network Analysis</span></span>
+    </div>
+  </section>
+
+  <footer class="cv-footer">
+    Tuong Bao Nguyen · <a href="mailto:tuongnguyen48205@gmail.com">tuongnguyen48205@gmail.com</a> · <a href="index.html">Back to full portfolio</a>
+  </footer>
+
+</div>
+
+<script>
+
+  try{
+    const saved = localStorage.getItem('theme_preference');
+    if(saved && saved !== 'dark'){
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+  }catch(e){}
+</script>
+
+</body>
+</html>
