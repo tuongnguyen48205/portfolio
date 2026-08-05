@@ -1235,6 +1235,14 @@ Click up up down down left right left right b a for another surprise.
   @media(prefers-reduced-motion:reduce){
     .card-imgs.is-carousel .carousel-track{animation:none;}
   }
+  .carousel-imgs-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .carousel-count{
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    color:var(--text-dim);font-size:.68rem;font-weight:600;
+    padding:3px 9px;border-radius:20px;border:1px solid var(--line);
+    letter-spacing:.02em;
+  }
+  .carousel-imgs-wrap .card-imgs.is-carousel{width:100%;}
 
   .lightbox-overlay{
     position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);
@@ -2856,6 +2864,8 @@ Click up up down down left right left right b a for another surprise.
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig4_voltage_stability_scan.png" alt="Voltage Stability" loading="lazy" decoding="async"></div>
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig5_transformer_loading.png" alt="Transformer Loading" loading="lazy" decoding="async"></div>
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig6_meshed_vs_radial_losses.png" alt="Redistribution" loading="lazy" decoding="async"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig3_n1_redistribution.png" alt="N1 Redistribution" loading="lazy" decoding="async"></div>
+            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig7_fault_currents.png" alt="fault currents" loading="lazy" decoding="async"></div>
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/resultslog.jpg" alt="Results log" loading="lazy" decoding="async"></div>
           </div>
           <div class="card-cols">
@@ -4829,6 +4839,16 @@ Click up up down down left right left right b a for another surprise.
       if(slots.length <= 6) return;
 
       container.classList.add('is-carousel');
+      const wrap = document.createElement('div');
+      wrap.className = 'carousel-imgs-wrap';
+      container.parentNode.insertBefore(wrap, container);
+
+      const badge = document.createElement('div');
+      badge.className = 'carousel-count';
+      badge.textContent = `${slots.length} images`;
+      wrap.appendChild(badge);
+      wrap.appendChild(container);
+
       const track = document.createElement('div');
       track.className = 'carousel-track';
 
