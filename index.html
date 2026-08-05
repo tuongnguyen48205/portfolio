@@ -1188,10 +1188,10 @@ Click up up down down left right left right b a for another surprise.
   .card-toggle-btn .chevron{display:inline-block;transition:transform .3s ease;font-size:.7rem;}
   .card.expanded .card-toggle-btn .chevron{transform:rotate(180deg);}
   .card-details{
-    max-height:0;overflow:hidden;opacity:0;padding:4px;margin:0 -4px;
+    max-height:0;overflow:hidden;opacity:0;padding:4px;margin:-4px;
     transition:max-height .45s ease,opacity .3s ease,margin-top .45s ease;
   }
-  .card.expanded .card-details{max-height:2200px;opacity:1;margin-top:16px;}
+  .card.expanded .card-details{max-height:2200px;opacity:1;margin-top:0px;}
 
   .card-main-img{
     position:absolute;top:calc(100% + 8px);right:0;z-index:1;
@@ -1246,7 +1246,7 @@ Click up up down down left right left right b a for another surprise.
     padding:3px 9px;border-radius:20px;border:1px solid var(--line);
     letter-spacing:.02em;
   }
-  .carousel-imgs-wrap .card-imgs.is-carousel{width:100%;}
+  .carousel-imgs-wrap .card-imgs{width:100%;}
 
   .lightbox-overlay{
     position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);
@@ -4933,19 +4933,21 @@ Click up up down down left right left right b a for another surprise.
     const PX_PER_SECOND = 40;
     document.querySelectorAll('.card-imgs').forEach(container=>{
       const slots = Array.from(container.children).filter(el=>el.classList.contains('img-slot'));
-      if(slots.length <= 6) return;
+      if(!slots.length) return;
 
-      container.classList.add('is-carousel');
       const wrap = document.createElement('div');
       wrap.className = 'carousel-imgs-wrap';
       container.parentNode.insertBefore(wrap, container);
 
       const badge = document.createElement('div');
       badge.className = 'carousel-count';
-      badge.textContent = `${slots.length} images`;
+      badge.textContent = `${slots.length} image${slots.length === 1 ? '' : 's'}`;
       wrap.appendChild(badge);
       wrap.appendChild(container);
 
+      if(slots.length <= 6) return;
+
+      container.classList.add('is-carousel');
       const track = document.createElement('div');
       track.className = 'carousel-track';
 
