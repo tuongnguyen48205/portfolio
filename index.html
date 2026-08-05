@@ -420,7 +420,7 @@ Click up up down down left right left right b a for another surprise.
   nav{
     position:fixed;top:0;left:0;right:0;z-index:100;
     display:flex;justify-content:space-between;align-items:center;
-    padding:10px 8%;
+    padding:10px 6.5%;
     background:rgba(10,14,20,.75);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
@@ -448,6 +448,9 @@ Click up up down down left right left right b a for another surprise.
   }
   @media(hover:hover) and (pointer:fine){
     .logo:hover .logo-tooltip{opacity:1;transform:translateY(0);}
+  }
+  @media(max-width:700px){
+    .logo-tooltip{display:none;}
   }
   .logo img {
     width: 53px;
@@ -507,7 +510,7 @@ Click up up down down left right left right b a for another surprise.
   .nav-toggle.open .nav-toggle-bar:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
   @media(max-width:700px){
-    nav{padding-left:6%;padding-right:6%;}
+    nav{padding-left:3.5%;padding-right:3.5%;}
     .logo img{width:44px;height:44px;margin-right:8px;}
     .logo{font-size:1rem;}
     .nav-toggle{display:flex;}
@@ -1644,6 +1647,9 @@ Click up up down down left right left right b a for another surprise.
     .reveal{opacity:1;transform:none;transition:none;}
   }
 
+  #cursorCrosshairH,#cursorCrosshairV,#cursorDotCenter,#cursorReadout,#scopeCursor,#cursorDot,#cursorRing,#cursorBreaker,#cursorFuse{
+    display:none;
+  }
   @media(hover:hover) and (pointer:fine){
     html:not([data-cursor="none"]) *{cursor:none;}
     html[data-cursor="none"] a,
@@ -3421,7 +3427,7 @@ Click up up down down left right left right b a for another surprise.
     contact:'Bus E'
   }
   function updateLogoPath(sectionId){
-    if(!logoPathSpan || !window.matchMedia('(min-width: 701px)').matches) return;
+    if(!logoPathSpan) return;
     const path = navPathMap[sectionId];
     const path2 = toolTipMap[sectionId];
     if(!path || logoPathSpan.textContent === path) return;
@@ -4571,6 +4577,23 @@ Click up up down down left right left right b a for another surprise.
       busSourceEl.addEventListener('mouseleave', () => setHovering(false));
     }
 
+    window.addEventListener('wheel', (e) => {
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const busNode = el ? el.closest('.bus-node-wrap') : null;
+      const busSrc = el ? el.closest('.bus-source') : null;
+      const link = el ? el.closest('a, button') : null;
+      if (busNode) {
+        const letter = busNode.querySelector('.bus-letter');
+        setHovering(true, letter ? letter.textContent.trim() : null, 'bus');
+      } else if (busSrc) {
+        setHovering(true, 'SRC', 'source');
+      } else if (link) {
+        setHovering(true, null, 'logic');
+      } else {
+        setHovering(false);
+      }
+    }, {passive:true});
+
     setInterval(() => {
       if (window.__lightboxOpen) {
         readout.textContent = "UNZOOM";
@@ -4690,6 +4713,12 @@ Click up up down down left right left right b a for another surprise.
       scopeCursor.classList.toggle('active', hovering);
     }, {passive:true});
 
+    window.addEventListener('wheel', (e)=>{
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      hovering = !!(el && el.closest(interactiveSelector));
+      scopeCursor.classList.toggle('active', hovering);
+    }, {passive:true});
+
     document.addEventListener('mousedown', ()=>{
       if(getCursorMode() !== 'oscilloscope') return;
       for(let i = 0; i < 6; i++) buffer[buffer.length - 1 - i] = (i % 2 === 0 ? 14 : -14);
@@ -4742,6 +4771,16 @@ Click up up down down left right left right b a for another surprise.
       });
     });
 
+    window.addEventListener('wheel', (e)=>{
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const isLink = !!(el && el.closest('a, button'));
+      const isBus = !!(el && el.closest('.bus-source, .bus-node-wrap'));
+      dot.classList.toggle('hovering', isLink);
+      ring.classList.toggle('hovering', isLink);
+      dot.classList.toggle('bus-hover', isBus);
+      ring.classList.toggle('bus-hover', isBus);
+    }, {passive:true});
+
     document.addEventListener('mousedown', (e)=>{
       if(getCursorMode() !== 'ring') return;
       const ripple = document.createElement('div');
@@ -4789,6 +4828,11 @@ Click up up down down left right left right b a for another surprise.
       t.addEventListener('mouseenter', ()=>el.classList.add('hovering'));
       t.addEventListener('mouseleave', ()=>el.classList.remove('hovering'));
     });
+
+    window.addEventListener('wheel', (e)=>{
+      const target = document.elementFromPoint(e.clientX, e.clientY);
+      el.classList.toggle('hovering', !!(target && target.closest('a, button')));
+    }, {passive:true});
 
     document.addEventListener('mousedown', (e)=>{
       if(getCursorMode() !== mode) return;
