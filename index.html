@@ -1823,6 +1823,44 @@ Click up up down down left right left right b a for another surprise.
       60%{opacity:1;transform:translateY(-50%) scaleX(.15);}
       100%{opacity:.35;transform:translateY(-50%) scaleX(.15);}
     }
+
+    html.img-zoom-hover .img-slot,
+    html.img-zoom-hover .img-slot *,
+    html.img-zoom-hover .peek-slide.d0,
+    html.img-zoom-hover .peek-slide.d0 *{
+      cursor:zoom-in !important;
+    }
+    html.img-zoom-hover #cursorCrosshairH,
+    html.img-zoom-hover #cursorCrosshairV,
+    html.img-zoom-hover #cursorDotCenter,
+    html.img-zoom-hover #cursorDot,
+    html.img-zoom-hover #cursorRing,
+    html.img-zoom-hover #cursorBreaker,
+    html.img-zoom-hover #cursorFuse{
+      opacity:0 !important;
+    }
+    html.img-zoom-hover #scopeTrace{opacity:0;}
+    #scopeZoomText{
+      position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+      font-family:var(--mono);font-size:.6rem;font-weight:700;letter-spacing:1px;
+      color:var(--accent2);
+    }
+    html.img-zoom-hover #scopeZoomText{display:flex;}
+    html.lightbox-open .lightbox-overlay,
+    html.lightbox-open .lightbox-overlay *{
+      cursor:zoom-out !important;
+    }
+    html.lightbox-open #cursorCrosshairH,
+    html.lightbox-open #cursorCrosshairV,
+    html.lightbox-open #cursorDotCenter,
+    html.lightbox-open #cursorDot,
+    html.lightbox-open #cursorRing,
+    html.lightbox-open #cursorBreaker,
+    html.lightbox-open #cursorFuse{
+      opacity:0 !important;
+    }
+    html.lightbox-open #scopeTrace{opacity:0;}
+    html.lightbox-open #scopeZoomText{display:flex;}
   }
   @keyframes cursor-ripple{
     from{width:10px;height:10px;opacity:.8;}
@@ -1894,6 +1932,7 @@ Click up up down down left right left right b a for another surprise.
 <div id="scopeCursor">
   <canvas id="scopeTrace" width="64" height="32"></canvas>
   <div class="scope-corner" id="scopeCorner"></div>
+  <div id="scopeZoomText">ZOOM</div>
 </div>
 
 <div id="cursorDot"></div>
@@ -2194,6 +2233,15 @@ Click up up down down left right left right b a for another surprise.
             <polyline points="3 3 3 8 8 8"></polyline>
             <path d="M12 7v5l4 2"></path>
           </svg>31 July, 2026</time></p>
+      </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Uptime</span>
+        <span class="footer-views">
+          <svg xmlns="http://w3.org" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="js-uptime-val" id="settingsUptime">00:00:00</span></span>
       </div>
     </div>
 
@@ -4138,13 +4186,22 @@ Click up up down down left right left right b a for another surprise.
   const CLOSE_GUARD_MS = 350;
   let lightboxOpenedAt = 0;
 
+  window.__lightboxOpen = false;
+  function setLightboxOpenState(isOpen){
+    window.__lightboxOpen = isOpen;
+    document.documentElement.classList.toggle('lightbox-open', isOpen);
+    const scopeZoomTextEl = document.getElementById('scopeZoomText');
+    if(scopeZoomTextEl) scopeZoomTextEl.textContent = isOpen ? 'UNZOOM' : 'ZOOM';
+  }
   function openLightbox(html){
     lightboxContent.innerHTML = html;
     lightboxOverlay.classList.add('active');
     lightboxOpenedAt = Date.now();
+    setLightboxOpenState(true);
   }
   function closeLightbox(){
     lightboxOverlay.classList.remove('active');
+    setLightboxOpenState(false);
   }
 
   function makeTappable(el, getHtml){
@@ -4370,6 +4427,24 @@ Click up up down down left right left right b a for another surprise.
   })();
 
   (function(){
+    const IMG_SELECTOR = '.img-slot, .peek-slide.d0';
+    function imgTarget(el){ return el && el.closest && el.closest(IMG_SELECTOR); }
+    window.__imgZoomHover = false;
+    document.addEventListener('mouseover', (e)=>{
+      if(imgTarget(e.target)){
+        window.__imgZoomHover = true;
+        document.documentElement.classList.add('img-zoom-hover');
+      }
+    });
+    document.addEventListener('mouseout', (e)=>{
+      if(imgTarget(e.target) && !imgTarget(e.relatedTarget)){
+        window.__imgZoomHover = false;
+        document.documentElement.classList.remove('img-zoom-hover');
+      }
+    });
+  })();
+
+  (function(){
     const hLine = document.getElementById('cursorCrosshairH');
     const vLine = document.getElementById('cursorCrosshairV');
     const centerDot = document.getElementById('cursorDotCenter');
@@ -4482,6 +4557,16 @@ Click up up down down left right left right b a for another surprise.
     }
 
     setInterval(() => {
+      if (window.__lightboxOpen) {
+        readout.textContent = "UNZOOM";
+        return;
+      }
+
+      if (window.__imgZoomHover) {
+        readout.textContent = "ZOOM";
+        return;
+      }
+
       if (mousetracker) {
         readout.textContent = `HOLD: ${currentVoltage}V`;
         return; 
