@@ -1145,7 +1145,7 @@ Click up up down down left right left right b a for another surprise.
   .card.expanded::before,.card.expanded::after{opacity:1;width:16px;height:16px;}
   .card.expanded::after{transition-delay:.08s;}
   .card:hover::before,.card:hover::after{border-color:var(--accent);}
-  .card-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;cursor:pointer;}
   .card-title{font-size:1.25rem;font-weight:700;}
   .card-sub{color:var(--accent);font-size:.85rem;margin-top:4px;}
   
@@ -3307,6 +3307,17 @@ Click up up down down left right left right b a for another surprise.
       btn.querySelector('.btn-label').textContent = nowExpanded ? 'Less details' : 'More details';
       if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
     });
+  });
+
+  document.addEventListener('click', (e)=>{
+    if(e.target.closest('a, button, input, textarea, select, .img-slot, .peek-slide, .carousel-imgs-wrap, .card-details')) return;
+    const card = e.target.closest('.card');
+    if(!card || card.classList.contains('expanded')) return;
+    const toggleBtn = card.querySelector(':scope > .card-toggle-btn');
+    if(!toggleBtn) return;
+    card.classList.add('expanded');
+    toggleBtn.querySelector('.btn-label').textContent = 'Less details';
+    if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
   });
 
   function goToLinkedCard(id){
