@@ -1165,7 +1165,7 @@ Click up up down down left right left right b a for another surprise.
   }
   .card-company-link:hover{text-decoration:underline;}
   .card-location{color:var(--text-dim);font-size:.85rem;display:flex;align-items:center;gap:5px;}
-  .card-period{color:var(--text-dim);font-size:.85rem;white-space:nowrap;text-align:right;}
+  .card-period{color:var(--text-dim);font-size:.85rem;white-space:nowrap;text-align:right;position:relative;}
 
   @keyframes cardHighlightFlash{
     0%{box-shadow:0 0 0 0 transparent;border-color:var(--line);}
@@ -1189,6 +1189,18 @@ Click up up down down left right left right b a for another surprise.
   }
   .card.expanded .card-details{max-height:2200px;opacity:1;margin-top:16px;}
 
+  .card-main-img{
+    position:absolute;top:calc(100% + 8px);right:0;z-index:1;
+    width:170px;height:116px;border-radius:8px;overflow:hidden;
+    border:1px solid var(--line);opacity:1;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  .card-main-img img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card.expanded .card-main-img{opacity:0;transform:translateY(-4px);pointer-events:none;}
+  @media(max-width:700px){
+    .card-main-img{display:none;}
+  }
+
   .card-imgs{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
   .img-slot{
   width:140px;height:100px;border-radius:8px;border:1px dashed var(--line);
@@ -1203,6 +1215,26 @@ Click up up down down left right left right b a for another surprise.
   min-width:0;min-height:0;display:block;transition:transform .35s ease;
   }
   .img-slot:hover img{transform:scale(1.06);}
+
+  .card-imgs.is-carousel{
+    flex-wrap:nowrap;overflow:hidden;position:relative;
+    padding:6px 0;margin-top:-6px;margin-bottom:12px;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
+    mask-image:linear-gradient(90deg,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);
+  }
+  .card-imgs.is-carousel .carousel-track{
+    display:flex;gap:12px;width:max-content;
+    animation:carouselScroll linear infinite;
+  }
+  .card-imgs.is-carousel .img-slot{flex:0 0 auto;}
+  .card-imgs.is-carousel:hover .carousel-track{animation-play-state:paused;}
+  @keyframes carouselScroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .card-imgs.is-carousel .carousel-track{animation:none;}
+  }
 
   .lightbox-overlay{
     position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);
@@ -2460,7 +2492,11 @@ Click up up down down left right left right b a for another surprise.
         <div class="sec-sub2">R&D of Ultra-High Vacuum Electronics</div>
       </div>
     </div>
-    <div class="card-period">Jun 2026 – Aug 2026</div>
+    <div class="card-period">Jun 2026 – Aug 2026
+      <div class="card-main-img">
+        <img src="Internships/KaiScientific/Kai Team Photo.jpg" alt="Team Photo" loading="lazy" decoding="async">
+      </div>
+    </div>
   </div>
 
   <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
@@ -4783,6 +4819,35 @@ Click up up down down left right left right b a for another surprise.
       } else {
         konamiIndex = (key === konamiCode[0]) ? 1 : 0;
       }
+    });
+  })();
+
+  (function(){
+    const PX_PER_SECOND = 40;
+    document.querySelectorAll('.card-imgs').forEach(container=>{
+      const slots = Array.from(container.children).filter(el=>el.classList.contains('img-slot'));
+      if(slots.length <= 6) return;
+
+      container.classList.add('is-carousel');
+      const track = document.createElement('div');
+      track.className = 'carousel-track';
+
+      slots.forEach(slot=>track.appendChild(slot));
+      const clones = slots.map(slot=>{
+        const clone = slot.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        return clone;
+      });
+      clones.forEach(clone=>track.appendChild(clone));
+      container.appendChild(track);
+
+      const halfWidth = track.scrollWidth / 2;
+      const duration = Math.max(halfWidth / PX_PER_SECOND, 10);
+      track.style.animationDuration = `${duration}s`;
+
+      clones.forEach(clone=>{
+        makeTappable(clone, ()=>clone.innerHTML);
+      });
     });
   })();
 </script>
