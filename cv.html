@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('theme_preference');
+    if (t && t !== 'dark') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tuong Nguyen | CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="description" content="Tuong Nguyen — Electrical Engineering CV: education, experience, skills, and projects at a glance.">
 <link rel="icon" type="image/png" href="MainImages/titleicon.png">
 <style>
@@ -60,15 +71,30 @@
 
   .wrap{max-width:840px;margin:0 auto;padding:48px 24px 90px;}
 
-  .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:40px;}
-  .back-link{color:var(--text-dim);font-size:.9rem;display:flex;align-items:center;gap:6px;transition:.2s;}
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+    padding:14px 6%;background:rgba(10,14,20,.86);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-title{
+    font-family:'JetBrains Mono','Courier New',monospace;font-size:.68rem;letter-spacing:1.5px;
+    color:var(--text-dim);text-transform:uppercase;position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);white-space:nowrap;
+  }
+  .back-link{
+    font-family:'JetBrains Mono','Courier New',monospace;font-size:.72rem;letter-spacing:.5px;
+    color:var(--text-dim);display:flex;align-items:center;gap:6px;transition:.2s;
+  }
+  .back-link .arrow{position:relative;top:-2px;}
   .back-link:hover{color:var(--accent);}
   .print-btn{
-    border:1px solid var(--line);background:transparent;color:var(--text-dim);
-    padding:8px 16px;border-radius:20px;font-size:.85rem;cursor:pointer;transition:.2s;
-    font-family:inherit;
+    font-family:'JetBrains Mono','Courier New',monospace;font-size:.68rem;color:var(--accent2);
+    border:1px solid var(--line);background:transparent;
+    padding:6px 12px;border-radius:5px;cursor:pointer;transition:border-color .2s ease,color .2s ease;
+    white-space:nowrap;
   }
-  .print-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .print-btn:hover{border-color:var(--accent2);}
 
   header.cv-header{
     display:flex;justify-content:center;align-items:flex-start;gap:3px;
@@ -91,6 +117,14 @@
   .cv-badge{cursor:default;}
   @media(max-width:900px){
     .cv-contacts{flex-wrap:wrap;justify-content:flex-start;}
+  }
+  @media(max-width:600px){
+    .topbar-title{display:none;}
+    .topbar{padding:12px 4%;}
+  }
+  @media(max-width:420px){
+    .cv-name{font-size:1.65rem;}
+    .cv-contacts{justify-content:center;}
   }
 
   section.cv-section{margin-bottom:30px;}
@@ -177,12 +211,13 @@
 </head>
 <body>
 
-<div class="wrap">
+<div class="topbar">
+  <a class="back-link" href="index.html"><span class="arrow">&#8592;</span> Back to portfolio</a>
+  <div class="topbar-title">CV</div>
+  <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+</div>
 
-  <div class="topbar">
-    <a class="back-link" href="index.html">&#8592; Back to portfolio</a>
-    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
-  </div>
+<div class="wrap">
 
   <header class="cv-header">
     <div class="cv-identity">
@@ -342,7 +377,7 @@
           <li>Observed 62%–253% power flow redistribution by evaluating network reliability and system security under contingency events through modeling line outages (N-1 scenarios) and radial network reconfiguration</li>
           <li>Identified critical voltage regulation issues with 5–10% drops at heavily loaded buses by modelling transformer loading limits, assessing risks to equipment reliability and safe network operation, under increased demand</li>
           <li>Maintained bus voltage accuracy within &lt;2% deviation under equivalent operating conditions by validating power generation and transmission network performance against pandapower benchmarks</li>
-          <li>Executed stable convergence within 4–5 Newton-Raphson iterations by developing a Python based solver for steady state analysis of multi-bus systems (WSCC 9-bus network) including fault response scenarios</li>
+          <li>Executed stable convergence within 4–8 Newton-Raphson iterations by developing a Python based solver for steady state analysis of multi-bus systems (WSCC 9-bus network) including fault response scenarios</li>
         </ul>
       </div>
 
@@ -387,16 +422,6 @@
   </footer>
 
 </div>
-
-<script>
-
-  try{
-    const saved = localStorage.getItem('theme_preference');
-    if(saved && saved !== 'dark'){
-      document.documentElement.setAttribute('data-theme', saved);
-    }
-  }catch(e){}
-</script>
 
 </body>
 </html>
