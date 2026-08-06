@@ -1154,6 +1154,17 @@ Click up up down down left right left right b a for another surprise.
   .card:hover::before,.card:hover::after{border-color:var(--accent);}
   .card-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;cursor:pointer;}
   .card-title{font-size:1.25rem;font-weight:700;}
+  .card-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+  .featured-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    font-family:var(--mono);font-size:.62rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+    color:var(--accent2);border:1px solid var(--accent2);border-radius:20px;padding:3px 10px 3px 8px;
+    background:color-mix(in srgb, var(--accent2) 10%, transparent);white-space:nowrap;
+    transition:opacity .25s ease,transform .25s ease;
+    transform:translateY(12px);
+  }
+  .featured-badge svg{width:11px;height:11px;fill:var(--accent2);}
+  .card.expanded .featured-badge{opacity:0;transform:translateY(12px) translateX(6px);pointer-events:none;}
   .card-sub{color:var(--accent);font-size:.85rem;margin-top:4px;}
   
   .card-top-left{display:flex;gap:14px;align-items:flex-start;}
@@ -2912,7 +2923,10 @@ Click up up down down left right left right b a for another surprise.
           <div class="card-period">Nov 2025 – Feb 2026</div>
         </div>
         <div class="sec-sub2">To better understand the operation and reliability of electrical transmission networks, I developed a Python-based Newton-Raphson power flow solver capable of building and analysing custom multi-bus systems using data structures. By modelling generators, transmission lines, transformers, and loads, the solver evaluates power flow, voltage stability, and network performance under normal operation and N-1 contingency scenarios, providing insight into the secure operation of modern power systems.</div>
-        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-toggle-row">
+          <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+          <span class="featured-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.2l7.1-.6z"/></svg>Featured</span>
+        </div>
         <div class="card-details">
 
           <div class="card-imgs">
@@ -2928,7 +2942,7 @@ Click up up down down left right left right b a for another surprise.
           </div>
           <div class="card-cols">
             <div><div class="col-label acc">Accomplishments</div><ul class="plain">
-              <li>Developed a custom Newton-Raphson power flow solver capable of analysing multi-bus transmission networks with reliable convergence within <b>4–5 iterations</b></li>
+              <li>Developed a custom Newton-Raphson power flow solver capable of analysing multi-bus transmission networks with reliable convergence within <b>4–8 iterations</b></li>
               <li>Identified <b>5–10% voltage drops</b> at heavily loaded buses by modelling transformer loading under increased demand, and <b>62%–253% power flow redistribution</b> under N-1 scenarios</li>
               <li>Validated simulation results against pandapower, achieving bus voltage within <b>2% of benchmark solutions</b></li>
             </ul></div>
@@ -2952,6 +2966,7 @@ Click up up down down left right left right b a for another surprise.
             <div class="dl-btns">
               <a href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download class="dl-btn">↓ Project</a>
               <a href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download class="dl-btn">↓ Report</a>
+              <a href="power-flow-analysis.html" class="dl-btn dl-btn-primary">Full Write-up ↗</a>
             </div>
           </div>
         </div>
@@ -2963,7 +2978,10 @@ Click up up down down left right left right b a for another surprise.
           <div class="card-period">Jul 2025 – Oct 2025</div>
         </div>
         <div class="sec-sub2">Designed and developed a solar-powered autonomous seed planter that demonstrates the integration of renewable energy, battery storage, and embedded control for off-grid operation. The project focused on low voltage DC power system design, energy management, and adaptive load control to maintain reliable performance under varying solar irradiance. Using Power system modelling and Arduino-based control for electromechanical actuation, the system simulated key principles of distributed energy resources, including energy storage, voltage regulation, and efficient power distribution in standalone renewable energy systems.</div>
-        <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+        <div class="card-toggle-row">
+          <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+          <span class="featured-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.2l7.1-.6z"/></svg>Featured</span>
+        </div>
         <div class="card-details">
           <div class="card-imgs">
             <div class="img-slot"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplanter front view.png" alt="Solar Planter Front View" loading="lazy" decoding="async"></div>
@@ -3031,12 +3049,12 @@ Click up up down down left right left right b a for another surprise.
           </div>
           <div class="card-cols">
             <div><div class="col-label acc">Accomplishments</div><ul class="plain">
-              <li>Designed and developed an embedded feeding system supporting automatic scheduling, manual feeding, with configurable feeding times and options optimised for each pet</li>
               <li>Achieved <b>±2 g dispensing accuracy</b> across more than <b>50 testing cycles</b> using a load cell feedback system and servo controlled food dispensing</li>
               <li>Delivered a fully integrated prototype combining embedded software, electronic hardware, and a custom SolidWorks designed enclosure through successful team collaboration</li>
+              <li>Benchmarked against the market at an estimated <b>$50 prototype cost</b>, undercutting comparable feeders (<b>$60&ndash;$150+</b>) while adding features like wet food reminders absent from competing products</li>
             </ul></div>
             <div><div class="col-label">Responsibilities</div><ul class="plain">
-              <li>Programmed the Arduino-based finite state machine (FSM) in C to manage feeding schedules, user interaction, sensor inputs, and actuator control</li>
+              <li>Programmed the Arduino-based finite state machine (FSM) in C to manage feeding schedules, user interaction, sensor inputs, and actuator control, supporting multiple feeding modes</li>
               <li>Integrated hardware including the servo motor, load cell, LCD display, keypad, buzzer, and supporting circuitry</li>
               <li>Assisted in assembling the mechanical enclosure incorporating laser-cut components for reliable hardware mounting while assisting with system testing and troubleshooting</li>
             </ul></div>
@@ -3323,7 +3341,7 @@ Click up up down down left right left right b a for another surprise.
     if(e.target.closest('a, button, input, textarea, select, .img-slot, .peek-slide, .carousel-imgs-wrap, .card-details')) return;
     const card = e.target.closest('.card');
     if(!card || card.classList.contains('expanded')) return;
-    const toggleBtn = card.querySelector(':scope > .card-toggle-btn');
+    const toggleBtn = card.querySelector('.card-toggle-btn');
     if(!toggleBtn) return;
     card.classList.add('expanded');
     toggleBtn.querySelector('.btn-label').textContent = 'Less details';
