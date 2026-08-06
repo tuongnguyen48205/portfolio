@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('theme_preference');
+    if (t && t !== 'dark') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuong N | Power Flow Analysis &amp; Voltage Stability Assessment</title>
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<meta name="description" content="A from-scratch Newton-Raphson AC power flow solver applied to N-1 contingency screening, meshed/radial reconfiguration, voltage stability, and transformer thermal loading on the WSCC 9-bus transmission network.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;
+  --bg-alt:#0f151d;
+  --panel:#131a24;
+  --line:#22303f;
+  --accent:#4cc9f0;
+  --accent2:#f5b942;
+  --red:#ef6461;
+  --green:#5fb86e;
+  --text:#e9eef2;
+  --text-dim:#8ea0ad;
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --serif:'Newsreader',Georgia,serif;
+}
+html[data-theme="light"]{
+  --bg:#faf6ee;--bg-alt:#f2ebda;--panel:#fffdf7;--line:#e4d8c0;
+  --accent:#6fa3c7;--accent2:#e2a366;--text:#3d3527;--text-dim:#8a7d68;
+}
+html[data-theme="blueprint"]{
+  --bg:#0b2947;--bg-alt:#0f3159;--panel:#123a63;--line:#2c5680;
+  --accent:#8fd3ff;--accent2:#ffd166;--text:#eaf4ff;--text-dim:#9fc3e0;
+}
+html[data-theme="terminal"]{
+  --bg:#03110a;--bg-alt:#06180f;--panel:#082014;--line:#163a26;
+  --accent:#3dffa0;--accent2:#ffcc66;--text:#dcffe9;--text-dim:#69a687;
+}
+html[data-theme="copper"]{
+  --bg:#1a100a;--bg-alt:#231508;--panel:#2b1a0d;--line:#4a2f18;
+  --accent:#e08a3c;--accent2:#ffce54;--text:#f5e6d3;--text-dim:#c9a37c;
+}
+html[data-theme="storm"]{
+  --bg:#12121c;--bg-alt:#181826;--panel:#1e1e30;--line:#33334d;
+  --accent:#a78bfa;--accent2:#f472b6;--text:#eae8f7;--text-dim:#9a94b8;
+}
+html[data-theme="ember"]{
+  --bg:#1a0b0b;--bg-alt:#230f0f;--panel:#2b1212;--line:#4a1f1f;
+  --accent:#e0503c;--accent2:#ff8a54;--text:#f5dcd3;--text-dim:#c98d7c;
+}
+html[data-theme="solar"]{
+  --bg:#1a1608;--bg-alt:#231d09;--panel:#2b230d;--line:#4a3f18;
+  --accent:#e0c23c;--accent2:#ff8c3c;--text:#f5f0d3;--text-dim:#c9bc7c;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{overflow-x:hidden;max-width:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);}
+img{max-width:100%;display:block;}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:14px 6%;background:rgba(10,14,20,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.back-link{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.5px;color:var(--text-dim);
+  text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s ease;
+}
+.back-link .arrow{position:relative;top:-2px;}
+.back-link:hover{color:var(--accent);}
+.topbar-title{font-family:var(--mono);font-size:.68rem;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.topbar-dl{
+  font-family:var(--mono);font-size:.68rem;color:var(--accent2);text-decoration:none;
+  border:1px solid var(--line);padding:6px 12px;border-radius:5px;transition:border-color .2s ease,color .2s ease;
+  white-space:nowrap;
+}
+.topbar-dl:hover{border-color:var(--accent2);}
+
+.wrap{max-width:880px;margin:0 auto;padding:0 6%;}
+
+.hero{padding:70px 0 40px;}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.hero-eyebrow::before{content:'';width:26px;height:2px;background:var(--accent);display:inline-block;}
+.hero h1{
+  font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.15;
+  margin:0 0 14px;color:var(--text);
+}
+.hero-sub{
+  font-family:var(--serif);font-style:italic;color:var(--text-dim);font-size:1.05rem;margin:0 0 22px;max-width:640px;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px 18px;font-family:var(--mono);font-size:.74rem;color:var(--text-dim);margin-bottom:26px;}
+.hero-meta span b{color:var(--text);font-weight:600;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;}
+.chip{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.5px;color:var(--text-dim);
+  border:1px solid var(--line);border-radius:20px;padding:4px 12px;
+}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;}
+.btn{
+  font-family:var(--mono);font-size:.74rem;text-decoration:none;padding:9px 18px;border-radius:6px;
+  border:1px solid var(--line);color:var(--text);transition:border-color .2s ease,color .2s ease,background .2s ease;
+}
+.btn.primary{border-color:var(--accent);color:var(--accent);}
+.btn.primary:hover{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+.btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+.stat-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:34px 0 10px;
+}
+.stat{background:var(--panel);padding:16px 14px;}
+.stat-num{font-family:var(--mono);font-weight:700;font-size:1.25rem;color:var(--accent2);}
+.stat-label{font-family:var(--mono);font-size:.62rem;color:var(--text-dim);letter-spacing:.5px;margin-top:4px;text-transform:uppercase;line-height:1.4;}
+
+.railnav{
+  position:sticky;top:58px;z-index:40;background:rgba(10,14,20,.9);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;white-space:nowrap;padding:10px 6%;
+  scrollbar-width:thin;
+}
+.railnav a{
+  font-family:var(--mono);font-size:.7rem;color:var(--text-dim);text-decoration:none;
+  padding:5px 12px;border:1px solid var(--line);border-radius:20px;margin-right:8px;display:inline-block;
+  transition:border-color .2s ease,color .2s ease;
+}
+.railnav a:hover{border-color:var(--accent);color:var(--accent);}
+
+section.rep{padding:52px 0;border-top:1px solid var(--line);}
+section.rep:first-of-type{border-top:none;}
+.sec-eyebrow{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:2px;color:var(--accent);text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.sec-eyebrow::before{content:'';width:22px;height:2px;background:var(--accent);display:inline-block;}
+.sec-eyebrow.num{color:var(--accent2);}
+.sec-eyebrow.num::before{background:var(--accent2);}
+h2.rep-title{font-family:var(--serif);font-weight:600;font-size:1.7rem;margin:0 0 18px;}
+h3.rep-sub{font-family:var(--serif);font-weight:600;font-size:1.25rem;margin:34px 0 12px;color:var(--text);}
+h3.rep-sub .num{color:var(--accent2);font-family:var(--mono);font-size:.9rem;margin-right:8px;}
+p{color:#c7d2da;margin:0 0 16px;}
+.lede{font-size:1.05rem;color:var(--text);}
+ul.rep-list{margin:0 0 18px;padding-left:20px;color:#c7d2da;}
+ul.rep-list li{margin-bottom:8px;}
+b{color:var(--text);}
+
+.fig{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 14px;}
+.fig .chart-svg{width:100%;height:auto;}
+.fig-cap{font-family:var(--mono);font-size:.72rem;color:var(--text-dim);margin-top:10px;text-align:center;}
+.fig-cap b{color:var(--accent2);}
+
+.tbl-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--line);border-radius:8px;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:480px;}
+thead th{
+  background:var(--bg-alt);color:var(--accent2);font-family:var(--mono);font-size:.68rem;
+  text-transform:uppercase;letter-spacing:.5px;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);
+  white-space:nowrap;
+}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line);color:#c7d2da;font-family:var(--mono);font-size:.78rem;white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--bg-alt);}
+.tbl-cap{font-family:var(--mono);font-size:.7rem;color:var(--text-dim);margin:-14px 0 22px;font-style:italic;}
+
+.eqn{
+  font-family:var(--serif);font-style:italic;background:var(--bg-alt);border:1px solid var(--line);
+  border-radius:6px;padding:14px 18px;margin:16px 0;color:var(--text);font-size:.95rem;overflow-x:auto;
+}
+
+.callout{
+  border-left:3px solid var(--accent2);background:var(--bg-alt);border-radius:0 6px 6px 0;
+  padding:14px 18px;margin:22px 0;color:#c7d2da;font-size:.9rem;
+}
+.callout b{color:var(--accent2);}
+
+.finding-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:24px 0;}
+.finding{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px;}
+.finding-label{font-family:var(--mono);font-size:.64rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.finding p{margin:0;font-size:.85rem;color:#c7d2da;}
+
+.appendix-list{list-style:none;margin:0;padding:0;}
+.appendix-list li{
+  font-family:var(--mono);font-size:.78rem;color:#c7d2da;padding:10px 0;border-bottom:1px solid var(--line);
+}
+.appendix-list li:last-child{border-bottom:none;}
+.appendix-list b{color:var(--accent);}
+
+footer.rep-footer{
+  border-top:1px solid var(--line);padding:40px 0 60px;text-align:center;
+}
+.footer-back{
+  font-family:var(--mono);font-size:.78rem;color:var(--accent);text-decoration:none;
+  border:1px solid var(--line);padding:10px 22px;border-radius:6px;display:inline-block;
+  transition:border-color .2s ease;
+}
+.footer-back .arrow{position:relative;top:-2px;}
+.footer-back:hover{border-color:var(--accent);}
+.footer-note{font-family:var(--mono);font-size:.66rem;color:var(--text-dim);margin-top:18px;}
+
+@media(max-width:700px){
+  .topbar-title{display:none;}
+  .topbar{padding:12px 4%;}
+  .railnav{top:53px;padding:8px 4%;}
+  .railnav a{padding:6px 13px;}
+  .stat-strip{grid-template-columns:repeat(2,1fr);}
+  .finding-grid{grid-template-columns:1fr;}
+  .hero{padding:44px 0 28px;}
+  table{font-size:.72rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#projects" class="back-link"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="topbar-title">Power Systems Engineering</div>
+  <a class="topbar-dl" href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download>&#8595; PDF</a>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-eyebrow">Self-Directed &middot; Power Systems Engineering</div>
+    <h1>Power Flow Analysis and Voltage Stability Assessment of a Transmission Network</h1>
+    <p class="hero-sub">A Newton-Raphson AC power-flow study of the WSCC 9-bus test transmission system, built from first principles.</p>
+    <div class="hero-meta">
+      <span><b>Author</b> &nbsp;Tuong Bao Nguyen</span>
+      <span><b>Period</b> &nbsp;Nov 2025 &ndash; Feb 2026</span>
+      <span><b>Test network</b> &nbsp;WSCC 9-Bus (Anderson &amp; Fouad)</span>
+    </div>
+    <div class="chips">
+      <span class="chip">Python</span>
+      <span class="chip">Newton-Raphson</span>
+      <span class="chip">Power Flow Analysis</span>
+      <span class="chip">Voltage Stability</span>
+      <span class="chip">N-1 Contingency Analysis</span>
+      <span class="chip">Fault Analysis</span>
+      <span class="chip">pandapower</span>
+    </div>
+    <div class="hero-actions">
+      <a class="btn primary" href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download>&#8595; Download full report (PDF)</a>
+      <a class="btn" href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download>&#8595; Download source</a>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-num">4&ndash;8</div><div class="stat-label">NR iterations to converge</div></div>
+      <div class="stat"><div class="stat-num">3e-6%</div><div class="stat-label">max deviation vs. pandapower</div></div>
+      <div class="stat"><div class="stat-num">253%</div><div class="stat-label">worst-case N-1 flow redistribution</div></div>
+      <div class="stat"><div class="stat-num">1.55&times;</div><div class="stat-label">demand at first thermal limit</div></div>
+    </div>
+  </div>
+</div>
+
+<nav class="railnav">
+  <a href="#abstract">Abstract</a>
+  <a href="#intro">Introduction</a>
+  <a href="#methodology">Methodology</a>
+  <a href="#results">Results</a>
+  <a href="#discussion">Discussion</a>
+  <a href="#limitations">Limitations</a>
+  <a href="#future">Future Work</a>
+  <a href="#conclusion">Conclusion</a>
+  <a href="#appendix">Appendix</a>
+</nav>
+
+<div class="wrap">
+
+<section class="rep" id="abstract">
+  <div class="sec-eyebrow">Abstract</div>
+  <h2 class="rep-title">A dependency-light solver, cross-checked two ways</h2>
+  <p class="lede">This report documents a custom, first-principles Newton-Raphson AC power flow solver, implemented in Python without commercial or third-party power system libraries, used to evaluate the steady-state performance, contingency security, and voltage stability of the WSCC 9-bus benchmark transmission network.</p>
+  <p>The primary validation method is a direct cross-check against <b>pandapower</b>: a dedicated script builds the identical network in pandapower and runs its own AC power flow solver for comparison. As a secondary, independently coded check, a Gauss-Seidel power flow implementation was run against the same network model, agreeing with the Newton-Raphson solution to within 0%&ndash;2% voltage magnitude across all buses.</p>
+  <p>Four analyses were carried out on the validated model:</p>
+  <ul class="rep-list">
+    <li><b>N-1 contingency screening</b> across all six transmission lines and three generator step-up (GSU) transformers: finding that losing any GSU transformer isolates its generator entirely, while line outages redistribute flow onto parallel corridors by roughly <b>62%&ndash;253%</b>.</li>
+    <li><b>Meshed vs. radial reconfiguration</b>: confirming that forcing radial operation increases system losses from a base case <b>4.64&nbsp;MW</b> up to <b>13.21&nbsp;MW</b>.</li>
+    <li><b>Progressive loading scan</b>: showing voltage drops of 5&ndash;10% at heavily loaded buses once demand reaches roughly <b>1.55&times;&ndash;1.9&times;</b> nominal, with the solver failing to converge beyond about <b>2.2&times;</b> nominal load.</li>
+    <li><b>Transformer thermal loading</b>: showing the most heavily loaded GSU unit exceeding its nameplate rating at roughly <b>1.55&times;</b> nominal demand, ahead of the network-wide voltage limit.</li>
+  </ul>
+  <p>A supplementary three-phase symmetrical fault study, performed with the bus impedance (Z<sub>bus</sub>) method, characterised fault current magnitudes at representative buses for protection coordination context. Newton-Raphson convergence was consistently fast (4&ndash;8 iterations), owing to the small, well-conditioned nature of the benchmark. Overall, the study shows the custom solver reproduces standard power system behaviour with high numerical fidelity and provides an auditable, dependency-light platform for contingency and voltage-stability screening.</p>
+</section>
+
+<section class="rep" id="intro">
+  <div class="sec-eyebrow num">2. Introduction</div>
+  <h2 class="rep-title">Objectives &amp; scope</h2>
+  <p>Modern transmission networks must remain secure not only under normal conditions but also following the unplanned loss of individual elements, the <b>N-1 security criterion</b>. Verifying this requires repeatedly solving the AC power flow equations under a range of network topologies and loading conditions. As demand grows, or as generation and transmission assets are lost, networks can also approach <b>voltage instability</b>, where bus voltages degrade sharply for comparatively small further increases in load.</p>
+  <p>This project implements the full analytical workflow needed to study these phenomena: a from-scratch Newton-Raphson AC power flow solver, an independent cross-validation solver, an automated N-1 contingency screening routine, a meshed-versus-radial reconfiguration comparison, a progressive loading voltage stability scan, a transformer thermal loading check, and a three-phase fault current calculation.</p>
+  <h3 class="rep-sub">Objectives</h3>
+  <ul class="rep-list">
+    <li>Implement a Newton-Raphson AC power flow solver from first principles (Y<sub>bus</sub> construction, polar-form mismatch equations, analytical Jacobian) for slack, PV, and PQ buses.</li>
+    <li>Validate solver accuracy primarily against pandapower, with an independently coded Gauss-Seidel solver as a secondary cross-check.</li>
+    <li>Screen the network for N-1 contingency security, quantifying post-outage flow redistribution and identifying resulting radial (demeshed) configurations.</li>
+    <li>Characterise voltage stability behaviour by scanning demand upward from nominal, tracking voltage decline at the most heavily loaded buses and GSU transformer thermal loading.</li>
+    <li>Extend the steady-state solver to a basic fault response capability (three-phase symmetrical fault analysis).</li>
+  </ul>
+  <h3 class="rep-sub">Scope &amp; test network</h3>
+  <p>All analyses are performed on the <b>WSCC 9-bus system</b> (the Anderson &amp; Fouad benchmark), consisting of three generating units (one slack, two PV), three load buses, three junction buses, three GSU transformers, and six 230&nbsp;kV lines arranged in a single meshed ring. It was chosen because its topology and data are publicly documented and reproducible, keeping the study fully self-contained and auditable.</p>
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/network_diagram.png" alt="Network Diagram" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 1</b>: WSCC 9-bus test network diagram. G1/G2/G3 are the slack and PV generator buses; 5, 6, 8 are load buses; 4, 7, 9 are junction buses.</div>
+  </div>
+</section>
+
+<section class="rep" id="methodology">
+  <div class="sec-eyebrow num">3. Methodology</div>
+  <h2 class="rep-title">Network data, formulation &amp; validation strategy</h2>
+  <h3 class="rep-sub">Test network data</h3>
+  <p>The WSCC 9-bus system comprises 9 buses on a 100&nbsp;MVA system base. Bus 1 (16.5&nbsp;kV) is the slack bus; Buses 2 (18.0&nbsp;kV) and 3 (13.8&nbsp;kV) are PV buses; Buses 4&ndash;9 (230&nbsp;kV) are junction and load buses. Three GSU transformers connect Buses 1, 2, and 3 to the 230&nbsp;kV network at Buses 4, 7, and 9 respectively. Six 230&nbsp;kV lines form a single meshed ring: 4&ndash;5, 4&ndash;6, 5&ndash;7, 6&ndash;9, 7&ndash;8, and 8&ndash;9.</p>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Bus</th><th>Type</th><th>Base kV</th><th>Generation (MW)</th><th>Load (MW / MVAr)</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Slack</td><td>16.5</td><td>solved by study</td><td>-</td></tr>
+      <tr><td>2</td><td>PV</td><td>18.0</td><td>163.0</td><td>-</td></tr>
+      <tr><td>3</td><td>PV</td><td>13.8</td><td>85.0</td><td>-</td></tr>
+      <tr><td>4</td><td>PQ (junction)</td><td>230</td><td>-</td><td>-</td></tr>
+      <tr><td>5</td><td>PQ (load)</td><td>230</td><td>-</td><td>125.0 / 50.0</td></tr>
+      <tr><td>6</td><td>PQ (load)</td><td>230</td><td>-</td><td>90.0 / 30.0</td></tr>
+      <tr><td>7</td><td>PQ (junction)</td><td>230</td><td>-</td><td>-</td></tr>
+      <tr><td>8</td><td>PQ (load)</td><td>230</td><td>-</td><td>100.0 / 35.0</td></tr>
+      <tr><td>9</td><td>PQ (junction)</td><td>230</td><td>-</td><td>-</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-cap">Table 1 - Bus, generation, and load data (WSCC 9-bus test network).</div>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Branch</th><th>Type</th><th>R (pu)</th><th>X (pu)</th><th>B (pu)</th><th>Rating (MVA)</th></tr></thead>
+    <tbody>
+      <tr><td>1&ndash;4</td><td>Transformer</td><td>0.0000</td><td>0.0576</td><td>-</td><td>250</td></tr>
+      <tr><td>2&ndash;7</td><td>Transformer</td><td>0.0000</td><td>0.0625</td><td>-</td><td>200</td></tr>
+      <tr><td>3&ndash;9</td><td>Transformer</td><td>0.0000</td><td>0.0586</td><td>-</td><td>100</td></tr>
+      <tr><td>4&ndash;5</td><td>Line</td><td>0.0100</td><td>0.0850</td><td>0.176</td><td>250</td></tr>
+      <tr><td>4&ndash;6</td><td>Line</td><td>0.0170</td><td>0.0920</td><td>0.158</td><td>200</td></tr>
+      <tr><td>5&ndash;7</td><td>Line</td><td>0.0320</td><td>0.1610</td><td>0.306</td><td>150</td></tr>
+      <tr><td>6&ndash;9</td><td>Line</td><td>0.0390</td><td>0.1700</td><td>0.358</td><td>150</td></tr>
+      <tr><td>7&ndash;8</td><td>Line</td><td>0.0085</td><td>0.0720</td><td>0.149</td><td>250</td></tr>
+      <tr><td>8&ndash;9</td><td>Line</td><td>0.0119</td><td>0.1008</td><td>0.209</td><td>250</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-cap">Table 2 - Branch impedance data, 100 MVA base. Transformer and line MVA ratings were assigned by the author for this study's thermal loading checks (see Limitations).</div>
+
+  <h3 class="rep-sub">Newton-Raphson AC power-flow formulation</h3>
+  <p>For each bus <i>i</i>, injected active and reactive power are expressed in polar coordinates as functions of all bus voltage magnitudes V, angles &theta;, and the network admittance matrix Y<sub>bus</sub> = G + jB. The slack bus fixes V and &theta; as the angle reference; PV buses specify P and V (Q floats); PQ buses specify both P and Q (V floats). The mismatch vector &Delta;F is driven to zero by Newton's method:</p>
+  <div class="eqn">&Delta;x = J<sup>&minus;1</sup>&Delta;F,&nbsp;&nbsp; x<sub>n+1</sub> = x<sub>n</sub> + &Delta;x,&nbsp;&nbsp; x = [&theta;(non-slack); V(PQ)]</div>
+  <p>The Jacobian J is assembled analytically in its standard four-block form (&part;P/&part;&theta;, &part;P/&part;V, &part;Q/&part;&theta;, &part;Q/&part;V) and re-evaluated every iteration. Y<sub>bus</sub> is built from branch R, X, and shunt charging B using the standard &pi;-model stamping procedure, with GSU transformers modelled as series reactances. The solver iterates until the largest absolute mismatch falls below a tolerance (1&times;10<sup>&minus;6</sup>&ndash;1&times;10<sup>&minus;9</sup> pu depending on the study) or a maximum iteration count is reached.</p>
+  <p>Two initial guess conventions are used and compared: a "generator-informed" flat start (V&nbsp;=&nbsp;1.0&nbsp;pu, &theta;&nbsp;=&nbsp;0 at PQ buses, PV/slack initialised at scheduled setpoints), and a fully flat start (V&nbsp;=&nbsp;1.0&nbsp;pu, &theta;&nbsp;=&nbsp;0 everywhere, including generators).</p>
+
+  <h3 class="rep-sub">Validation strategy</h3>
+  <p>The primary validation method is a direct comparison against <b>pandapower</b>. A dedicated script, <code>src/pandapower_validation.py</code>, builds the identical WSCC 9-bus network in pandapower's data model and calls <code>pandapower.runpp</code> to obtain an independent solution for direct comparison against the custom solver's bus voltages and angles.</p>
+  <p>As a secondary cross-check, a <b>Gauss-Seidel</b> solver was independently implemented from a completely different iterative formulation (fixed-point bus voltage updates rather than Newton linearisation) and run against the identical Y<sub>bus</sub>/injection model. Because Gauss-Seidel solves the same nonlinear equations by an unrelated numerical route, close agreement between it and the Newton-Raphson solution is meaningful evidence that both the network model and the Newton-Raphson implementation are correct.</p>
+
+  <div class="callout"><b>N-1 screening method</b>: for every one of the nine branches, the branch is removed from Y<sub>bus</sub> and the power flow is re-solved from the converged base case voltage profile (a "hot start"). Three outcomes are checked automatically: islanding (zero row sum &rarr; singular Y<sub>bus</sub>), non-convergence, and, for converged cases, % change in active power flow on every surviving branch, plus any voltage (&plusmn;5%) or thermal rating (100% nameplate) violations.</div>
+
+  <p>The <b>meshed-vs-radial</b> comparison opens each of the six ring lines in turn and compares total real-power losses and bus voltage spread against the closed-ring base case. The <b>loading scan</b> scales all three load buses together from 1.00&times; to 2.20&times; nominal in 0.05&times; steps, holding generation dispatch fixed, and re-solves at each step, continuing until the solver fails to converge (used as a practical, non-continuation-method indicator of maximum loadability). At every step, GSU transformer apparent power is also expressed as a percentage of nameplate rating. The <b>fault analysis</b> applies a bolted three-phase fault at bus <i>k</i> using the bus impedance matrix Z<sub>bus</sub> = Y<sub>bus</sub><sup>&minus;1</sup> and the pre-fault voltage profile.</p>
+</section>
+
+<section class="rep" id="results">
+  <div class="sec-eyebrow num">4. Results</div>
+  <h2 class="rep-title">Base case, contingencies, stability &amp; faults</h2>
+
+  <h3 class="rep-sub"><span class="num">4.1</span>Base case power flow</h3>
+  <p>With generator buses initialised at their scheduled voltage setpoints (the standard flat start), the Newton-Raphson solver converged in <b>4 iterations</b> to a maximum mismatch tolerance of 1&times;10<sup>&minus;6</sup>&nbsp;pu. With a fully flat start, convergence took 5 iterations, both reflecting the well-known quadratic convergence property of Newton-Raphson on a small, well-conditioned network.</p>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Bus</th><th>Type</th><th>Voltage (pu)</th><th>Angle</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>slack</td><td>1.0400</td><td>0.000&deg;</td></tr>
+      <tr><td>2</td><td>PV</td><td>1.0250</td><td>9.280&deg;</td></tr>
+      <tr><td>3</td><td>PV</td><td>1.0250</td><td>4.665&deg;</td></tr>
+      <tr><td>4</td><td>PQ</td><td>1.0258</td><td>-2.217&deg;</td></tr>
+      <tr><td>5</td><td>PQ</td><td>0.9956</td><td>-3.989&deg;</td></tr>
+      <tr><td>6</td><td>PQ</td><td>1.0127</td><td>-3.687&deg;</td></tr>
+      <tr><td>7</td><td>PQ</td><td>1.0258</td><td>3.720&deg;</td></tr>
+      <tr><td>8</td><td>PQ</td><td>1.0159</td><td>0.728&deg;</td></tr>
+      <tr><td>9</td><td>PQ</td><td>1.0324</td><td>1.967&deg;</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-cap">Table 3 - Converged base case bus voltages and angles.</div>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig1_base_voltage_profile.png" alt="Bus Voltages" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 2</b>: Base case bus voltage profile. All buses remain within the &plusmn;5% (0.95&ndash;1.05 pu) operating band.</div>
+  </div>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig2_nr_convergence.png" alt="Solver Convergence" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 3</b>: Newton-Raphson convergence history for both initial guess conventions (log-scale mismatch vs. iteration), illustrating quadratic convergence.</div>
+  </div>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Branch</th><th>Loading (MVA)</th><th>Rating (MVA)</th><th>% of Rating</th><th>Losses (MW)</th></tr></thead>
+    <tbody>
+      <tr><td>4&ndash;5</td><td>56.1</td><td>250</td><td>22%</td><td>0.258</td></tr>
+      <tr><td>4&ndash;6</td><td>34.7</td><td>200</td><td>17%</td><td>0.166</td></tr>
+      <tr><td>5&ndash;7</td><td>87.0</td><td>150</td><td>58%</td><td>2.300</td></tr>
+      <tr><td>6&ndash;9</td><td>63.5</td><td>150</td><td>42%</td><td>1.354</td></tr>
+      <tr><td>7&ndash;8</td><td>76.7</td><td>250</td><td>31%</td><td>0.475</td></tr>
+      <tr><td>8&ndash;9</td><td>34.2</td><td>250</td><td>14%</td><td>0.088</td></tr>
+      <tr><td>1&ndash;4 (xfmr)</td><td>76.6</td><td>250</td><td>31%</td><td>0.000</td></tr>
+      <tr><td>2&ndash;7 (xfmr)</td><td>163.3</td><td>200</td><td>82%</td><td>0.000</td></tr>
+      <tr><td>3&ndash;9 (xfmr)</td><td>86.3</td><td>100</td><td>86%</td><td>0.000</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-cap">Table 4 - Base case branch loadings and losses. Total system real power transmission losses: 4.64 MW.</div>
+
+  <h3 class="rep-sub"><span class="num">4.2</span>Validation</h3>
+  <p>The independently coded Gauss-Seidel solver converged in 43 iterations (tolerance 1&times;10<sup>&minus;8</sup>&nbsp;pu). Across all nine buses, the maximum deviation between the Newton-Raphson, pandapower, and Gauss-Seidel voltage magnitude solutions was <b>3.00&times;10<sup>&minus;6</sup>%</b>, several orders of magnitude inside the 2% threshold, confirming the Y<sub>bus</sub> model and Newton-Raphson implementation are correct.</p>
+
+  <h3 class="rep-sub"><span class="num">4.3</span>N-1 contingency screening</h3>
+  <p>All six line contingencies converged. The mildest, loss of line 4&ndash;6, redistributes the worst-affected surviving branch's flow by <b>61.5%</b>; the most severe, loss of line 7&ndash;8, redistributes flow by <b>253.3%</b> and pushes line 5&ndash;7 to 155.0 MVA against its 150 MVA rating (103% of rating), the only thermal violation found in the base-case N-1 screen. Loss of line 4&ndash;5 also drives Bus 5 to 0.839 pu, a voltage violation of the &plusmn;5% band.</p>
+  <p>All three GSU transformer contingencies resulted in immediate <b>islanding</b>: each generator has only one radial connection into the 230&nbsp;kV mesh, so losing its step-up transformer disconnects the unit entirely rather than producing a converged but stressed power flow case.</p>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig3_n1_redistribution.png" alt="N1 Redistribution" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 4</b>: Maximum post-outage branch flow redistribution for each N-1 line contingency (%). All three GSU transformer contingencies caused islanding rather than redistribution.</div>
+  </div>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Outage</th><th>Outcome</th><th>Iters</th><th>Max Flow Redist.</th><th>Min Bus V (pu)</th><th>Thermal Violation</th></tr></thead>
+    <tbody>
+      <tr><td>4-5</td><td>Converged</td><td>5</td><td>+149.2%</td><td>0.8388</td><td>None</td></tr>
+      <tr><td>4-6</td><td>Converged</td><td>4</td><td>+61.5%</td><td>0.9418</td><td>None</td></tr>
+      <tr><td>5-7</td><td>Converged</td><td>5</td><td>+191.2%</td><td>0.9380</td><td>None</td></tr>
+      <tr><td>6-9</td><td>Converged</td><td>4</td><td>+207.5%</td><td>0.9639</td><td>None</td></tr>
+      <tr><td>7-8</td><td>Converged</td><td>4</td><td>+253.3%</td><td>0.9690</td><td>Branch 5-7: 155/150 MVA</td></tr>
+      <tr><td>8-9</td><td>Converged</td><td>4</td><td>-69.1%</td><td>0.9783</td><td>None</td></tr>
+      <tr><td>1-4 (xfmr)</td><td>Islanding - Bus 1 isolated</td><td>-</td><td>-</td><td>-</td><td>None</td></tr>
+      <tr><td>2-7 (xfmr)</td><td>Islanding - Bus 2 isolated</td><td>-</td><td>-</td><td>-</td><td>None</td></tr>
+      <tr><td>3-9 (xfmr)</td><td>Islanding - Bus 3 isolated</td><td>-</td><td>-</td><td>-</td><td>None</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-cap">Table 6 - N-1 contingency screening summary for all six lines and three GSU transformers.</div>
+
+  <h3 class="rep-sub"><span class="num">4.4</span>Meshed (ring) vs. radial configuration</h3>
+  <p>The closed-ring base case sustains total transmission losses of 4.64&nbsp;MW. Forcing radial operation by opening any one of the six ring lines increases losses in every case, from a modest +0.71&nbsp;MW (opening 8&ndash;9) up to +8.57&nbsp;MW (opening 5&ndash;7), a loss penalty of up to roughly 185% relative to meshed operation. Radial configurations also show a wider bus voltage spread, confirming that ring/meshed operation improves both loss performance and voltage profile relative to radial feeding, at the cost of the additional protection coordination a meshed topology requires.</p>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig6_meshed_vs_radial_losses.png" alt="Redistribution" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 5</b>: Total real-power transmission losses (MW): meshed operation vs. each single-line-open radial reconfiguration.</div>
+  </div>
+
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Configuration</th><th>Losses (MW)</th><th>&Delta; vs. Meshed (MW)</th><th>V Spread (pu)</th><th>Min Bus V (pu)</th></tr></thead>
+    <tbody>
+      <tr><td>Meshed (base case)</td><td>4.64</td><td>+0.00</td><td>0.0444</td><td>0.9956</td></tr>
+      <tr><td>Radial (open 4-5)</td><td>9.57</td><td>+4.93</td><td>0.2012</td><td>0.8388</td></tr>
+      <tr><td>Radial (open 4-6)</td><td>6.14</td><td>+1.49</td><td>0.0982</td><td>0.9418</td></tr>
+      <tr><td>Radial (open 5-7)</td><td>13.21</td><td>+8.57</td><td>0.1020</td><td>0.9380</td></tr>
+      <tr><td>Radial (open 6-9)</td><td>9.49</td><td>+4.85</td><td>0.0761</td><td>0.9639</td></tr>
+      <tr><td>Radial (open 7-8)</td><td>12.09</td><td>+7.45</td><td>0.0710</td><td>0.9690</td></tr>
+      <tr><td>Radial (open 8-9)</td><td>5.35</td><td>+0.71</td><td>0.0617</td><td>0.9783</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl-cap">Table 7 - System losses and voltage spread: meshed operation vs. each single-line-open radial configuration.</div>
+
+  <h3 class="rep-sub"><span class="num">4.5</span>Voltage stability &amp; increased demand loading scan</h3>
+  <p>As system demand is scaled uniformly upward, voltage at the three load buses declines monotonically. <b>Bus 5</b>, the electrically weakest, furthest from the nearest generator along the highest-impedance corridor, first crosses a 5% drop at 1.55&times; nominal load and a 10% drop at 1.9&times; nominal load. Buses 6 and 8 follow the same trend but decline more gently, reflecting their stronger electrical connection to the nearest generator.</p>
+  <p>The power flow continued to converge up to <b>2.2&times;</b> nominal demand; beyond that point (tested up to 2.30&times;) the solver failed to converge for every initial guess attempted, consistent with the network approaching its maximum loadability (voltage collapse) boundary in this region.</p>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig4_voltage_stability_scan.png" alt="Voltage Stability" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 6</b>: Voltage decline at the three load buses vs. increasing system demand (&times; nominal). Dashed line marks the network's practical convergence limit near 2.2&times;.</div>
+  </div>
+
+  <h3 class="rep-sub"><span class="num">4.6</span>Transformer thermal loading</h3>
+  <p>At the base case, GSU transformer <b>T1</b> (Gen 1, 250 MVA) carries only 30.6% of rating, while <b>T2</b> (200 MVA) and <b>T3</b> (100 MVA) are already comparatively heavily loaded at 81.6% and 86.3% respectively. As demand grows, T1's loading rises fastest, crossing 100% of its rating at approximately <b>1.55&times;</b> nominal demand, noticeably before the network-wide voltage stability limits become binding. T3 also approaches its rating (100.1% at 1.90&times;) later in the scan, while T2 remains below 95% throughout the tested range. This identifies T1 thermal loading as the <b>first equipment-level constraint</b> the system encounters under sustained load growth, ahead of the voltage stability boundary itself.</p>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig5_transformer_loading.png" alt="Transformer Loading" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 7</b>: GSU transformer loading (% of nameplate MVA rating) vs. increasing system demand. T1 is the first unit to exceed its thermal rating.</div>
+  </div>
+
+  <h3 class="rep-sub"><span class="num">4.7</span>Three-phase symmetrical fault analysis</h3>
+  <p>A bolted three-phase fault was applied in turn at Bus 1 and at each of Buses 4, 5, 6, 7, 8, and 9. At every faulted bus the local voltage collapses to zero, as expected, while remaining buses retain a partial voltage depending on their electrical distance from the fault. The fault at Bus 1 produces the highest per-unit fault current (1.670&nbsp;pu) due to the generator's low internal (transformer) impedance, while faults on the 230&nbsp;kV network produce broadly similar per-unit currents (1.46&ndash;1.51&nbsp;pu), reflecting the relatively uniform impedance of the meshed ring as seen from any one of its buses.</p>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig7_fault_currents.png" alt="fault currents" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Figure 8</b>: Three-phase bolted fault current magnitude (kA) by faulted bus location.</div>
+  </div>
+</section>
+
+<section class="rep" id="discussion">
+  <div class="sec-eyebrow num">5. Discussion</div>
+  <h2 class="rep-title">What the results mean operationally</h2>
+
+  <h3 class="rep-sub"><span class="num">5.1</span>Convergence behaviour</h3>
+  <p>The project scope originally targeted stable convergence within 10&ndash;12 Newton-Raphson iterations. In practice, the WSCC 9-bus benchmark converged in 4 iterations from a generator-informed start and 5 from a fully flat start, rising only to 6&ndash;8 iterations even under combined heavy loading and contingency stress, before the solver stopped converging altogether beyond the network's loadability limit. This isn't a solver shortfall, quadratic convergence on a compact, strongly meshed 9-bus system is expected to be fast, but the 10&ndash;12 iteration figure is more characteristic of larger transmission networks, more weakly conditioned systems, or industrial-scale EMS runs solved without a warm start.</p>
+
+  <h3 class="rep-sub"><span class="num">5.2</span>Contingency security implications</h3>
+  <p>The N-1 screening results split cleanly into two risk categories. Line contingencies stress the network by redistributing flow within the surviving mesh, severely in some cases, but the network continues to operate, converging to a valid (if more stressed) solution every time. Transformer contingencies are categorically different: because each generator has only a single radial GSU transformer into the mesh, losing it removes the generator entirely rather than stressing the network. Line contingencies are <b>network security events</b> requiring flow and voltage limit checks; GSU transformer contingencies are <b>generation adequacy events</b> requiring reserve/redispatch planning, and the islanding detection automatically flags which category each contingency falls into.</p>
+
+  <h3 class="rep-sub"><span class="num">5.3</span>Voltage stability &amp; equipment margins</h3>
+  <p>Sections 4.5 and 4.6 together show that demand-growth headroom is bounded by two different mechanisms that bind at different points: transformer T1 reaches its thermal rating at roughly 1.55&times; nominal demand, well before bus voltage limits become binding, and well before the network approaches voltage collapse near 2.2&times;. In this network, <b>equipment thermal limits, not voltage stability, are the first constraint</b> encountered under sustained, uniform load growth. Voltage stability analysis alone would understate the actual growth headroom if performed without also checking equipment thermal ratings.</p>
+
+  <h3 class="rep-sub">Meshed operation as a loss &amp; voltage stability resource</h3>
+  <p>The meshed-vs-radial comparison reinforces the contingency results: every radial configuration increases both losses and voltage spread relative to the closed-ring base case, by amounts that vary widely with which line is opened (+0.71&nbsp;MW to +8.57&nbsp;MW). The same physical event, a line outage, has a materially different impact depending on which corridor is affected, which is precisely why blanket N-1 rules of thumb are insufficient and case-by-case contingency screening remains necessary even on a network this small.</p>
+</section>
+
+<section class="rep" id="limitations">
+  <div class="sec-eyebrow num">6. Limitations</div>
+  <h2 class="rep-title">Where the results should be read carefully</h2>
+  <div class="finding-grid">
+    <div class="finding"><div class="finding-label">No Q-limit enforcement</div><p>PV bus generators can supply any reactive power required to hold their voltage setpoint. Real generators have finite Q<sub>min</sub>/Q<sub>max</sub> limits; enforcing them would further tighten the voltage stability margin.</p></div>
+    <div class="finding"><div class="finding-label">Single, small test network</div><p>All results are specific to the 9-bus WSCC benchmark. Its single-ring topology and 1:1 generator-to-transformer arrangement directly shape the N-1 islanding finding and redistribution percentages.</p></div>
+    <div class="finding"><div class="finding-label">Author-assigned thermal ratings</div><p>The classical WSCC 9-bus dataset doesn't specify thermal ratings; assigned ratings are reasonable estimates, not sourced from a utility design document.</p></div>
+    <div class="finding"><div class="finding-label">Convergence-based loadability</div><p>The maximum loadability point is inferred from where Newton-Raphson stops converging, a practical but approximate proxy for the true saddle-node (voltage collapse) point, not a full continuation power flow.</p></div>
+    <div class="finding"><div class="finding-label">Bolted three-phase faults only</div><p>Unbalanced faults (SLG, LL, DLG) require negative- and zero-sequence network models, not built for this study; results shouldn't be used for protection relay coordination.</p></div>
+    <div class="finding"><div class="finding-label">Static, single-snapshot analysis</div><p>Steady-state operating points only, no transient stability, dynamic voltage recovery, or time-domain protection/switching sequences.</p></div>
+  </div>
+</section>
+
+<section class="rep" id="future">
+  <div class="sec-eyebrow num">7. Future Improvements</div>
+  <h2 class="rep-title">Where this could go next</h2>
+  <ul class="rep-list">
+    <li>Add PV bus reactive power limit enforcement (automatic PV &rarr; PQ switching at Q<sub>max</sub>/Q<sub>min</sub>), a standard feature of production-grade power flow solvers.</li>
+    <li>Extend to a larger IEEE benchmark (30, 57, or 118 bus) to test iteration-count behaviour on a more weakly conditioned system and obtain results on a more realistically meshed topology.</li>
+    <li>Implement a continuation power flow (predictor-corrector) method to trace the complete P-V and Q-V nose curves for a rigorous maximum loadability margin.</li>
+    <li>Extend fault analysis to negative- and zero-sequence networks to support single-line-to-ground and line-to-line fault calculations.</li>
+    <li>Source or design actual thermal ratings for branches and transformers if this workflow is applied to a real utility network.</li>
+    <li>Add time-domain transient stability simulation (swing equation integration following a fault).</li>
+  </ul>
+</section>
+
+<section class="rep" id="conclusion">
+  <div class="sec-eyebrow num">8. Conclusion</div>
+  <h2 class="rep-title">A complete, auditable power flow toolchain</h2>
+  <p class="lede">This project delivered a complete power flow analysis toolchain: a Newton-Raphson AC solver, a primary pandapower validation script, a secondary independently coded Gauss-Seidel cross-check, N-1 contingency screening, meshed-versus-radial reconfiguration comparison, a voltage stability loading scan, transformer thermal loading checks, and a three-phase fault current calculation, applied to the WSCC 9-bus transmission benchmark.</p>
+  <p>The solver converged reliably across all tested operating conditions up to the network's maximum loadability boundary, with the pandapower check showing agreement to within 3.00&times;10<sup>&minus;6</sup>%. The analyses produced several concrete, physically consistent engineering findings: N-1 line contingencies redistribute flow onto surviving corridors by tens to hundreds of percent depending on severity, while the network's three GSU transformers have no contingency redundancy and instead island their generators when lost; meshed operation reduces both losses and voltage spread relative to any radial configuration; heavily loaded buses see voltage drops in the operationally significant 5&ndash;10% range once demand grows to roughly 1.55&times;&ndash;1.9&times; nominal; and, on this network, a transformer thermal limit is reached before the voltage stability boundary itself becomes binding.</p>
+  <p>Taken together, the results demonstrate a sound, auditable, and extensible power system analysis capability built without dependence on external power flow libraries for its core solver, with a third-party pandapower cross-check confirming its functionality.</p>
+</section>
+
+<section class="rep" id="appendix">
+  <div class="sec-eyebrow">Appendix A</div>
+  <h2 class="rep-title">Software structure</h2>
+  <p>The analysis toolchain is implemented in Python 3 (numpy, scipy, matplotlib):</p>
+  <ul class="appendix-list">
+    <li><b>data/network_9bus.py</b>: WSCC 9-bus network dataset (buses, generators, loads, lines, transformers).</li>
+    <li><b>src/ybus.py</b>: Admittance-matrix (Y<sub>bus</sub>) builder from branch data, with optional branch outage exclusion for contingency studies.</li>
+    <li><b>src/newton_raphson.py</b>: Newton-Raphson AC power flow solver (polar form, analytical Jacobian) and branch power flow post-processing.</li>
+    <li><b>src/pandapower_validation.py</b>: builds the identical network in pandapower and runs pandapower's own AC power flow solver for comparison.</li>
+    <li><b>src/gauss_seidel.py</b>: independently coded Gauss-Seidel AC power flow solver, the project's secondary cross-check.</li>
+    <li><b>src/network_setup.py</b>: assembles solver-ready Y<sub>bus</sub>/injection arrays from the raw network dataset, with load scaling and outage index options.</li>
+    <li><b>src/contingency.py</b>: automated N-1 contingency screening across all branches, including islanding detection and thermal/voltage violation checks.</li>
+    <li><b>src/fault_analysis.py</b>: three-phase symmetrical fault analysis via the bus impedance (Z<sub>bus</sub>) method.</li>
+    <li><b>src/main.py</b>: orchestrates all analyses, saves results to <code>results/results.json</code>, and generates figures.</li>
+  </ul>
+  <p style="margin-top:18px;font-style:italic;color:var(--text-dim);font-size:.85rem;">All numerical results and figures in this report were generated directly by this codebase; no numbers were entered by hand. The complete source code and results.json data file accompany this report.</p>
+
+  <div class="fig">
+    <img src="Projects/PersonalElectric/PowerFlowSolver/Images/resultslog.jpg" alt="Results log" loading="lazy" decoding="async" style="border-radius:6px;">
+    <div class="fig-cap"><b>Console output</b>: results log generated by <code>src/main.py</code> on a full run of the toolchain.</div>
+  </div>
+</section>
+
+</div>
+
+<footer class="rep-footer">
+  <a class="footer-back" href="index.html#projects"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="footer-note">Power Flow Analysis and Voltage Stability Assessment &middot; Tuong Bao Nguyen &middot; Nov 2025 &ndash; Feb 2026</div>
+</footer>
+
+</body>
+</html>
