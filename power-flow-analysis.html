@@ -29,36 +29,44 @@
   --green:#5fb86e;
   --text:#e9eef2;
   --text-dim:#8ea0ad;
+  --body-text:#c7d2da;
   --mono:'JetBrains Mono','Courier New',monospace;
   --serif:'Newsreader',Georgia,serif;
 }
 html[data-theme="light"]{
   --bg:#faf6ee;--bg-alt:#f2ebda;--panel:#fffdf7;--line:#e4d8c0;
   --accent:#6fa3c7;--accent2:#e2a366;--text:#3d3527;--text-dim:#8a7d68;
+  --body-text:#5c5140;
 }
 html[data-theme="blueprint"]{
   --bg:#0b2947;--bg-alt:#0f3159;--panel:#123a63;--line:#2c5680;
   --accent:#8fd3ff;--accent2:#ffd166;--text:#eaf4ff;--text-dim:#9fc3e0;
+  --body-text:#d3e6fa;
 }
 html[data-theme="terminal"]{
   --bg:#03110a;--bg-alt:#06180f;--panel:#082014;--line:#163a26;
   --accent:#3dffa0;--accent2:#ffcc66;--text:#dcffe9;--text-dim:#69a687;
+  --body-text:#bfe9d2;
 }
 html[data-theme="copper"]{
   --bg:#1a100a;--bg-alt:#231508;--panel:#2b1a0d;--line:#4a2f18;
   --accent:#e08a3c;--accent2:#ffce54;--text:#f5e6d3;--text-dim:#c9a37c;
+  --body-text:#e9d4b9;
 }
 html[data-theme="storm"]{
   --bg:#12121c;--bg-alt:#181826;--panel:#1e1e30;--line:#33334d;
   --accent:#a78bfa;--accent2:#f472b6;--text:#eae8f7;--text-dim:#9a94b8;
+  --body-text:#d4cfec;
 }
 html[data-theme="ember"]{
   --bg:#1a0b0b;--bg-alt:#230f0f;--panel:#2b1212;--line:#4a1f1f;
   --accent:#e0503c;--accent2:#ff8a54;--text:#f5dcd3;--text-dim:#c98d7c;
+  --body-text:#ecd2c8;
 }
 html[data-theme="solar"]{
   --bg:#1a1608;--bg-alt:#231d09;--panel:#2b230d;--line:#4a3f18;
   --accent:#e0c23c;--accent2:#ff8c3c;--text:#f5f0d3;--text-dim:#c9bc7c;
+  --body-text:#ece0bd;
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -75,7 +83,7 @@ img{max-width:100%;display:block;}
 .topbar{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
-  padding:14px 6%;background:rgba(10,14,20,.86);backdrop-filter:blur(10px);
+  padding:14px 6%;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
 }
 .back-link{
@@ -132,7 +140,7 @@ img{max-width:100%;display:block;}
 .stat-label{font-family:var(--mono);font-size:.62rem;color:var(--text-dim);letter-spacing:.5px;margin-top:4px;text-transform:uppercase;line-height:1.4;}
 
 .railnav{
-  position:sticky;top:58px;z-index:40;background:rgba(10,14,20,.9);backdrop-filter:blur(8px);
+  position:sticky;top:58px;z-index:40;background:color-mix(in srgb, var(--bg) 90%, transparent);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);
   overflow-x:auto;white-space:nowrap;padding:10px 6%;
   scrollbar-width:thin;
@@ -156,9 +164,9 @@ section.rep:first-of-type{border-top:none;}
 h2.rep-title{font-family:var(--serif);font-weight:600;font-size:1.7rem;margin:0 0 18px;}
 h3.rep-sub{font-family:var(--serif);font-weight:600;font-size:1.25rem;margin:34px 0 12px;color:var(--text);}
 h3.rep-sub .num{color:var(--accent2);font-family:var(--mono);font-size:.9rem;margin-right:8px;}
-p{color:#c7d2da;margin:0 0 16px;}
+p{color:var(--body-text);margin:0 0 16px;}
 .lede{font-size:1.05rem;color:var(--text);}
-ul.rep-list{margin:0 0 18px;padding-left:20px;color:#c7d2da;}
+ul.rep-list{margin:0 0 18px;padding-left:20px;color:var(--body-text);}
 ul.rep-list li{margin-bottom:8px;}
 b{color:var(--text);}
 
@@ -174,7 +182,7 @@ thead th{
   text-transform:uppercase;letter-spacing:.5px;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);
   white-space:nowrap;
 }
-tbody td{padding:8px 12px;border-bottom:1px solid var(--line);color:#c7d2da;font-family:var(--mono);font-size:.78rem;white-space:nowrap;}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line);color:var(--body-text);font-family:var(--mono);font-size:.78rem;white-space:nowrap;}
 tbody tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:var(--bg-alt);}
 .tbl-cap{font-family:var(--mono);font-size:.7rem;color:var(--text-dim);margin:-14px 0 22px;font-style:italic;}
@@ -186,24 +194,24 @@ tbody tr:hover{background:var(--bg-alt);}
 
 .callout{
   border-left:3px solid var(--accent2);background:var(--bg-alt);border-radius:0 6px 6px 0;
-  padding:14px 18px;margin:22px 0;color:#c7d2da;font-size:.9rem;
+  padding:14px 18px;margin:22px 0;color:var(--body-text);font-size:.9rem;
 }
 .callout b{color:var(--accent2);}
 
 .finding-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:24px 0;}
 .finding{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px;}
 .finding-label{font-family:var(--mono);font-size:.64rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
-.finding p{margin:0;font-size:.85rem;color:#c7d2da;}
+.finding p{margin:0;font-size:.85rem;color:var(--body-text);}
 
 .appendix-list{list-style:none;margin:0;padding:0;}
 .appendix-list li{
-  font-family:var(--mono);font-size:.78rem;color:#c7d2da;padding:10px 0;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:.78rem;color:var(--body-text);padding:10px 0;border-bottom:1px solid var(--line);
 }
 .appendix-list li:last-child{border-bottom:none;}
 .appendix-list b{color:var(--accent);}
 
 footer.rep-footer{
-  border-top:1px solid var(--line);padding:40px 0 60px;text-align:center;
+  border-top:1px solid var(--line);padding:20px 0;text-align:center;
 }
 .footer-back{
   font-family:var(--mono);font-size:.78rem;color:var(--accent);text-decoration:none;
@@ -252,10 +260,12 @@ footer.rep-footer{
       <span class="chip">N-1 Contingency Analysis</span>
       <span class="chip">Fault Analysis</span>
       <span class="chip">pandapower</span>
+      <span class="chip">Transformer Loading</span>
+      <span class="chip">Ybus Modelling</span>
     </div>
     <div class="hero-actions">
-      <a class="btn primary" href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download>&#8595; Download full report (PDF)</a>
-      <a class="btn" href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download>&#8595; Download source</a>
+      <a class="btn primary" href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download>↓ Download full report (PDF)</a>
+      <a class="btn" href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download>↓ Download source</a>
     </div>
 
     <div class="stat-strip">
