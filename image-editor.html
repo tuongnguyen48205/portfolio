@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('theme_preference');
+    if (t && t !== 'dark') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuong N | Image Editor</title>
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<meta name="description" content="An interactive, in-browser port of a Tkinter/Pillow image editor — upload up to 10 images, apply invert, threshold, greyscale, flips, rotations, pinch &amp; zoom, and opacity, then download the results.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;
+  --bg-alt:#0f151d;
+  --panel:#131a24;
+  --line:#22303f;
+  --accent:#4cc9f0;
+  --accent2:#f5b942;
+  --red:#ef6461;
+  --green:#5fb86e;
+  --text:#e9eef2;
+  --text-dim:#8ea0ad;
+  --body-text:#c7d2da;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+html[data-theme="light"]{
+  --bg:#faf6ee;--bg-alt:#f2ebda;--panel:#fffdf7;--line:#e4d8c0;
+  --accent:#6fa3c7;--accent2:#e2a366;--text:#3d3527;--text-dim:#8a7d68;
+  --body-text:#5c5140;
+}
+html[data-theme="blueprint"]{
+  --bg:#0b2947;--bg-alt:#0f3159;--panel:#123a63;--line:#2c5680;
+  --accent:#8fd3ff;--accent2:#ffd166;--text:#eaf4ff;--text-dim:#9fc3e0;
+  --body-text:#d3e6fa;
+}
+html[data-theme="terminal"]{
+  --bg:#03110a;--bg-alt:#06180f;--panel:#082014;--line:#163a26;
+  --accent:#3dffa0;--accent2:#ffcc66;--text:#dcffe9;--text-dim:#69a687;
+  --body-text:#bfe9d2;
+}
+html[data-theme="copper"]{
+  --bg:#1a100a;--bg-alt:#231508;--panel:#2b1a0d;--line:#4a2f18;
+  --accent:#e08a3c;--accent2:#ffce54;--text:#f5e6d3;--text-dim:#c9a37c;
+  --body-text:#e9d4b9;
+}
+html[data-theme="storm"]{
+  --bg:#12121c;--bg-alt:#181826;--panel:#1e1e30;--line:#33334d;
+  --accent:#a78bfa;--accent2:#f472b6;--text:#eae8f7;--text-dim:#9a94b8;
+  --body-text:#d4cfec;
+}
+html[data-theme="ember"]{
+  --bg:#1a0b0b;--bg-alt:#230f0f;--panel:#2b1212;--line:#4a1f1f;
+  --accent:#e0503c;--accent2:#ff8a54;--text:#f5dcd3;--text-dim:#c98d7c;
+  --body-text:#ecd2c8;
+}
+html[data-theme="solar"]{
+  --bg:#1a1608;--bg-alt:#231d09;--panel:#2b230d;--line:#4a3f18;
+  --accent:#e0c23c;--accent2:#ff8c3c;--text:#f5f0d3;--text-dim:#c9bc7c;
+  --body-text:#ece0bd;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{overflow-x:clip;max-width:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);}
+img{max-width:100%;display:block;}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:14px 6%;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.back-link{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.5px;color:var(--text-dim);
+  text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s ease;
+}
+.back-link .arrow{position:relative;top:-2px;}
+.back-link:hover{color:var(--accent);}
+.topbar-title{font-family:var(--mono);font-size:.68rem;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.topbar-dl{
+  font-family:var(--mono);font-size:.68rem;color:var(--accent2);text-decoration:none;
+  border:1px solid var(--line);padding:6px 12px;border-radius:5px;transition:border-color .2s ease,color .2s ease;
+  white-space:nowrap;
+}
+.topbar-dl:hover{border-color:var(--accent2);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 6%;}
+.wrap.narrow{max-width:880px;}
+
+.hero{padding:70px 0 40px;}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.hero-eyebrow::before{content:'';width:26px;height:2px;background:var(--accent);display:inline-block;}
+.hero h1{
+  font-weight:800;font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.15;
+  margin:0 0 14px;color:var(--text);
+}
+.hero-sub{
+  color:var(--text-dim);font-size:1.05rem;margin:0 0 22px;max-width:720px;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px 18px;font-family:var(--mono);font-size:.74rem;color:var(--text-dim);margin-bottom:26px;}
+.hero-meta span b{color:var(--text);font-weight:600;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;}
+.chip{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.5px;color:var(--text-dim);
+  border:1px solid var(--line);border-radius:20px;padding:4px 12px;
+}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;}
+.btn{
+  font-family:var(--mono);font-size:.74rem;text-decoration:none;padding:9px 18px;border-radius:6px;
+  border:1px solid var(--line);color:var(--text);transition:border-color .2s ease,color .2s ease,background .2s ease;
+  display:inline-block;cursor:pointer;background:none;
+}
+.btn.primary{border-color:var(--accent);color:var(--accent);}
+.btn.primary:hover{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+.btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+section.rep{padding:0 0 60px;}
+.fig{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 14px;}
+
+.callout{
+  border-left:3px solid var(--accent2);background:var(--bg-alt);border-radius:0 6px 6px 0;
+  padding:14px 18px;margin:22px 0;color:var(--body-text);font-size:.9rem;
+}
+.callout b{color:var(--accent2);}
+
+footer.rep-footer{
+  border-top:1px solid var(--line);padding:28px 0;text-align:center;
+}
+.footer-back{
+  font-family:var(--mono);font-size:.78rem;color:var(--accent);text-decoration:none;
+  border:1px solid var(--line);padding:10px 22px;border-radius:6px;display:inline-block;
+  transition:border-color .2s ease;
+}
+.footer-back .arrow{position:relative;top:-2px;}
+.footer-back:hover{border-color:var(--accent);}
+.footer-note{font-family:var(--mono);font-size:.66rem;color:var(--text-dim);margin-top:18px;}
+
+#image-editor-root{min-height:660px;}
+.ied-loading{color:var(--text-dim);font-size:.85rem;padding:40px 0;text-align:center;font-family:var(--mono);}
+
+.ied-root{
+  font-family:var(--mono);color:var(--text);padding:22px;
+}
+.ied-section-label{
+  font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);
+  margin:0 0 12px;display:flex;align-items:center;gap:10px;
+}
+.ied-section-label::after{content:'';flex:1;height:1px;background:var(--line);}
+.ied-count{
+  font-size:.68rem;color:var(--text-dim);margin-left:auto;
+}
+.ied-dropzone{
+  border:1.5px dashed var(--line);border-radius:8px;padding:26px;text-align:center;
+  color:var(--text-dim);font-size:.8rem;background:var(--bg-alt);transition:border-color .2s ease,color .2s ease;
+  cursor:pointer;
+}
+.ied-dropzone:hover, .ied-dropzone.drag{border-color:var(--accent);color:var(--accent);}
+.ied-dropzone input{display:none;}
+.ied-dropzone .big{font-size:.9rem;color:var(--text);display:block;margin-bottom:6px;}
+.ied-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px;margin-top:16px;
+}
+.ied-thumb{
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg-alt);
+  cursor:pointer;transition:border-color .2s ease,transform .15s ease;position:relative;
+}
+.ied-thumb:hover{border-color:var(--accent);transform:translateY(-2px);}
+.ied-thumb img{width:100%;height:110px;object-fit:cover;display:block;}
+.ied-thumb .label{
+  font-size:.62rem;color:var(--text-dim);padding:6px 8px;border-top:1px solid var(--line);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ied-controls{margin-top:26px;}
+.ied-opts{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px;
+}
+.ied-opt{
+  border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--bg-alt);
+}
+.ied-opt label{
+  display:flex;align-items:center;gap:8px;font-size:.76rem;color:var(--text);cursor:pointer;user-select:none;
+}
+.ied-opt input[type=checkbox]{
+  accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;
+}
+.ied-opt .sub{
+  margin-top:8px;display:none;gap:6px;flex-direction:column;
+}
+.ied-opt.active .sub{display:flex;}
+.ied-opt.active{border-color:var(--accent);}
+.ied-opt .sub-row{display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--text-dim);}
+.ied-opt .sub-row input[type=number], .ied-opt .sub-row input[type=range]{
+  background:var(--panel);border:1px solid var(--line);color:var(--text);
+  font-family:var(--mono);font-size:.68rem;border-radius:4px;padding:3px 6px;width:64px;
+}
+.ied-opt .sub-row input[type=range]{width:90px;padding:0;}
+.ied-apply-row{
+  display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap;
+}
+.ied-hint{font-size:.68rem;color:var(--text-dim);}
+
+.ied-viewer{
+  margin-top:26px;border-top:1px solid var(--line);padding-top:22px;display:none;
+}
+.ied-viewer.show{display:block;}
+.ied-viewer-frame{
+  position:relative;background:var(--bg-alt);border:1px solid var(--line);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;min-height:340px;padding:20px;overflow:hidden;
+}
+.ied-viewer-frame canvas{max-width:100%;max-height:420px;image-rendering:pixelated;border-radius:3px;}
+.ied-nav{
+  position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(10,14,20,.7);color:var(--text);font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .2s ease,color .2s ease;
+}
+.ied-nav:hover{border-color:var(--accent);color:var(--accent);}
+.ied-nav.left{left:10px;}
+.ied-nav.right{right:10px;}
+.ied-viewer-meta{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:14px;
+  font-size:.72rem;color:var(--text-dim);
+}
+.ied-viewer-meta b{color:var(--text);font-weight:600;}
+.ied-dl-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;}
+
+@media(max-width:700px){
+  .topbar-title{display:none;}
+  .topbar{padding:12px 4%;}
+  .hero{padding:44px 0 28px;}
+  .ied-root{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#projects" class="back-link"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="topbar-title">Software Development</div>
+  <a class="topbar-dl" href="https://github.com/tuongnguyen48205/Image-Editor" target="_blank" rel="noopener">Source ↗</a>
+</div>
+
+<div class="wrap narrow">
+  <div class="hero">
+    <div class="hero-eyebrow">Self-Directed &middot; Software Development</div>
+    <h1>Image Editor</h1>
+    <p class="hero-sub">An interactive, in-browser port of my Tkinter/Pillow desktop image editor.<br><br>Upload a batch of images, choose from nine pixel-level transforms, preview and download the results directly.</p>
+    <div class="hero-meta">
+      <span><b>Author</b> &nbsp;Tuong Bao Nguyen</span>
+      <span><b>Built from</b> &nbsp;Image_Editor.py (tkinter + Pillow)</span>
+    </div>
+    <div class="hero-actions">
+      <a class="btn primary" href="https://github.com/tuongnguyen48205/Image-Editor/blob/main/README.md" target="_blank" rel="noopener">Read the README ↗</a>
+      <a class="btn" href="https://github.com/tuongnguyen48205/Image-Editor" target="_blank" rel="noopener">View Python source ↗</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="rep">
+    <div class="fig" style="padding:0;overflow:hidden;">
+      <div id="image-editor-root">
+        <div class="ied-loading">Loading image editor…</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="rep-footer">
+  <a class="footer-back" href="index.html#projects"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="footer-note">Image Editor &middot; Tuong Bao Nguyen</div>
+</footer>
+
+<script>
+(function(){
+  const root = document.getElementById('image-editor-root');
+
+  const MAX_IMAGES = 10;
+  let originals = [];    
+  let transformed = [];   
+  let viewerIndex = 0;
+  let viewerSet = 'original'; 
+
+  root.innerHTML = `
+    <div class="ied-root">
+      <p class="ied-section-label"><span>01 — Upload images</span><span class="ied-count" id="ied-count">0 / ${MAX_IMAGES}</span></p>
+      <div class="ied-dropzone" id="ied-dropzone">
+        <span class="big">Click to choose, or drag &amp; drop</span>
+        Up to ${MAX_IMAGES} images &middot; PNG or JPG
+        <input type="file" id="ied-file-input" accept="image/png, image/jpeg" multiple>
+      </div>
+      <div class="ied-grid" id="ied-grid-original"></div>
+
+      <div class="ied-controls" id="ied-controls" style="display:none;">
+        <p class="ied-section-label"><span>02 — Choose your transformations</span></p>
+        <div class="ied-opts" id="ied-opts"></div>
+        <div class="ied-apply-row">
+          <button class="btn primary" id="ied-apply">Transform all images</button>
+          <button class="btn" id="ied-reset">Transform different images</button>
+          <span class="ied-hint">Applied in order: invert &rarr; threshold &rarr; greyscale &rarr; flip x &rarr; flip y &rarr; rotate right &rarr; rotate left &rarr; pinch &amp; zoom &rarr; opacity</span>
+        </div>
+        <div class="ied-grid" id="ied-grid-transformed"></div>
+      </div>
+
+      <div class="ied-viewer" id="ied-viewer">
+        <p class="ied-section-label"><span>Preview</span></p>
+        <div class="ied-viewer-frame">
+          <div class="ied-nav left" id="ied-nav-left"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M8 1L2 8L8 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <canvas id="ied-canvas"></canvas>
+          <div class="ied-nav right" id="ied-nav-right"><svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M2 1L8 8L2 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+        <div class="ied-viewer-meta" id="ied-viewer-meta"></div>
+        <div class="ied-dl-row">
+          <button class="btn" id="ied-download">Download PNG</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const dropzone = root.querySelector('#ied-dropzone');
+  const fileInput = root.querySelector('#ied-file-input');
+  const countLabel = root.querySelector('#ied-count');
+  const gridOriginal = root.querySelector('#ied-grid-original');
+  const controls = root.querySelector('#ied-controls');
+  const gridTransformed = root.querySelector('#ied-grid-transformed');
+  const viewer = root.querySelector('#ied-viewer');
+  const canvas = root.querySelector('#ied-canvas');
+  const ctx = canvas.getContext('2d');
+  const viewerMeta = root.querySelector('#ied-viewer-meta');
+  const applyBtn = root.querySelector('#ied-apply');
+  const resetBtn = root.querySelector('#ied-reset');
+  const downloadBtn = root.querySelector('#ied-download');
+  const navLeft = root.querySelector('#ied-nav-left');
+  const navRight = root.querySelector('#ied-nav-right');
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  ['dragenter','dragover'].forEach(ev => dropzone.addEventListener(ev, e => {
+    e.preventDefault(); dropzone.classList.add('drag');
+  }));
+  ['dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, e => {
+    e.preventDefault(); dropzone.classList.remove('drag');
+  }));
+  dropzone.addEventListener('drop', e => handleFiles(e.dataTransfer.files));
+  fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+  function handleFiles(fileList){
+    const files = Array.from(fileList).filter(f => /^image\/(png|jpeg)$/.test(f.type));
+    for (const file of files){
+      if (originals.length >= MAX_IMAGES) break;
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        originals.push({ img, name: file.name, width: img.naturalWidth, height: img.naturalHeight });
+        renderOriginalGrid();
+        if (originals.length === Math.min(files.length, MAX_IMAGES) || originals.length === MAX_IMAGES){
+          maybeShowControls();
+        }
+      };
+      img.src = url;
+    }
+    fileInput.value = '';
+  }
+
+  function maybeShowControls(){
+    if (originals.length > 0){
+      controls.style.display = 'block';
+    }
+    if (originals.length >= MAX_IMAGES){
+      dropzone.style.opacity = '.45';
+      dropzone.style.pointerEvents = 'none';
+    }
+  }
+
+  function renderOriginalGrid(){
+    countLabel.textContent = `${originals.length} / ${MAX_IMAGES}`;
+    gridOriginal.innerHTML = '';
+    originals.forEach((o, i) => {
+      const el = document.createElement('div');
+      el.className = 'ied-thumb';
+      el.innerHTML = `<img src="${o.img.src}"><div class="label">${o.name}</div>`;
+      el.addEventListener('click', () => openViewer('original', i));
+      gridOriginal.appendChild(el);
+    });
+    maybeShowControls();
+  }
+
+  const OPTIONS = [
+    { key: 'inverse',   label: 'Inverse' },
+    { key: 'threshold', label: 'Threshold', sub: [{ id: 'value', type: 'number', dflt: 128, min: 0, max: 255, text: 'Value (0–255)' }] },
+    { key: 'greyscale', label: 'Greyscale' },
+    { key: 'flipx',     label: 'Flip x' },
+    { key: 'flipy',     label: 'Flip y' },
+    { key: 'rotater',   label: 'Rotate right' },
+    { key: 'rotatel',   label: 'Rotate left' },
+    { key: 'pinch',     label: 'Pinch & zoom', sub: [
+        { id: 'width', type: 'number', dflt: 1, min: 0.1, max: 4, step: 0.1, text: 'Width &times;' },
+        { id: 'height', type: 'number', dflt: 1, min: 0.1, max: 4, step: 0.1, text: 'Height &times;' }
+      ] },
+    { key: 'opacity',   label: 'Opacity %', sub: [{ id: 'value', type: 'range', dflt: 100, min: 0, max: 100, text: 'Percent' }] },
+  ];
+  const state = {};
+  OPTIONS.forEach(o => { state[o.key] = { on: false, ...(o.sub ? Object.fromEntries(o.sub.map(s => [s.id, s.dflt])) : {}) }; });
+
+  const optsWrap = root.querySelector('#ied-opts');
+  OPTIONS.forEach(o => {
+    const box = document.createElement('div');
+    box.className = 'ied-opt';
+    box.dataset.key = o.key;
+    let subHtml = '';
+    if (o.sub){
+      subHtml = '<div class="sub">' + o.sub.map(s => `
+        <div class="sub-row">
+          <span>${s.text}</span>
+          <input type="${s.type}" data-sub="${s.id}" min="${s.min}" max="${s.max}" step="${s.step || 1}" value="${s.dflt}">
+        </div>
+      `).join('') + '</div>';
+    }
+    box.innerHTML = `<label><input type="checkbox" data-key="${o.key}"> ${o.label}</label>${subHtml}`;
+    optsWrap.appendChild(box);
+  });
+
+  optsWrap.addEventListener('change', e => {
+    const t = e.target;
+    const box = t.closest('.ied-opt');
+    const key = box.dataset.key;
+    if (t.matches('input[type=checkbox]')){
+      state[key].on = t.checked;
+      box.classList.toggle('active', t.checked);
+    } else if (t.dataset.sub){
+      state[key][t.dataset.sub] = parseFloat(t.value);
+    }
+  });
+  optsWrap.addEventListener('input', e => {
+    const t = e.target;
+    if (t.dataset.sub){
+      const box = t.closest('.ied-opt');
+      state[box.dataset.key][t.dataset.sub] = parseFloat(t.value);
+    }
+  });
+
+  function resetAll(){
+    originals.forEach(o => { try{ URL.revokeObjectURL(o.img.src); }catch(e){} });
+    originals = [];
+    transformed = [];
+    viewerIndex = 0;
+    viewerSet = 'original';
+
+    gridOriginal.innerHTML = '';
+    gridTransformed.innerHTML = '';
+    countLabel.textContent = `0 / ${MAX_IMAGES}`;
+    controls.style.display = 'none';
+    viewer.classList.remove('show');
+    dropzone.style.opacity = '';
+    dropzone.style.pointerEvents = '';
+    fileInput.value = '';
+
+    OPTIONS.forEach(o => {
+      state[o.key] = { on: false, ...(o.sub ? Object.fromEntries(o.sub.map(s => [s.id, s.dflt])) : {}) };
+      const box = optsWrap.querySelector(`.ied-opt[data-key="${o.key}"]`);
+      if (!box) return;
+      box.classList.remove('active');
+      const checkbox = box.querySelector('input[type=checkbox]');
+      if (checkbox) checkbox.checked = false;
+      if (o.sub){
+        o.sub.forEach(s => {
+          const input = box.querySelector(`input[data-sub="${s.id}"]`);
+          if (input) input.value = s.dflt;
+        });
+      }
+    });
+
+    dropzone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  resetBtn.addEventListener('click', resetAll);
+
+  function applyPipeline(sourceImg){
+    let c = document.createElement('canvas');
+    c.width = sourceImg.width; c.height = sourceImg.height;
+    let cx = c.getContext('2d');
+    cx.drawImage(sourceImg, 0, 0);
+
+    if (state.inverse.on) c = invert(c);
+    if (state.threshold.on) c = threshold(c, state.threshold.value);
+    if (state.greyscale.on) c = greyscale(c);
+    if (state.flipx.on) c = flip(c, true, false);
+    if (state.flipy.on) c = flip(c, false, true);
+    if (state.rotater.on) c = rotate(c, 90);
+    if (state.rotatel.on) c = rotate(c, -90);
+    if (state.pinch.on) c = pinchZoom(c, state.pinch.width, state.pinch.height);
+    if (state.opacity.on) c = applyOpacity(c, state.opacity.value);
+    return c;
+  }
+
+  function invert(c){
+    const cx = c.getContext('2d');
+    const d = cx.getImageData(0,0,c.width,c.height);
+    for (let i=0;i<d.data.length;i+=4){
+      d.data[i] = 255-d.data[i]; d.data[i+1]=255-d.data[i+1]; d.data[i+2]=255-d.data[i+2];
+    }
+    cx.putImageData(d,0,0);
+    return c;
+  }
+  function threshold(c, value){
+    const cx = c.getContext('2d');
+    const d = cx.getImageData(0,0,c.width,c.height);
+    for (let i=0;i<d.data.length;i+=4){
+      const lum = 0.299*d.data[i] + 0.587*d.data[i+1] + 0.114*d.data[i+2];
+      const v = lum > value ? 255 : 0;
+      d.data[i]=v; d.data[i+1]=v; d.data[i+2]=v;
+    }
+    cx.putImageData(d,0,0);
+    return c;
+  }
+  function greyscale(c){
+    const cx = c.getContext('2d');
+    const d = cx.getImageData(0,0,c.width,c.height);
+    for (let i=0;i<d.data.length;i+=4){
+      const lum = 0.299*d.data[i] + 0.587*d.data[i+1] + 0.114*d.data[i+2];
+      d.data[i]=lum; d.data[i+1]=lum; d.data[i+2]=lum;
+    }
+    cx.putImageData(d,0,0);
+    return c;
+  }
+  function flip(c, x, y){
+    const out = document.createElement('canvas');
+    out.width = c.width; out.height = c.height;
+    const cx = out.getContext('2d');
+    cx.translate(x ? c.width : 0, y ? c.height : 0);
+    cx.scale(x ? -1 : 1, y ? -1 : 1);
+    cx.drawImage(c, 0, 0);
+    return out;
+  }
+  function rotate(c, deg){
+    const out = document.createElement('canvas');
+    out.width = c.height; out.height = c.width;
+    const cx = out.getContext('2d');
+    cx.translate(out.width/2, out.height/2);
+    cx.rotate(deg * Math.PI/180);
+    cx.drawImage(c, -c.width/2, -c.height/2);
+    return out;
+  }
+  function pinchZoom(c, wMult, hMult){
+    const out = document.createElement('canvas');
+    out.width = Math.max(1, Math.round(c.width * wMult));
+    out.height = Math.max(1, Math.round(c.height * hMult));
+    const cx = out.getContext('2d');
+    cx.drawImage(c, 0, 0, out.width, out.height);
+    return out;
+  }
+  function applyOpacity(c, pct){
+    const out = document.createElement('canvas');
+    out.width = c.width; out.height = c.height;
+    const cx = out.getContext('2d');
+    cx.globalAlpha = Math.max(0, Math.min(100, pct)) / 100;
+    cx.drawImage(c, 0, 0);
+    return out;
+  }
+
+  applyBtn.addEventListener('click', () => {
+    transformed = originals.map(o => {
+      const c = applyPipeline(o.img);
+      return { canvas: c, name: o.name, width: c.width, height: c.height };
+    });
+    renderTransformedGrid();
+  });
+
+  function renderTransformedGrid(){
+    gridTransformed.innerHTML = '';
+    transformed.forEach((t, i) => {
+      const el = document.createElement('div');
+      el.className = 'ied-thumb';
+      const thumbImg = document.createElement('img');
+      thumbImg.src = t.canvas.toDataURL('image/png');
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = t.name + ' (transformed)';
+      el.appendChild(thumbImg); el.appendChild(label);
+      el.addEventListener('click', () => openViewer('transformed', i));
+      gridTransformed.appendChild(el);
+    });
+  }
+
+  function openViewer(set, index){
+    viewerSet = set; viewerIndex = index;
+    viewer.classList.add('show');
+    viewer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    renderViewer();
+  }
+
+  function currentSet(){ return viewerSet === 'original' ? originals : transformed; }
+
+  function renderViewer(){
+    const set = currentSet();
+    if (!set.length) return;
+    const item = set[viewerIndex];
+    const w = viewerSet === 'original' ? item.width : item.width;
+    const h = viewerSet === 'original' ? item.height : item.height;
+    canvas.width = w; canvas.height = h;
+    if (viewerSet === 'original'){
+      ctx.clearRect(0,0,w,h);
+      ctx.drawImage(item.img, 0, 0);
+    } else {
+      ctx.clearRect(0,0,w,h);
+      ctx.drawImage(item.canvas, 0, 0);
+    }
+    const suffix = viewerSet === 'transformed' ? ' (transformed)' : '';
+    viewerMeta.innerHTML = `
+      <span><b>Filename:</b> ${item.name}${suffix}</span>
+      <span><b>Mode:</b> RGBA</span>
+      <span><b>Width:</b> ${item.width}px</span>
+      <span><b>Height:</b> ${item.height}px</span>
+      <span><b>${viewerIndex+1} / ${set.length}</b></span>
+    `;
+  }
+
+  navLeft.addEventListener('click', () => {
+    const set = currentSet();
+    viewerIndex = (viewerIndex - 1 + set.length) % set.length;
+    renderViewer();
+  });
+  navRight.addEventListener('click', () => {
+    const set = currentSet();
+    viewerIndex = (viewerIndex + 1) % set.length;
+    renderViewer();
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const set = currentSet();
+    const item = set[viewerIndex];
+    const src = viewerSet === 'original' ? (() => {
+      const c = document.createElement('canvas');
+      c.width = item.width; c.height = item.height;
+      c.getContext('2d').drawImage(item.img, 0, 0);
+      return c;
+    })() : item.canvas;
+    const link = document.createElement('a');
+    const base = item.name.replace(/\.[^/.]+$/, '');
+    link.download = `${base}${viewerSet === 'transformed' ? ' (transformed)' : ''}.png`;
+    link.href = src.toDataURL('image/png');
+    link.click();
+  });
+})();
+</script>
+
+</body>
+</html>

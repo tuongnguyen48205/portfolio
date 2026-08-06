@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('theme_preference');
+    if (t && t !== 'dark') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuong N | Network Builder</title>
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<meta name="description" content="An interactive, in-browser Newton-Raphson power flow solver — build a bus network on canvas and run load flow, N-1 contingency screening, three-phase fault analysis, and a Gauss-Seidel cross-check.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;
+  --bg-alt:#0f151d;
+  --panel:#131a24;
+  --line:#22303f;
+  --accent:#4cc9f0;
+  --accent2:#f5b942;
+  --red:#ef6461;
+  --green:#5fb86e;
+  --text:#e9eef2;
+  --text-dim:#8ea0ad;
+  --body-text:#c7d2da;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+html[data-theme="light"]{
+  --bg:#faf6ee;--bg-alt:#f2ebda;--panel:#fffdf7;--line:#e4d8c0;
+  --accent:#6fa3c7;--accent2:#e2a366;--text:#3d3527;--text-dim:#8a7d68;
+  --body-text:#5c5140;
+}
+html[data-theme="blueprint"]{
+  --bg:#0b2947;--bg-alt:#0f3159;--panel:#123a63;--line:#2c5680;
+  --accent:#8fd3ff;--accent2:#ffd166;--text:#eaf4ff;--text-dim:#9fc3e0;
+  --body-text:#d3e6fa;
+}
+html[data-theme="terminal"]{
+  --bg:#03110a;--bg-alt:#06180f;--panel:#082014;--line:#163a26;
+  --accent:#3dffa0;--accent2:#ffcc66;--text:#dcffe9;--text-dim:#69a687;
+  --body-text:#bfe9d2;
+}
+html[data-theme="copper"]{
+  --bg:#1a100a;--bg-alt:#231508;--panel:#2b1a0d;--line:#4a2f18;
+  --accent:#e08a3c;--accent2:#ffce54;--text:#f5e6d3;--text-dim:#c9a37c;
+  --body-text:#e9d4b9;
+}
+html[data-theme="storm"]{
+  --bg:#12121c;--bg-alt:#181826;--panel:#1e1e30;--line:#33334d;
+  --accent:#a78bfa;--accent2:#f472b6;--text:#eae8f7;--text-dim:#9a94b8;
+  --body-text:#d4cfec;
+}
+html[data-theme="ember"]{
+  --bg:#1a0b0b;--bg-alt:#230f0f;--panel:#2b1212;--line:#4a1f1f;
+  --accent:#e0503c;--accent2:#ff8a54;--text:#f5dcd3;--text-dim:#c98d7c;
+  --body-text:#ecd2c8;
+}
+html[data-theme="solar"]{
+  --bg:#1a1608;--bg-alt:#231d09;--panel:#2b230d;--line:#4a3f18;
+  --accent:#e0c23c;--accent2:#ff8c3c;--text:#f5f0d3;--text-dim:#c9bc7c;
+  --body-text:#ece0bd;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{overflow-x:clip;max-width:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);}
+img{max-width:100%;display:block;}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:14px 6%;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.back-link{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.5px;color:var(--text-dim);
+  text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s ease;
+}
+.back-link .arrow{position:relative;top:-2px;}
+.back-link:hover{color:var(--accent);}
+.topbar-title{font-family:var(--mono);font-size:.68rem;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.topbar-dl{
+  font-family:var(--mono);font-size:.68rem;color:var(--accent2);text-decoration:none;
+  border:1px solid var(--line);padding:6px 12px;border-radius:5px;transition:border-color .2s ease,color .2s ease;
+  white-space:nowrap;
+}
+.topbar-dl:hover{border-color:var(--accent2);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 6%;}
+.wrap.narrow{max-width:880px;}
+
+.hero{padding:70px 0 40px;}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.hero-eyebrow::before{content:'';width:26px;height:2px;background:var(--accent);display:inline-block;}
+.hero h1{
+  font-weight:800;font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.15;
+  margin:0 0 14px;color:var(--text);
+}
+.hero-sub{
+  color:var(--text-dim);font-size:1.05rem;margin:0 0 22px;max-width:720px;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px 18px;font-family:var(--mono);font-size:.74rem;color:var(--text-dim);margin-bottom:26px;}
+.hero-meta span b{color:var(--text);font-weight:600;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;}
+.chip{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.5px;color:var(--text-dim);
+  border:1px solid var(--line);border-radius:20px;padding:4px 12px;
+}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;}
+.btn{
+  font-family:var(--mono);font-size:.74rem;text-decoration:none;padding:9px 18px;border-radius:6px;
+  border:1px solid var(--line);color:var(--text);transition:border-color .2s ease,color .2s ease,background .2s ease;
+  display:inline-block;
+}
+.btn.primary{border-color:var(--accent);color:var(--accent);}
+.btn.primary:hover{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+.btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+section.rep{padding:0 0 60px;}
+.fig{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 14px;}
+
+.callout{
+  border-left:3px solid var(--accent2);background:var(--bg-alt);border-radius:0 6px 6px 0;
+  padding:14px 18px;margin:22px 0;color:var(--body-text);font-size:.9rem;
+}
+.callout b{color:var(--accent2);}
+
+footer.rep-footer{
+  border-top:1px solid var(--line);padding:20px 0;text-align:center;
+}
+.footer-back{
+  font-family:var(--mono);font-size:.78rem;color:var(--accent);text-decoration:none;
+  border:1px solid var(--line);padding:10px 22px;border-radius:6px;display:inline-block;
+  transition:border-color .2s ease;
+}
+.footer-back .arrow{position:relative;top:-2px;}
+.footer-back:hover{border-color:var(--accent);}
+.footer-note{font-family:var(--mono);font-size:.66rem;color:var(--text-dim);margin-top:18px;}
+
+#network-builder-root{min-height:660px;}
+.nwb-loading{color:var(--text-dim);font-size:.85rem;padding:40px 0;text-align:center;font-family:var(--mono);}
+
+@media(max-width:700px){
+  .topbar-title{display:none;}
+  .topbar{padding:12px 4%;}
+  .hero{padding:44px 0 28px;}
+  #network-builder-root .nwb-root{min-height:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#projects" class="back-link"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="topbar-title">Power Systems Engineering</div>
+  <a class="topbar-dl" href="power-flow-analysis.html">Full Write-up ↗</a>
+</div>
+
+<div class="wrap narrow">
+  <div class="hero">
+    <div class="hero-eyebrow">Self-Directed &middot; Power Systems Engineering</div>
+    <h1>Network Builder</h1>
+    <p class="hero-sub">An interactive, in-browser port of the Newton-Raphson power flow solver from my <a href="power-flow-analysis.html">Power Flow Analysis project</a><br><br>Place buses, connect branches, and solve load flow, N-1 contingencies, and three-phase faults directly online here.</p>
+    <div class="hero-meta">
+      <span><b>Author</b> &nbsp;Tuong Bao Nguyen</span>
+      <span><b>Built from</b> &nbsp;ybus.py &amp; newton_raphson.py</span>
+    </div>
+    <div class="hero-actions">
+      <a class="btn primary" href="power-flow-analysis.html">Read the full write-up ↗</a>
+      <a class="btn" href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download>↓ Download Python source</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="rep">
+    <div class="fig" style="padding:0;overflow:hidden;">
+      <div id="network-builder-root">
+        <div class="nwb-loading">Loading network builder…</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="rep-footer">
+  <a class="footer-back" href="index.html#projects"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="footer-note">Network Builder &middot; Tuong Bao Nguyen</div>
+</footer>
+
+<script src="network-builder.bundle.js"></script>
+
+</body>
+</html>
