@@ -177,6 +177,8 @@ Click up up down down left right left right b a for another surprise.
   }
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:rgba(0,0,0,0);scrollbar-width:none;-ms-overflow-style:none;}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;-webkit-appearance:none;appearance:none;}
+  button::-moz-focus-inner{border:0;padding:0;}
   *::-webkit-scrollbar{display:none;width:0;height:0;}
   html{scroll-behavior:smooth;font-size:calc(100% * var(--text-scale));scrollbar-width:none;-ms-overflow-style:none;}
   html::-webkit-scrollbar{display:none;width:0;height:0;}
@@ -1194,7 +1196,7 @@ Click up up down down left right left right b a for another surprise.
 
   .card-toggle-btn{
     margin-top:16px;background:transparent;border:1px solid var(--line);color:var(--accent);
-    padding:8px 16px;border-radius:8px;font-size:.82rem;transition:.25s;
+    padding:6px 16px;border-radius:8px;font-size:.82rem;font-family:inherit;transition:.25s;
     display:inline-flex;align-items:center;gap:6px;
   }
   .card-toggle-btn:hover{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 8%, transparent);}
@@ -1284,7 +1286,7 @@ Click up up down down left right left right b a for another surprise.
 
   .subtabs{display:flex;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
   .subtab-btn{
-    padding:8px 16px;border-radius:20px;border:1px solid var(--line);
+    padding:6px 16px;border-radius:20px;border:1px solid var(--line);
     background:transparent;color:var(--text-dim);font-size:.82rem;transition:.25s;
   }
   .subtab-btn:hover{border-color:var(--accent2);color:var(--accent2);}
@@ -1450,7 +1452,7 @@ Click up up down down left right left right b a for another surprise.
   .dl-btn{
     display:flex;align-items:center;gap:6px;
     background:transparent;border:1px solid var(--accent);color:var(--accent);
-    padding:8px 14px;border-radius:8px;font-size:.82rem;transition:.25s;
+    padding:6px 14px;border-radius:8px;font-size:.82rem;transition:.25s;
   }
   .dl-btn:hover{background:var(--accent);color:#04121a;}
   .dl-btn-primary{background:var(--accent);border-color:var(--accent);color:#04121a;font-weight:600;position:relative;overflow:hidden;}
@@ -1464,7 +1466,7 @@ Click up up down down left right left right b a for another surprise.
  
   .tabs{display:flex;gap:10px;margin-bottom:36px;flex-wrap:wrap;}
   .tab-btn{
-    padding:10px 20px;border-radius:30px;border:1px solid var(--line);
+    padding:6px 20px;border-radius:30px;border:1px solid var(--line);
     background:transparent;color:var(--text-dim);font-size:.9rem;transition:.25s;
   }
   .tab-btn:hover{border-color:var(--accent);color:var(--accent);}
