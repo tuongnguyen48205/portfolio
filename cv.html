@@ -74,7 +74,7 @@
   .topbar{
     position:sticky;top:0;z-index:50;
     display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
-    padding:14px 6%;background:rgba(10,14,20,.86);backdrop-filter:blur(10px);
+    padding:14px 6%;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
   }
   .topbar-title{
@@ -134,8 +134,6 @@
   }
 
   .cv-summary{color:var(--text-dim);font-size:.95rem;max-width:100%;}
-
-  /* Timeline (carried over from the main site, simplified) */
   .ct-legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:18px;color:var(--text-dim);font-size:.78rem;}
   .ct-legend-item{display:flex;align-items:center;gap:7px;}
   .ct-legend-dot{width:10px;height:10px;border-radius:50%;background:var(--bg-alt);border:2px solid var(--line);flex-shrink:0;}
@@ -198,7 +196,7 @@
   .proj-period{color:var(--text-dim);font-size:.82rem;font-family:var(--mono);white-space:nowrap;}
   .proj-desc{color:var(--text-dim);font-size:.82rem;margin-top:6px;}
 
-  footer.cv-footer{border-top:1px solid var(--line);padding-top:22px;margin-top:10px;color:var(--text-dim);font-size:.82rem;text-align:center;}
+  footer.cv-footer{border-top:1px solid var(--line);padding-top:20px;margin-top:10px;color:var(--text-dim);font-size:.82rem;text-align:center;}
 
   @media print{
     .topbar{display:none;}
@@ -249,7 +247,7 @@
   </header>
 
   <section class="cv-section">
-    <div class="cv-summary">Electrical engineering student at the University of Melbourne focused on power systems, renewable energy integration, and grid modernisation. Experience spans internships in power systems engineering and R&amp;D electronics, alongside self-directed projects in power system analysis, embedded systems, and control.</div>
+    <div class="cv-summary">Electrical Engineering student at the University of Melbourne specialising in Low-Carbon Power Systems. Experienced in power systems engineering, electronic hardware development, and data-driven engineering analysis through internships and technical projects. Strong foundation in power system analysis, electrical testing, hardware validation, Python, and MATLAB, with a keen interest in renewable energy integration, grid modernisation, and reliable electricity networks.</div>
   </section>
 
   <section class="cv-section">
