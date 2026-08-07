@@ -2717,9 +2717,15 @@ Click up up down down left right left right b a for another surprise.
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="personal">Personal Projects</button>
+    <button class="tab-btn active" data-tab="featured">Featured</button>
+    <button class="tab-btn" data-tab="personal">Personal Projects</button>
     <button class="tab-btn" data-tab="academic">Academic Projects</button>
     <button class="tab-btn" data-tab="teams">Project Teams</button>
+  </div>
+
+  <div class="tab-panel active" id="featured">
+    <div class="sec-sub2" style="margin-bottom:18px;">A quick look at the projects I'd point you to first.</div>
+    <div id="featuredGrid"></div>
   </div>
 
   <div class="tab-panel" id="academic">
@@ -2922,7 +2928,7 @@ Click up up down down left right left right b a for another surprise.
     </div>
   </div>
 
-  <div class="tab-panel active" id="personal">
+  <div class="tab-panel" id="personal">
     <div class="subtabs">
       <button class="subtab-btn active" data-subtab="electrical-personal">Electrical Projects</button>
       <button class="subtab-btn" data-subtab="software-personal">Software Projects</button>
@@ -2935,6 +2941,7 @@ Click up up down down left right left right b a for another surprise.
           <div class="card-period">Nov 2025 – Feb 2026</div>
         </div>
         <div class="sec-sub2">To better understand the operation and reliability of electrical transmission networks, I developed a Python-based Newton-Raphson power flow solver capable of building and analysing custom multi-bus systems using data structures. By modelling generators, transmission lines, transformers, and loads, the solver evaluates power flow, voltage stability, and network performance under normal operation and N-1 contingency scenarios, providing insight into the secure operation of modern power systems.</div>
+        <div class="sec-sub2" style="font-style:italic;">Also available as an interactive in-browser tool <a href="#proj-network-builder" class="pfs-to-nwb-link" style="color:var(--accent);text-decoration:underline;">here</a></div>
         <div class="card-toggle-row">
           <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
           <span class="featured-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.2l7.1-.6z"/></svg>Featured</span>
@@ -2951,26 +2958,22 @@ Click up up down down left right left right b a for another surprise.
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig3_n1_redistribution.png" alt="N1 Redistribution" loading="lazy" decoding="async"></div>
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/fig7_fault_currents.png" alt="fault currents" loading="lazy" decoding="async"></div>
             <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/resultslog.jpg" alt="Results log" loading="lazy" decoding="async"></div>
-            <div class="img-slot"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/NetworkBuilder.png" alt="Online tool" loading="lazy" decoding="async"></div>
           </div>
           <div class="card-cols">
             <div><div class="col-label acc">Accomplishments</div><ul class="plain">
               <li>Developed a custom Newton-Raphson power flow solver capable of analysing multi-bus transmission networks with reliable convergence within <b>4–8 iterations</b></li>
               <li>Identified <b>5–10% voltage drops</b> at heavily loaded buses by modelling transformer loading under increased demand, and <b>62%–253% power flow redistribution</b> under N-1 scenarios</li>
               <li>Validated simulation results against pandapower, achieving bus voltage within <b>2% of benchmark solutions</b></li>
-              <li>Ported the solver to an interactive, in-browser Network Builder tool: build a network and run load flow, N-1 screening, and fault analysis in real time</li>
             </ul></div>
             <div><div class="col-label">Responsibilities</div><ul class="plain">
               <li>Modelled transmission lines, transformers, generators, and electrical loads to simulate realistic operating conditions</li>
               <li>Analysed voltage profiles, transformer loading, and system performance under network reconfiguration and contingency events</li>
               <li>Compared results to industry standard under both nominal operating conditions and N-1 contingency scenarios</li>
-              <li>Ported the core Python solver (Ybus assembly, Newton-Raphson iteration) to JavaScript/React and built an interactive canvas editor around it</li>
             </ul></div>
             <div><div class="col-label">Learnings</div><ul class="plain">
               <li>Gained a deeper understanding of power system modelling, load flow analysis, and voltage stability assessment</li>
               <li>Strengthened skills in numerical methods, Python programming, and validation of engineering models</li>
               <li>Developed practical insight into how contingency analysis supports secure, reliable, and resilient power system operation</li>
-              <li>Learned how floating point rounding and matrix ill-conditioning in the Jacobian can quietly stall Newton-Raphson convergence, and how to guard against it with pivoting and convergence tolerances</li>
             </ul></div>
           </div>
           <div class="card-footer">
@@ -2985,7 +2988,6 @@ Click up up down down left right left right b a for another surprise.
               <a href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download class="dl-btn">↓ Project</a>
               <a href="Projects/PersonalElectric/PowerFlowSolver/Power Flow Analysis and Voltage Stability Assessment of a Transmission Network.pdf" download class="dl-btn">↓ Report</a>
               <a href="power-flow-analysis.html" class="dl-btn dl-btn-primary">Full Write-up ↗</a>
-              <a href="network-builder.html" class="dl-btn dl-btn-primary nwb-launch-btn" target="_blank" rel="noopener">Launch Network Builder ↗</a>
             </div>
           </div>
         </div>
@@ -3101,6 +3103,106 @@ Click up up down down left right left right b a for another surprise.
       </div>
 
     <div class="subtab-panel" id="software-personal">
+      <div class="card" id="proj-nem-live">
+        <div class="card-top">
+          <div><div class="card-title">Live National Electricity Market Dashboard</div><div class="card-sub">Self-directed · Power Systems / Web-Dev</div></div>
+          <div class="card-period">Aug 2026 – Present</div>
+        </div>
+        <div class="sec-sub2">Building a real-time dashboard visualising spot price, demand, and generation mix across Australia's five NEM regions. Pulling live data from the Open Electricity API.</div>
+        <div class="card-toggle-row">
+          <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+          <span class="featured-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.2l7.1-.6z"/></svg>Featured</span>
+        
+        
+        </div>
+        <div class="card-details">
+          <!--
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalSoftware/NEM Live/NEM Live.png" alt="Feeder Project Isometric" loading="lazy" decoding="async"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Built a live monitoring dashboard tracking spot price, demand, and generation mix across all <b>five NEM regions</b> (NSW1, QLD1, VIC1, SA1, TAS1), surfacing regional price spread and the highest-priced region in real time</li>
+              <li>Delivered a live, fuel-disaggregated generation mix view (coal, gas, wind, solar, hydro, battery) per region, giving a rolling <b>24 hour</b> picture of the supply stack behind each region's price</li>
+              <li>Solved Open Electricity API CORS restrictions with a lightweight Cloudflare Worker proxy, enabling secure, continuously refreshing access to live NEM market data</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Designed the dashboard's data model and metrics (spot price, demand, NEM-wide average, highest-priced region) to reflect how regional price separation actually shows up in the NEM</li>
+              <li>Integrated the Open Electricity API through a Cloudflare Worker proxy to retrieve live price, demand, and generation-by-fuel data without exposing the API key client-side</li>
+              <li>Implemented auto-refreshing data on a 5-minute cycle with per-region selection and graceful fallback to demo data on API/network failure</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Deepened understanding of the NEM's regional pricing structure, including how demand and generation mix by fuel type drive price separation between regions</li>
+              <li>Learned how to work around browser CORS restrictions using a serverless proxy architecture while keeping API credentials server-side</li>
+              <li>Learned to design a monitoring tool that degrades gracefully between live and demo data states without misrepresenting itself as live when it isn't</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">JavaScript</span>
+            <span class="skill-chip">Chart.js</span>
+            <span class="skill-chip">API Integration</span>
+            <span class="skill-chip">Data Visualisation</span>
+            <span class="skill-chip">Power Systems</span>
+            <span class="skill-chip">NEM / Energy Markets</span>
+            <div class="dl-btns">
+              <a href="nem-dashboard.html" class="dl-btn dl-btn-primary" target="_blank" rel="noopener">Launch NEM Live ↗</a>
+            </div>
+          </div>
+        -->
+          <div class="card coming-soon-card">
+            <div class="coming-soon-icon">🌣</div>
+            <h4>Coming Soon</h4>
+            <p>Still completing this project – check back soon!</p>
+            <div class="progress-track"><div class="progress-fill"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="proj-network-builder">
+        <div class="card-top">
+          <div><div class="card-title">Network Builder</div><div class="card-sub">Self-directed · Power Systems / Web-Dev</div></div>
+          <div class="card-period">Aug 2026</div>
+        </div>
+        <div class="sec-sub2">Ported the core Python power flow solver behind my Voltage Stability Assessment project into an interactive, in-browser tool. Built a canvas-based network editor where users can build a custom multi-bus system and run load flow, N-1 contingency screening, and fault analysis in real time.</div>
+        <div class="card-toggle-row">
+          <button class="card-toggle-btn"><span class="btn-label">More details</span> <span class="chevron">▾</span></button>
+          <span class="featured-badge"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.7 7-6.3-3.9-6.3 3.9 1.7-7L2 9.2l7.1-.6z"/></svg>Featured</span>
+        </div>
+        <div class="card-details">
+
+          <div class="card-imgs">
+            <div class="img-slot"><img src="Projects/PersonalSoftware/Network Builder/NetworkBuilder.png" alt="Online tool" loading="lazy" decoding="async"></div>
+          </div>
+          <div class="card-cols">
+            <div><div class="col-label acc">Accomplishments</div><ul class="plain">
+              <li>Extended a validated Newton-Raphson power flow solver into an interactive tool for load flow, N-1 contingency screening, and fault analysis on arbitrary multi-bus transmission topologies</li>
+              <li>Enabled engineers to configure custom networks (buses, lines, transformers, loads) and see voltage stability and contingency outcomes without writing code or running the original Python solver locally</li>
+              <li>Delivered real-time N-1 contingency screening and fault current analysis in-browser, reproducing the convergence reliability (<b>4–8 iterations</b>) and accuracy of the underlying solver</li>
+            </ul></div>
+            <div><div class="col-label">Responsibilities</div><ul class="plain">
+              <li>Ported the core Ybus assembly and Newton-Raphson iteration from the original Python solver to JavaScript, preserving numerical accuracy and convergence behaviour across arbitrary network topologies</li>
+              <li>Designed the canvas-based network editor's underlying data model so any user-built topology (bus types, line impedances, transformer taps, load profiles) maps directly onto the solver's admittance matrix</li>
+              <li>Built result visualisation for load flow, contingency, and fault outputs so voltage profiles, loading, and redistribution are interpretable directly against standard power systems conventions</li>
+            </ul></div>
+            <div><div class="col-label">Learnings</div><ul class="plain">
+              <li>Gained hands-on experience translating power flow theory (Ybus formation, Newton-Raphson iteration, N-1 screening) into a general-purpose numerical tool rather than a fixed-case script</li>
+              <li>Learned how network topology choices (meshed vs radial, transformer placement, load distribution) affect solver convergence and voltage stability outcomes in practice</li>
+              <li>Developed a deeper appreciation for the gap between an engineering tool built for one system and one built to handle arbitrary networks reliably</li>
+            </ul></div>
+          </div>
+          <div class="card-footer">
+            <span class="skill-chip">JavaScript</span>
+            <span class="skill-chip">React</span>
+            <span class="skill-chip">Power Flow Analysis</span>
+            <span class="skill-chip">Voltage Stability</span>
+            <span class="skill-chip">Contingency Analysis (N-1)</span>
+            <span class="skill-chip">Fault Analysis</span>
+            <div class="dl-btns">
+              <a href="network-builder.html" class="dl-btn dl-btn-primary nwb-launch-btn" target="_blank" rel="noopener">Launch Network Builder ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="card" id="proj-portfolio-website">
         <div class="card-top">
@@ -3240,11 +3342,11 @@ Click up up down down left right left right b a for another surprise.
   <div class="tab-panel" id="teams">
 
     <div class="card coming-soon-card">
-        <div class="coming-soon-icon">🌣</div>
-        <h4>Coming Soon</h4>
-        <p>Still uploading more projects – check back soon!</p>
-        <div class="progress-track"><div class="progress-fill"></div></div>
-      </div>
+      <div class="coming-soon-icon">🌣</div>
+      <h4>Coming Soon</h4>
+      <p>Still uploading more projects – check back soon!</p>
+      <div class="progress-track"><div class="progress-fill"></div></div>
+    </div>
   </div>
 </section>
 
@@ -3439,6 +3541,45 @@ Click up up down down left right left right b a for another surprise.
   window.addEventListener('hashchange', ()=>{
     if(location.hash) goToLinkedCard(location.hash.slice(1));
   });
+
+  document.addEventListener('click', (e)=>{
+    const link = e.target.closest('.pfs-to-nwb-link');
+    if(!link) return;
+    e.preventDefault();
+    goToLinkedCard('proj-network-builder');
+    if(location.hash !== '#proj-network-builder') history.pushState(null, '', '#proj-network-builder');
+  });
+
+  (function buildFeaturedTab(){
+    const grid = document.getElementById('featuredGrid');
+    if(!grid) return;
+    const seen = new Set();
+    document.querySelectorAll('.card').forEach(orig=>{
+      if(orig.closest('#featured')) return;
+      if(!orig.querySelector('.featured-badge')) return;
+      if(seen.has(orig.id)) return;
+      seen.add(orig.id);
+
+      const clone = orig.cloneNode(true);
+      if(clone.id) clone.id = clone.id + '-featured-copy';
+      clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+      clone.classList.remove('expanded');
+      const label = clone.querySelector('.card-toggle-btn .btn-label');
+      if(label) label.textContent = 'More details';
+
+      const toggleBtn = clone.querySelector('.card-toggle-btn');
+      if(toggleBtn){
+        toggleBtn.addEventListener('click', ()=>{
+          const nowExpanded = clone.classList.toggle('expanded');
+          toggleBtn.querySelector('.btn-label').textContent = nowExpanded ? 'Less details' : 'More details';
+          if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
+        });
+      }
+
+      grid.appendChild(clone);
+    });
+    if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
+  })();
 
   const busNodes = [...document.querySelectorAll('.bus-node-wrap')];
   busNodes.forEach(node=>{
