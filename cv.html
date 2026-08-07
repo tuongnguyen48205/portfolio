@@ -88,13 +88,13 @@
   }
   .back-link .arrow{position:relative;top:-2px;}
   .back-link:hover{color:var(--accent);}
-  .print-btn{
+  .topbar-dl{
     font-family:'JetBrains Mono','Courier New',monospace;font-size:.68rem;color:var(--accent2);
     border:1px solid var(--line);background:transparent;
     padding:6px 12px;border-radius:5px;cursor:pointer;transition:border-color .2s ease,color .2s ease;
     white-space:nowrap;
   }
-  .print-btn:hover{border-color:var(--accent2);}
+  .topbar-dl:hover{border-color:var(--accent2);}
 
   header.cv-header{
     display:flex;justify-content:center;align-items:flex-start;gap:3px;
@@ -210,9 +210,9 @@
 <body>
 
 <div class="topbar">
-  <a class="back-link" href="index.html"><span class="arrow">&#8592;</span> Back to portfolio</a>
+  <a href="index.html#contact" class="back-link"><span class="arrow">&larr;</span> Back to portfolio</a>
   <div class="topbar-title">CV</div>
-  <button class="print-btn" onclick="window.print()">↓ Save as PDF</button>
+  <button class="topbar-dl" onclick="window.print()">↓ Save as PDF</button>
 </div>
 
 <div class="wrap">
