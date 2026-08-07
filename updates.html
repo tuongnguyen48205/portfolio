@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('theme_preference');
+    if (t && t !== 'dark') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuong N | Project Updates</title>
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<meta name="description" content="A running timeline of every project on Tuong Nguyen's electrical engineering portfolio, with progress notes and milestones.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;
+  --bg-alt:#0f151d;
+  --panel:#131a24;
+  --line:#22303f;
+  --accent:#4cc9f0;
+  --accent2:#f5b942;
+  --red:#ef6461;
+  --green:#5fb86e;
+  --text:#e9eef2;
+  --text-dim:#8ea0ad;
+  --body-text:#c7d2da;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+html[data-theme="light"]{
+  --bg:#faf6ee;--bg-alt:#f2ebda;--panel:#fffdf7;--line:#e4d8c0;
+  --accent:#6fa3c7;--accent2:#e2a366;--text:#3d3527;--text-dim:#8a7d68;
+  --body-text:#5c5140;
+}
+html[data-theme="blueprint"]{
+  --bg:#0b2947;--bg-alt:#0f3159;--panel:#123a63;--line:#2c5680;
+  --accent:#8fd3ff;--accent2:#ffd166;--text:#eaf4ff;--text-dim:#9fc3e0;
+  --body-text:#d3e6fa;
+}
+html[data-theme="terminal"]{
+  --bg:#03110a;--bg-alt:#06180f;--panel:#082014;--line:#163a26;
+  --accent:#3dffa0;--accent2:#ffcc66;--text:#dcffe9;--text-dim:#69a687;
+  --body-text:#bfe9d2;
+}
+html[data-theme="copper"]{
+  --bg:#1a100a;--bg-alt:#231508;--panel:#2b1a0d;--line:#4a2f18;
+  --accent:#e08a3c;--accent2:#ffce54;--text:#f5e6d3;--text-dim:#c9a37c;
+  --body-text:#e9d4b9;
+}
+html[data-theme="storm"]{
+  --bg:#12121c;--bg-alt:#181826;--panel:#1e1e30;--line:#33334d;
+  --accent:#a78bfa;--accent2:#f472b6;--text:#eae8f7;--text-dim:#9a94b8;
+  --body-text:#d4cfec;
+}
+html[data-theme="ember"]{
+  --bg:#1a0b0b;--bg-alt:#230f0f;--panel:#2b1212;--line:#4a1f1f;
+  --accent:#e0503c;--accent2:#ff8a54;--text:#f5dcd3;--text-dim:#c98d7c;
+  --body-text:#ecd2c8;
+}
+html[data-theme="solar"]{
+  --bg:#1a1608;--bg-alt:#231d09;--panel:#2b230d;--line:#4a3f18;
+  --accent:#e0c23c;--accent2:#ff8c3c;--text:#f5f0d3;--text-dim:#c9bc7c;
+  --body-text:#ece0bd;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{overflow-x:clip;max-width:100%;}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent),
+    var(--bg);
+  background-color:var(--bg);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);}
+img{max-width:100%;display:block;}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:14px 6%;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.back-link{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.5px;color:var(--text-dim);
+  text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s ease;
+}
+.back-link .arrow{position:relative;top:-2px;}
+.back-link:hover{color:var(--accent);}
+.topbar-title{font-family:var(--mono);font-size:.68rem;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.topbar-dl{
+  font-family:var(--mono);font-size:.68rem;color:var(--accent2);text-decoration:none;
+  border:1px solid var(--line);padding:6px 12px;border-radius:5px;transition:border-color .2s ease,color .2s ease;
+  white-space:nowrap;
+}
+.topbar-dl:hover{border-color:var(--accent2);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 6%;}
+.wrap.narrow{max-width:880px;}
+
+.hero{padding:70px 0 40px;}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.hero-eyebrow::before{content:'';width:26px;height:2px;background:var(--accent);display:inline-block;}
+.hero h1{
+  font-weight:800;font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.15;
+  margin:0 0 14px;color:var(--text);
+}
+.hero-sub{
+  color:var(--text-dim);font-size:1.05rem;margin:0 0 22px;max-width:720px;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px 18px;font-family:var(--mono);font-size:.74rem;color:var(--text-dim);margin-bottom:26px;}
+.hero-meta span b{color:var(--text);font-weight:600;}
+
+section.rep{padding:0 0 60px;}
+.fig{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 14px;}
+
+footer.rep-footer{
+  border-top:1px solid var(--line);padding:20px 0;text-align:center;
+}
+.footer-back{
+  font-family:var(--mono);font-size:.78rem;color:var(--accent);text-decoration:none;
+  border:1px solid var(--line);padding:10px 22px;border-radius:6px;display:inline-block;
+  transition:border-color .2s ease;
+}
+.footer-back .arrow{position:relative;top:-2px;}
+.footer-back:hover{border-color:var(--accent);}
+.footer-note{font-family:var(--mono);font-size:.66rem;color:var(--text-dim);margin-top:18px;}
+
+@media(max-width:700px){
+  .topbar-title{display:none;}
+  .topbar{padding:12px 4%;}
+  .hero{padding:44px 0 28px;}
+}
+
+.sec-label{
+  font-family:var(--mono);font-size:11px;color:var(--text-dim);
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+}
+
+
+.filter-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;}
+.filter-chip{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--text-dim);border:1px solid var(--line);background:var(--bg-alt);
+  padding:6px 13px;border-radius:20px;transition:.2s;cursor:pointer;
+}
+.filter-chip:hover{border-color:var(--accent);color:var(--accent);}
+.filter-chip.active{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600;}
+
+.timeline{position:relative;padding-left:30px;}
+.timeline::before{
+  content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(to bottom, var(--accent), var(--line) 85%, transparent);
+}
+.tl-entry{position:relative;padding-bottom:26px;opacity:0;transform:translateY(14px);animation:tlIn .5s ease forwards;}
+.tl-entry:last-child{padding-bottom:0;}
+@keyframes tlIn{to{opacity:1;transform:translateY(0);}}
+.tl-node{
+  position:absolute;left:-30px;top:4px;width:12px;height:12px;border-radius:50%;
+  background:var(--bg-alt);border:2px solid var(--accent);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+.tl-entry[data-status="complete"] .tl-node{background:var(--accent);}
+.tl-entry[data-status="paused"] .tl-node{border-color:var(--text-dim);box-shadow:0 0 0 4px color-mix(in srgb, var(--text-dim) 12%, transparent);}
+.tl-date{
+  font-family:var(--mono);font-size:.68rem;letter-spacing:1px;text-transform:uppercase;
+  color:var(--accent2);margin-bottom:8px;
+}
+.tl-card{
+  background:var(--bg-alt);border:1px solid var(--line);border-radius:6px;
+  padding:16px 18px;transition:border-color .2s ease, transform .2s ease;
+  display:flex;gap:16px;flex-wrap:wrap;
+}
+.tl-card:hover{border-color:var(--accent);transform:translateX(2px);}
+.tl-main{flex:1 1 260px;min-width:0;}
+.tl-thumb{
+  flex:0 0 auto;width:150px;border-radius:5px;overflow:hidden;border:1px solid var(--line);
+  align-self:flex-start;background:var(--bg);
+}
+.tl-thumb img{width:100%;height:100px;object-fit:cover;display:block;}
+@media(max-width:600px){.tl-thumb{width:100%;order:-1;} .tl-thumb img{height:150px;}}
+.tl-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;}
+.tl-title{font-size:1rem;font-weight:700;color:var(--text);}
+.tl-project{font-size:.78rem;color:var(--text-dim);margin-top:3px;}
+.tl-status{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:1px;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;border:1px solid var(--line);white-space:nowrap;flex-shrink:0;
+}
+.tl-entry[data-status="complete"] .tl-status{color:var(--accent);border-color:var(--accent);}
+.tl-entry[data-status="in-progress"] .tl-status{color:var(--accent2);border-color:var(--accent2);}
+.tl-entry[data-status="paused"] .tl-status{color:var(--text-dim);}
+.tl-body{color:var(--body-text);font-size:.88rem;margin-top:10px;}
+.tl-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.tl-tag{
+  font-size:.68rem;color:var(--text-dim);border:1px solid var(--line);
+  padding:3px 10px;border-radius:20px;font-family:var(--mono);
+}
+.tl-tag.predates{color:var(--accent2);border-color:color-mix(in srgb, var(--accent2) 45%, var(--line));}
+.tl-jump{
+  font-family:var(--mono);font-size:.68rem;color:var(--accent);text-decoration:none;
+  border:1px solid var(--line);padding:4px 11px;border-radius:20px;white-space:nowrap;
+  transition:border-color .2s ease;display:inline-block;margin-top:12px;
+}
+.tl-jump:hover{border-color:var(--accent);}
+.tl-empty{
+  display:none;color:var(--text-dim);font-size:.85rem;padding:30px 0;text-align:center;
+  font-family:var(--mono);
+}
+.tl-card{position:relative;}
+.tl-project-badge{
+  position:absolute;right:16px;bottom:12px;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.4px;color:var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#projects" class="back-link"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="topbar-title">Project Updates</div>
+  <a class="topbar-dl" href="index.html#projects">All Projects</a>
+</div>
+
+<div class="wrap narrow">
+  <div class="hero">
+    <div class="hero-eyebrow">Changelog</div>
+    <h1>Project Updates</h1>
+    <p class="hero-sub">A single timeline covering every project on the portfolio with recent progress notes alongside the full back-catalogue, each entry linking straight back to its project card.</p>
+    <div class="hero-meta">
+      <span><b>Author</b> &nbsp;Tuong Bao Nguyen</span>
+      <span><b>Projects tracked</b> &nbsp;11</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="rep">
+    <div class="sec-label">Timeline</div>
+    <div class="fig">
+      <div class="filter-row" id="filterRow">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="in-progress">In Progress</button>
+        <button class="filter-chip" data-filter="complete">Complete</button>
+        <button class="filter-chip" data-filter="paused">Paused</button>
+      </div>
+
+      <div class="timeline" id="timeline">
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:0s">
+          <div class="tl-node"></div>
+          <div class="tl-date">7 August 2026</div>
+          <div class="tl-card">
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Added Updates Section</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Added this project updates timeline to the portfolio site, giving each project a running changelog with filtering by status.</div>
+              <a class="tl-jump" href="index.html#proj-portfolio-website">View project card &rarr;</a>
+            </div>
+            <div class="tl-project-badge">Portfolio Website</div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="paused" style="animation-delay:.02s">
+          <div class="tl-node"></div>
+          <div class="tl-date">5 August 2026</div>
+          <div class="tl-card">
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Begun work on Live NEM but paused</div>
+                </div>
+                <div class="tl-status">Paused</div>
+              </div>
+              <div class="tl-body">Paused while I'm focused on internships. Picking back up on the regional price-forecast panel and refresh pipeline once there's more time to dedicate to it.</div>
+              <a class="tl-jump" href="index.html#proj-nem-live">View project card &rarr;</a>
+            </div>
+            <div class="tl-project-badge">Live NEM</div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="in-progress" style="animation-delay:.06s">
+          <div class="tl-node"></div>
+          <div class="tl-date">August 2026</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/PersonalSoftware/Network Builder/NetworkBuilder.png" alt="Network Builder screenshot" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Bug Fixes</div>
+                </div>
+                <div class="tl-status">In Progress</div>
+              </div>
+              <div class="tl-body">In-browser network builder is live as a companion tool to the power flow analysis project; still refining the interaction model for constructing and testing transmission networks directly on the site.</div>
+              <a class="tl-jump" href="index.html#proj-network-builder">View project card &rarr;</a>
+            </div>
+            <div class="tl-project-badge">Network Builder</div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="in-progress" style="animation-delay:.1s">
+          <div class="tl-node"></div>
+          <div class="tl-date">Jun 2026 &ndash; Present</div>
+          <div class="tl-card">
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Online Personal Portfolio</div>
+                  <div class="tl-project">Self-directed · Web-Dev</div>
+                </div>
+                <div class="tl-status">In Progress</div>
+              </div>
+              <div class="tl-body">Core site is live and the interactive project cards, with ongoing polish and new features added as they come together.</div>
+              <div class="tl-tags">
+                <span class="tl-tag">Web-Dev</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-portfolio-website">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.14s">
+          <div class="tl-node"></div>
+          <div class="tl-date">Semester 1, 2026</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/AcademicElectric/InvertedPendulum/Images/Inverted Pendulum Project Photo.png" alt="Inverted Pendulum project photo" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Inverted Pendulum Stabilisation and Control System</div>
+                  <div class="tl-project">Academic · Feedback Control</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Finalised the control system design and passed hardware validation, with the system holding stable balance under external disturbance testing.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">Simulink</span>
+                <span class="tl-tag">Control Systems</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-inverted-pendulum">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.18s">
+          <div class="tl-node"></div>
+          <div class="tl-date">February 2026</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/PersonalElectric/PowerFlowSolver/Images/network_diagram.png" alt="Power flow network diagram" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Power Flow Analysis and Voltage Stability Assessment</div>
+                  <div class="tl-project">Self-directed · Power Systems</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Wrapped up the voltage stability assessment on the transmission network model and documented findings, including contingency scenarios and margin improvements.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">MATLAB</span>
+                <span class="tl-tag">Voltage Stability</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-power-flow-analysis">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.22s">
+          <div class="tl-node"></div>
+          <div class="tl-date">October 2025</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/PersonalElectric/SolarPlanter/Images/solarplanter front view.png" alt="Solar Powered Autonomous Seed Planter photo" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Solar Powered Autonomous Seed Planter</div>
+                  <div class="tl-project">Team-based · Embedded Systems</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Field testing finished for the semester with the seed-drop mechanism performing reliably across trials. Closed out as a complete build.</div>
+              <div class="tl-tags">
+                <span class="tl-tag">Embedded</span>
+                <span class="tl-tag">Solar</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-seed-planter">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.26s">
+          <div class="tl-node"></div>
+          <div class="tl-date">October 2025</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/PersonalElectric/AutoPetFeeder/Images/Auto Pet Feeder Isometric .png" alt="Automatic Pet Feeder isometric render" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Automatic Pet Feeder</div>
+                  <div class="tl-project">Team-based · Embedded Systems</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Wrapped up the build and testing of the scheduled feeding mechanism and control electronics.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">Embedded</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-pet-feeder">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.3s">
+          <div class="tl-node"></div>
+          <div class="tl-date">Semester 1, 2025</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/AcademicElectric/ENAD/Images/speaker system.png" alt="Custom Speaker System photo" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Custom Speaker System with Integrated Equaliser</div>
+                  <div class="tl-project">Academic · Analogue Circuits</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Designed and built the analogue equaliser circuit and integrated speaker system as part of coursework.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">Analogue Circuits</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-speaker-equaliser">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.34s">
+          <div class="tl-node"></div>
+          <div class="tl-date">Semester 1, 2024</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/AcademicElectric/FPGA Clock/Images/DE1-SoC project.jpg" alt="FPGA Clock on DE1-SoC board" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">FPGA Clock</div>
+                  <div class="tl-project">Academic · Digital Systems</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Built and verified a digital clock implemented on an FPGA as part of a digital systems course.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">Digital Systems</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-fpga-clock">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.38s">
+          <div class="tl-node"></div>
+          <div class="tl-date">March 2024</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/PersonalSoftware/LoginSystem/loginscreen.jpg" alt="Login and Registration System screenshot" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Login and Registration System</div>
+                  <div class="tl-project">Self-directed · Python</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Finished building the login and registration flow, including validation and account handling.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">Python</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-login-system">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-entry" data-status="complete" style="animation-delay:.42s">
+          <div class="tl-node"></div>
+          <div class="tl-date">January 2024</div>
+          <div class="tl-card">
+            <div class="tl-thumb"><img src="Projects/PersonalSoftware/ImageEditor/imageeditorscreen.jpg" alt="Image Editor screenshot" loading="lazy"></div>
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">Image Editor</div>
+                  <div class="tl-project">Self-directed · Python</div>
+                </div>
+                <div class="tl-status">Complete</div>
+              </div>
+              <div class="tl-body">Finished the standalone image editing tool built in Python.</div>
+              <div class="tl-tags">
+                <span class="tl-tag predates">Predates updates page</span>
+                <span class="tl-tag">Python</span>
+              </div>
+              <a class="tl-jump" href="index.html#proj-image-editor">View project card &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tl-empty" id="tlEmpty">No updates in this category yet.</div>
+    </div>
+  </section>
+</div>
+
+<footer class="rep-footer">
+  <a class="footer-back" href="index.html#projects"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="footer-note">Project Updates &middot; Tuong Bao Nguyen</div>
+</footer>
+
+<script>
+  (function(){
+    const chips = document.querySelectorAll('.filter-chip');
+    const entries = document.querySelectorAll('.tl-entry');
+    const empty = document.getElementById('tlEmpty');
+
+    chips.forEach(chip=>{
+      chip.addEventListener('click', ()=>{
+        chips.forEach(c=>c.classList.remove('active'));
+        chip.classList.add('active');
+        const filter = chip.dataset.filter;
+        let visibleCount = 0;
+        entries.forEach(entry=>{
+          const match = filter === 'all' || entry.dataset.status === filter;
+          entry.style.display = match ? '' : 'none';
+          if(match) visibleCount++;
+        });
+        empty.style.display = visibleCount === 0 ? 'block' : 'none';
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
