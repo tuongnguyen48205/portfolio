@@ -1762,7 +1762,12 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
       built.push({ track, naturalDuration });
 
       clones.forEach(clone=>{
-        makeTappable(clone, ()=>clone.innerHTML);
+        makeTappable(clone, ()=>{
+          const img = clone.querySelector('img');
+          if(!img) return clone.innerHTML;
+          const fullSrc = img.dataset.full || img.src;
+          return `<img src="${fullSrc}" alt="${img.alt}" loading="lazy" decoding="async">`;
+        });
       });
     });
 
