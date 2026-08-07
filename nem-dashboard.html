@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<script>
+(function(){
+  try{
+    var t = localStorage.getItem('theme_preference');
+    if (t && t !== 'dark') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuong N | NEM Live</title>
+<link rel="icon" type="image/png" href="MainImages/titleicon.png">
+<meta name="description" content="NEM Live — a real-time dashboard visualising spot price, demand, and generation mix across Australia's National Electricity Market, built with a Cloudflare Worker proxy in front of the Open Electricity API.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0e14;
+  --bg-alt:#0f151d;
+  --panel:#131a24;
+  --line:#22303f;
+  --accent:#4cc9f0;
+  --accent2:#f5b942;
+  --red:#ef6461;
+  --green:#5fb86e;
+  --text:#e9eef2;
+  --text-dim:#8ea0ad;
+  --body-text:#c7d2da;
+  --mono:'JetBrains Mono','Courier New',monospace;
+}
+html[data-theme="light"]{
+  --bg:#faf6ee;--bg-alt:#f2ebda;--panel:#fffdf7;--line:#e4d8c0;
+  --accent:#6fa3c7;--accent2:#e2a366;--text:#3d3527;--text-dim:#8a7d68;
+  --body-text:#5c5140;
+}
+html[data-theme="blueprint"]{
+  --bg:#0b2947;--bg-alt:#0f3159;--panel:#123a63;--line:#2c5680;
+  --accent:#8fd3ff;--accent2:#ffd166;--text:#eaf4ff;--text-dim:#9fc3e0;
+  --body-text:#d3e6fa;
+}
+html[data-theme="terminal"]{
+  --bg:#03110a;--bg-alt:#06180f;--panel:#082014;--line:#163a26;
+  --accent:#3dffa0;--accent2:#ffcc66;--text:#dcffe9;--text-dim:#69a687;
+  --body-text:#bfe9d2;
+}
+html[data-theme="copper"]{
+  --bg:#1a100a;--bg-alt:#231508;--panel:#2b1a0d;--line:#4a2f18;
+  --accent:#e08a3c;--accent2:#ffce54;--text:#f5e6d3;--text-dim:#c9a37c;
+  --body-text:#e9d4b9;
+}
+html[data-theme="storm"]{
+  --bg:#12121c;--bg-alt:#181826;--panel:#1e1e30;--line:#33334d;
+  --accent:#a78bfa;--accent2:#f472b6;--text:#eae8f7;--text-dim:#9a94b8;
+  --body-text:#d4cfec;
+}
+html[data-theme="ember"]{
+  --bg:#1a0b0b;--bg-alt:#230f0f;--panel:#2b1212;--line:#4a1f1f;
+  --accent:#e0503c;--accent2:#ff8a54;--text:#f5dcd3;--text-dim:#c98d7c;
+  --body-text:#ecd2c8;
+}
+html[data-theme="solar"]{
+  --bg:#1a1608;--bg-alt:#231d09;--panel:#2b230d;--line:#4a3f18;
+  --accent:#e0c23c;--accent2:#ff8c3c;--text:#f5f0d3;--text-dim:#c9bc7c;
+  --body-text:#ece0bd;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+html,body{overflow-x:clip;max-width:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+}
+::selection{background:var(--accent);color:var(--bg);}
+a{color:var(--accent);}
+img{max-width:100%;display:block;}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:14px 6%;background:color-mix(in srgb, var(--bg) 86%, transparent);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.back-link{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.5px;color:var(--text-dim);
+  text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s ease;
+}
+.back-link .arrow{position:relative;top:-2px;}
+.back-link:hover{color:var(--accent);}
+.topbar-title{font-family:var(--mono);font-size:.68rem;letter-spacing:1.5px;color:var(--text-dim);text-transform:uppercase;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.topbar-dl{
+  font-family:var(--mono);font-size:.68rem;color:var(--accent2);text-decoration:none;
+  border:1px solid var(--line);padding:6px 12px;border-radius:5px;transition:border-color .2s ease,color .2s ease;
+  white-space:nowrap;
+}
+.topbar-dl:hover{border-color:var(--accent2);}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 6%;}
+.wrap.narrow{max-width:880px;}
+
+.hero{padding:70px 0 40px;}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.hero-eyebrow::before{content:'';width:26px;height:2px;background:var(--accent);display:inline-block;}
+.hero h1{
+  font-weight:800;font-size:clamp(1.9rem,4.2vw,2.9rem);line-height:1.15;
+  margin:0 0 14px;color:var(--text);
+}
+.hero-sub{
+  color:var(--text-dim);font-size:1.05rem;margin:0 0 22px;max-width:720px;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px 18px;font-family:var(--mono);font-size:.74rem;color:var(--text-dim);margin-bottom:26px;}
+.hero-meta span b{color:var(--text);font-weight:600;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;}
+.chip{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.5px;color:var(--text-dim);
+  border:1px solid var(--line);border-radius:20px;padding:4px 12px;
+}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;}
+.btn{
+  font-family:var(--mono);font-size:.74rem;text-decoration:none;padding:9px 18px;border-radius:6px;
+  border:1px solid var(--line);color:var(--text);transition:border-color .2s ease,color .2s ease,background .2s ease;
+  display:inline-block;
+}
+.btn.primary{border-color:var(--accent);color:var(--accent);}
+.btn.primary:hover{background:color-mix(in srgb, var(--accent) 10%, transparent);}
+.btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+section.rep{padding:0 0 60px;}
+.fig{margin:26px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 18px 14px;}
+
+.callout{
+  border-left:3px solid var(--accent2);background:var(--bg-alt);border-radius:0 6px 6px 0;
+  padding:14px 18px;margin:22px 0;color:var(--body-text);font-size:.9rem;
+}
+.callout b{color:var(--accent2);}
+
+footer.rep-footer{
+  border-top:1px solid var(--line);padding:20px 0;text-align:center;
+}
+.footer-back{
+  font-family:var(--mono);font-size:.78rem;color:var(--accent);text-decoration:none;
+  border:1px solid var(--line);padding:10px 22px;border-radius:6px;display:inline-block;
+  transition:border-color .2s ease;
+}
+.footer-back .arrow{position:relative;top:-2px;}
+.footer-back:hover{border-color:var(--accent);}
+.footer-note{font-family:var(--mono);font-size:.66rem;color:var(--text-dim);margin-top:18px;}
+
+@media(max-width:700px){
+  .topbar-title{display:none;}
+  .topbar{padding:12px 4%;}
+  .hero{padding:44px 0 28px;}
+}
+
+.nwb-status-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--line);
+  gap:16px;flex-wrap:wrap;
+}
+.brand-eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);animation:pulse 2s infinite;}
+.pulse-dot.off{background:var(--text-dim);animation:none;box-shadow:none;}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent);}
+  70%{box-shadow:0 0 0 8px color-mix(in srgb, var(--accent) 0%, transparent);}
+  100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);}
+}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.clock{font-family:var(--mono);font-size:15px;color:var(--text);}
+.clock-label{font-size:10px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;}
+
+.key-row{display:flex;gap:8px;align-items:center;}
+.nwb-status-row input[type=text]{
+  background:var(--bg-alt);border:1px solid var(--line);color:var(--text);
+  font-family:var(--mono);font-size:12px;padding:7px 10px;border-radius:4px;
+  width:220px;outline:none;
+}
+.nwb-status-row input:focus{border-color:var(--accent);}
+.btn-connect{
+  font:inherit;font-family:var(--mono);font-size:12px;background:var(--accent);
+  color:var(--bg);border:1px solid var(--accent);padding:7px 14px;border-radius:4px;
+  cursor:pointer;letter-spacing:.03em;font-weight:600;
+}
+.btn-connect:hover{opacity:.88;}
+
+.banner{
+  font-family:var(--mono);font-size:12px;color:var(--accent2);
+  background:color-mix(in srgb, var(--accent2) 8%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent2) 25%, transparent);
+  padding:10px 14px;border-radius:4px;margin-bottom:22px;line-height:1.6;
+}
+.banner b{color:var(--accent2);}
+.banner.error{
+  color:var(--red);background:color-mix(in srgb, var(--red) 8%, transparent);
+  border-color:color-mix(in srgb, var(--red) 25%, transparent);
+}
+
+.bus-label{
+  font-family:var(--mono);font-size:11px;color:var(--text-dim);
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;
+}
+.bus{position:relative;margin-bottom:30px;}
+.bus-line{position:absolute;top:4px;left:0;right:0;height:1px;background:var(--line);z-index:0;}
+.region-rail{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;position:relative;z-index:1;}
+.node{display:flex;justify-content:center;margin-bottom:10px;}
+.node span{
+  width:9px;height:9px;border-radius:50%;background:var(--bg);border:2px solid var(--line);
+  display:block;
+}
+.node span.live{border-color:var(--accent);box-shadow:0 0 8px color-mix(in srgb, var(--accent) 50%, transparent);}
+
+.region-card{
+  background:var(--bg-alt);border:1px solid var(--line);border-radius:6px;
+  padding:16px 14px;cursor:pointer;transition:border-color .15s;
+}
+.region-card:hover{border-color:var(--accent2);}
+.region-card.selected{border-color:var(--accent);}
+.region-name{font-family:var(--mono);font-size:12px;color:var(--text-dim);letter-spacing:.06em;}
+.region-price{font-family:var(--mono);font-size:24px;font-weight:600;margin:8px 0 2px;color:var(--text);}
+.region-price.low{color:var(--accent);}
+.region-price.mid{color:var(--accent2);}
+.region-price.high{color:var(--red);}
+.region-price-unit{font-size:11px;color:var(--text-dim);font-weight:400;margin-left:4px;}
+.region-demand{font-size:12px;color:var(--text-dim);font-family:var(--mono);}
+
+.panels{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+@media(max-width:820px){.panels{grid-template-columns:1fr;} .region-rail{grid-template-columns:repeat(2,1fr);} .bus-line{display:none;}}
+.panel{background:var(--bg-alt);border:1px solid var(--line);border-radius:6px;padding:20px;}
+.panel-title{
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-dim);margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;
+}
+.chart-wrap{position:relative;height:280px;}
+.legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:14px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);font-family:var(--mono);}
+.legend-swatch{width:9px;height:9px;border-radius:2px;}
+
+.stat-list{display:flex;flex-direction:column;gap:14px;}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px dashed var(--line);padding-bottom:10px;}
+.stat-row:last-child{border-bottom:none;padding-bottom:0;}
+.stat-label{font-size:12px;color:var(--text-dim);}
+.stat-value{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--text);}
+.stat-value.teal{color:var(--accent);}
+.stat-value.amber{color:var(--accent2);}
+
+.data-footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  font-size:11px;color:var(--text-dim);font-family:var(--mono);}
+.data-footer a{color:var(--text-dim);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html#projects" class="back-link"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="topbar-title">Power Systems Engineering</div>
+  <a class="topbar-dl" href="https://openelectricity.org.au" target="_blank" rel="noopener">Open Electricity ↗</a>
+</div>
+
+<div class="wrap narrow">
+  <div class="hero">
+    <div class="hero-eyebrow">Self-Directed &middot; Power Systems / Web-Dev</div>
+    <h1>Live National Electricity Market Dashboard</h1>
+    <p class="hero-sub">A real-time dashboard tracking spot price, demand, and generation mix across Australia's five National Electricity Market (NEM) regions, surfacing regional price separation and the underlying fuel mix behind it as market conditions shift. Pulls live data from the Open Electricity API.</p>
+    <div class="hero-meta">
+      <span><b>Author</b> &nbsp;Tuong Bao Nguyen</span>
+      <span><b>Data source</b> &nbsp;Open Electricity API v4</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="rep">
+    <div class="fig">
+
+      <div class="nwb-status-row">
+        <div class="brand-eyebrow"><span class="pulse-dot" id="pulseDot"></span><span id="modeLabel">DEMO MODE</span></div>
+        <div class="header-right">
+          <div>
+            <div class="clock-label">Local time</div>
+            <div class="clock" id="clock">--:--:--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="banner" id="statusBanner">
+        <b>Running on demo data.</b> Live data is loading from the proxy — this will update automatically.
+      </div>
+
+      <div class="bus-label">Network regions — click a bus to inspect</div>
+      <div class="bus">
+        <div class="bus-line"></div>
+        <div class="region-rail" id="regionRail"></div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <div class="panel-title">
+            <span id="chartTitle">Generation mix — NSW1 — last 24h</span>
+            <span id="chartRefresh" style="color:var(--text-dim);font-weight:400;">refresh in 5:00</span>
+          </div>
+          <div class="chart-wrap"><canvas id="mixChart"></canvas></div>
+          <div class="legend" id="legend"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Region snapshot</div>
+          <div class="stat-list" id="statList"></div>
+        </div>
+      </div>
+
+      <div class="data-footer">
+        <span>Data: Open Electricity (openelectricity.org.au), CC BY-NC 4.0.</span>
+        <span>Built with the Open Electricity API v4</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="rep-footer">
+  <a class="footer-back" href="index.html#projects"><span class="arrow">&larr;</span> Back to portfolio</a>
+  <div class="footer-note">NEM Live &middot; Tuong Bao Nguyen</div>
+</footer>
+
+<script>
+
+const REGIONS = ["NSW1","QLD1","SA1","TAS1","VIC1"];
+const FUEL_COLORS = {
+  coal:        "#8a7a5c",
+  gas:         "#e3956b",
+  wind:        "#35d0a0",
+  solar:       "#f2c14e",
+  solar_utility: "#f2c14e",
+  solar_rooftop: "#f2e08a",
+  hydro:       "#4a90d9",
+  pumps:       "#2f6f9e",
+  battery_discharging: "#a78bfa",
+  battery_charging: "#6b5b95",
+  distillate:  "#e35b5b",
+  bioenergy:   "#8bc34a",
+  other:       "#556364"
+};
+const FUEL_LABELS = {
+  coal:"Coal", gas:"Gas", wind:"Wind", solar:"Solar",
+  solar_utility:"Solar (utility)", solar_rooftop:"Solar (rooftop)", hydro:"Hydro", pumps:"Pumps",
+  battery_discharging:"Battery (discharge)", battery_charging:"Battery (charge)",
+  distillate:"Distillate", bioenergy:"Bioenergy", other:"Other"
+};
+const SKIP_FUELS = new Set(["battery"]);
+
+
+let proxyUrl = null;
+let selectedRegion = "NSW1";
+let mixChart = null;
+let refreshTimer = null;
+let countdown = 300;
+
+
+function cssVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function demoPriceDemand(region){
+  const base = {NSW1:85, QLD1:70, SA1:110, TAS1:55, VIC1:95}[region] || 80;
+  const jitter = (Math.random()-0.5) * 40;
+  const price = Math.round((base + jitter) * 100) / 100;
+  const demand = Math.round(({NSW1:8200,QLD1:6400,SA1:1500,TAS1:1100,VIC1:5600}[region]||3000) + (Math.random()-0.5)*400);
+  return {price, demand};
+}
+
+function demoMix(){
+  const hours = 24;
+  const labels = [];
+  const now = new Date();
+  const series = {coal:[], gas:[], wind:[], solar_utility:[], hydro:[], battery_discharging:[]};
+  for(let i=hours-1;i>=0;i--){
+    const t = new Date(now.getTime() - i*3600*1000);
+    labels.push(t.getHours().toString().padStart(2,"0")+":00");
+    const hour = t.getHours();
+    const solar = Math.max(0, Math.sin(((hour-6)/12)*Math.PI)) * 3200;
+    const wind = 1200 + Math.random()*1400;
+    const coal = 4200 + Math.random()*600;
+    const gas = 900 + Math.random()*500 + (hour>17&&hour<21 ? 700 : 0);
+    const hydro = 400 + Math.random()*300;
+    const batt = (hour>17&&hour<20) ? 300+Math.random()*200 : Math.random()*80;
+    series.coal.push(Math.round(coal));
+    series.gas.push(Math.round(gas));
+    series.wind.push(Math.round(wind));
+    series.solar_utility.push(Math.round(solar));
+    series.hydro.push(Math.round(hydro));
+    series.battery_discharging.push(Math.round(batt));
+  }
+  return {labels, series};
+}
+
+function apiBase(){
+  if(!proxyUrl) throw new Error("No proxy URL configured — see PROXY-SETUP.md");
+  return proxyUrl.replace(/\/+$/, "") + "/v4";
+}
+
+function toNemLocalStamp(date){
+  const nemMs = date.getTime() + 10*60*60*1000; 
+  const d = new Date(nemMs);
+  const pad = n => String(n).padStart(2,"0");
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+}
+
+async function fetchJSON(path, params){
+  const url = new URL(apiBase() + path);
+  Object.entries(params).forEach(([k,v])=>{
+    if(Array.isArray(v)) v.forEach(x=>url.searchParams.append(k,x));
+    else url.searchParams.append(k,v);
+  });
+  const res = await fetch(url.toString());
+  if(!res.ok){
+    const body = await res.text().catch(()=> "");
+    throw new Error("HTTP "+res.status+" "+body.slice(0,140));
+  }
+  return res.json();
+}
+
+async function fetchLivePriceDemand(){
+  const end = new Date();
+  const start = new Date(end.getTime() - 3*60*60*1000); 
+  const json = await fetchJSON("/market/network/NEM", {
+    metrics: ["price","demand"],
+    interval: "5m",
+    date_start: toNemLocalStamp(start),
+    date_end: toNemLocalStamp(end),
+    primary_grouping: "network_region"
+  });
+  console.log("[NEM LIVE] price/demand response", json);
+  const out = {};
+  REGIONS.forEach(r => out[r] = {price:null, demand:null});
+  (json.data || []).forEach(series => {
+    (series.results || []).forEach(r => {
+      const region = r.columns && r.columns.region;
+      const points = r.data || [];
+      const last = points[points.length-1]; 
+      if(!last || !region || !out[region]) return;
+      const value = last[1];
+      if(series.metric === "price") out[region].price = value;
+      if(series.metric === "demand") out[region].demand = value;
+    });
+  });
+  const gotAny = Object.values(out).some(v => v.price!=null || v.demand!=null);
+  if(!gotAny) throw new Error("API returned no price/demand records for the requested window");
+  return out;
+}
+
+async function fetchLiveMix(region){
+  const end = new Date();
+  const start = new Date(end.getTime() - 24*60*60*1000);
+  const json = await fetchJSON("/data/network/NEM", {
+    metrics: ["power"],
+    interval: "1h",
+    date_start: toNemLocalStamp(start),
+    date_end: toNemLocalStamp(end),
+    network_region: region,
+    secondary_grouping: "fueltech_group"
+  });
+  console.log("[NEM LIVE] generation mix response", json);
+  const series = json.data && json.data[0];
+  if(!series || !(series.results||[]).length) throw new Error("No generation data returned for " + region);
+  const labelSet = new Set();
+  const byFuel = {};
+  (series.results || []).forEach(r => {
+    const fuel = (r.columns && r.columns.fueltech_group) || r.name || "other";
+    if(SKIP_FUELS.has(fuel)) return;
+    byFuel[fuel] = {};
+    (r.data || []).forEach(([timestamp, value]) => {
+      const t = new Date(timestamp);
+      const label = t.getHours().toString().padStart(2,"0")+":00";
+      labelSet.add(label);
+      byFuel[fuel][label] = value;
+    });
+  });
+  const labels = Array.from(labelSet);
+  const out = {};
+  Object.entries(byFuel).forEach(([fuel, map]) => {
+    out[fuel] = labels.map(l => map[l] ?? 0);
+  });
+  return {labels, series: out};
+}
+
+function priceClass(price){
+  if(price === null || price === undefined) return "";
+  if(price < 60) return "low";
+  if(price < 200) return "mid";
+  return "high";
+}
+
+function renderRegions(priceDemand){
+  const rail = document.getElementById("regionRail");
+  rail.innerHTML = "";
+  REGIONS.forEach(region => {
+    const d = priceDemand[region] || {price:null, demand:null};
+    const card = document.createElement("div");
+    card.innerHTML = `
+      <div class="node"><span class="${proxyUrl?'live':''}"></span></div>
+      <div class="region-card ${region===selectedRegion?'selected':''}" data-region="${region}">
+        <div class="region-name">${region}</div>
+        <div class="region-price ${priceClass(d.price)}">${d.price!=null ? '$'+d.price.toFixed(0) : '—'}<span class="region-price-unit">/MWh</span></div>
+        <div class="region-demand">${d.demand!=null ? Math.round(d.demand).toLocaleString()+' MW demand' : 'no data'}</div>
+      </div>`;
+    rail.appendChild(card);
+  });
+  rail.querySelectorAll(".region-card").forEach(el => {
+    el.addEventListener("click", () => {
+      selectedRegion = el.dataset.region;
+      loadAll(false);
+    });
+  });
+}
+
+function renderStats(priceDemand){
+  const list = document.getElementById("statList");
+  const d = priceDemand[selectedRegion] || {};
+  const prices = REGIONS.map(r => priceDemand[r] && priceDemand[r].price).filter(v => v!=null);
+  const avg = prices.length ? (prices.reduce((a,b)=>a+b,0)/prices.length) : null;
+  const max = prices.length ? Math.max(...prices) : null;
+  const maxRegion = REGIONS.find(r => priceDemand[r] && priceDemand[r].price === max);
+  list.innerHTML = `
+    <div class="stat-row"><span class="stat-label">Selected region</span><span class="stat-value">${selectedRegion}</span></div>
+    <div class="stat-row"><span class="stat-label">Spot price</span><span class="stat-value ${priceClass(d.price)==='high'?'amber':'teal'}">${d.price!=null?'$'+d.price.toFixed(2):'—'} /MWh</span></div>
+    <div class="stat-row"><span class="stat-label">Demand</span><span class="stat-value">${d.demand!=null?Math.round(d.demand).toLocaleString()+' MW':'—'}</span></div>
+    <div class="stat-row"><span class="stat-label">NEM average price</span><span class="stat-value">${avg!=null?'$'+avg.toFixed(2):'—'}</span></div>
+    <div class="stat-row"><span class="stat-label">Highest-priced region</span><span class="stat-value amber">${maxRegion || '—'}</span></div>
+    <div class="stat-row"><span class="stat-label">Data source</span><span class="stat-value" style="font-size:12px;">${proxyUrl?'Open Electricity API (live)':'Demo data'}</span></div>
+  `;
+}
+
+function renderChart(mix){
+  const ctx = document.getElementById("mixChart").getContext("2d");
+  const fuels = Object.keys(mix.series).filter(f => mix.series[f].some(v=>v>0));
+  const datasets = fuels.map(fuel => ({
+    label: FUEL_LABELS[fuel] || fuel,
+    data: mix.series[fuel],
+    backgroundColor: (FUEL_COLORS[fuel]||"#556364") + "cc",
+    borderColor: FUEL_COLORS[fuel]||"#556364",
+    borderWidth: 1,
+    fill: true,
+    tension: 0.25,
+    pointRadius: 0
+  }));
+
+  const gridColor = cssVar('--line') || "#1c2528";
+  const tickColor = cssVar('--text-dim') || "#7c8c8c";
+  const panelColor = cssVar('--bg-alt') || "#10171a";
+
+  if(mixChart) mixChart.destroy();
+  mixChart = new Chart(ctx, {
+    type: "line",
+    data: { labels: mix.labels, datasets },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:"index", intersect:false},
+      scales:{
+        x:{ stacked:true, grid:{color:gridColor}, ticks:{color:tickColor, font:{family:"JetBrains Mono", size:10}} },
+        y:{ stacked:true, grid:{color:gridColor}, ticks:{color:tickColor, font:{family:"JetBrains Mono", size:10}}, title:{display:true, text:"MW", color:tickColor} }
+      },
+      plugins:{ legend:{display:false}, tooltip:{ backgroundColor:panelColor, borderColor:gridColor, borderWidth:1, titleFont:{family:"JetBrains Mono"}, bodyFont:{family:"JetBrains Mono", size:11} } }
+    }
+  });
+
+  const legend = document.getElementById("legend");
+  legend.innerHTML = fuels.map(f => `
+    <div class="legend-item"><span class="legend-swatch" style="background:${FUEL_COLORS[f]||'#556364'}"></span>${FUEL_LABELS[f]||f}</div>
+  `).join("");
+
+  document.getElementById("chartTitle").textContent = `Generation mix — ${selectedRegion} — last 24h`;
+}
+
+async function loadAll(isAutoRefresh){
+  const banner = document.getElementById("statusBanner");
+  const modeLabel = document.getElementById("modeLabel");
+  const pulseDot = document.getElementById("pulseDot");
+
+  if(!proxyUrl){
+    modeLabel.textContent = "DEMO MODE";
+    pulseDot.classList.add("off");
+    banner.className = "banner";
+    banner.innerHTML = `<b>Running on demo data.</b> Enter your deployed proxy URL and click Connect to pull live NEM data.
+      See PROXY-SETUP.md if you haven't deployed the proxy yet.`;
+    const priceDemand = {};
+    REGIONS.forEach(r => priceDemand[r] = demoPriceDemand(r));
+    renderRegions(priceDemand);
+    renderStats(priceDemand);
+    renderChart(demoMix());
+    return;
+  }
+
+  modeLabel.textContent = "LIVE";
+  pulseDot.classList.remove("off");
+  banner.className = "banner";
+  banner.innerHTML = `<b>Connected.</b> Pulling live data from the Open Electricity API. Attribution: openelectricity.org.au, CC BY-NC 4.0.`;
+
+  const errors = [];
+
+  let priceDemand;
+  try{
+    priceDemand = await fetchLivePriceDemand();
+    renderRegions(priceDemand);
+    renderStats(priceDemand);
+  }catch(err){
+    console.error("[NEM LIVE] price/demand fetch failed:", err);
+    errors.push("price/demand — " + err.message);
+    priceDemand = {};
+    REGIONS.forEach(r => priceDemand[r] = demoPriceDemand(r));
+    renderRegions(priceDemand);
+    renderStats(priceDemand);
+  }
+
+  try{
+    const mix = await fetchLiveMix(selectedRegion);
+    renderChart(mix);
+  }catch(err){
+    console.error("[NEM LIVE] generation mix fetch failed:", err);
+    errors.push("generation mix — " + err.message);
+    renderChart(demoMix());
+  }
+
+  if(errors.length){
+    banner.className = "banner error";
+    banner.innerHTML = `<b>Partial or failed live data:</b> ${errors.join("; ")}. Open the browser console for the raw API response. If this is a CORS/network error, try running via a local server or deploying instead of opening the file directly.`;
+    if(errors.length === 2){ modeLabel.textContent = "DEMO MODE"; pulseDot.classList.add("off"); }
+  }
+}
+
+function resetCountdown(){
+  countdown = 300;
+}
+
+function tickClock(){
+  const now = new Date();
+  document.getElementById("clock").textContent = now.toLocaleTimeString();
+  const el = document.getElementById("chartRefresh");
+  const m = Math.floor(countdown/60), s = countdown%60;
+  el.textContent = `refresh in ${m}:${s.toString().padStart(2,"0")}`;
+  countdown--;
+  if(countdown < 0){
+    resetCountdown();
+    loadAll(true);
+  }
+}
+
+
+proxyUrl = "https://nem-dashboard.tuongnguyen48205.workers.dev";
+loadAll(false);
+setInterval(tickClock, 1000);
+</script>
+</body>
+</html>
