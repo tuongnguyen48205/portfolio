@@ -72,7 +72,13 @@ html[data-theme="solar"]{
 html{scroll-behavior:smooth;}
 html,body{overflow-x:clip;max-width:100%;}
 body{
-  margin:0;background:var(--bg);color:var(--text);
+  margin:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent),
+    var(--bg);
+  background-color:var(--bg);
+  background-attachment:fixed;
+  color:var(--text);
   font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   line-height:1.65;
 }
