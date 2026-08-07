@@ -71,7 +71,13 @@ html[data-theme="solar"]{
 html{scroll-behavior:smooth;}
 html,body{overflow-x:clip;max-width:100%;}
 body{
-  margin:0;background:var(--bg);color:var(--text);
+  margin:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in srgb, var(--accent) 7%, transparent), transparent),
+    var(--bg);
+  background-color:var(--bg);
+  background-attachment:fixed;
+  color:var(--text);
   font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
   line-height:1.65;
 }
@@ -182,7 +188,7 @@ footer.rep-footer{
       <span><b>Built from</b> &nbsp;ybus.py &amp; newton_raphson.py</span>
     </div>
     <div class="hero-actions">
-      <a class="btn primary" href="power-flow-analysis.html">Read the full write-up ↗</a>
+      <a class="btn primary" href="Projects/PersonalElectric/PowerFlowSolver/power-flow-analysis.html">Read the full write-up ↗</a>
       <a class="btn" href="Projects/PersonalElectric/PowerFlowSolver/powerflowproject.zip" download>↓ Download Python source</a>
     </div>
   </div>
@@ -203,7 +209,7 @@ footer.rep-footer{
   <div class="footer-note">Network Builder &middot; Tuong Bao Nguyen</div>
 </footer>
 
-<script src="network-builder.bundle.js"></script>
+<script src="Projects/PersonalSoftware/Network Builder/network-builder.bundle.js"></script>
 
 </body>
 </html>
