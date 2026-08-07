@@ -152,7 +152,8 @@ footer.rep-footer{
 }
 
 
-.filter-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;}
+.filter-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:22px;}
+.filter-row-date{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-left:auto;}
 .filter-chip{
   font-family:var(--mono);font-size:.7rem;letter-spacing:.5px;text-transform:uppercase;
   color:var(--text-dim);border:1px solid var(--line);background:var(--bg-alt);
@@ -160,6 +161,25 @@ footer.rep-footer{
 }
 .filter-chip:hover{border-color:var(--accent);color:var(--accent);}
 .filter-chip.active{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600;}
+.filter-select{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--text-dim);border:1px solid var(--line);background:var(--bg-alt);
+  padding:6px 30px 6px 13px;border-radius:20px;cursor:pointer;transition:.2s;
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  margin:0;line-height:1.4;
+}
+.filter-select:hover,.filter-select:focus{border-color:var(--accent);color:var(--accent);outline:none;}
+.filter-select::-ms-expand{display:none;}
+.select-wrap{position:relative;display:inline-flex;align-items:center;}
+.select-wrap::after{
+  content:'';position:absolute;right:14px;top:50%;
+  width:6px;height:6px;
+  border-right:1.5px solid var(--text-dim);border-bottom:1.5px solid var(--text-dim);
+  transform:translateY(-70%) rotate(45deg);
+  pointer-events:none;transition:border-color .2s ease;
+}
+.select-wrap:hover::after,.select-wrap:focus-within::after{border-color:var(--accent);}
+.filter-divider{width:1px;height:16px;background:var(--line);margin:0 2px;}
 
 .timeline{position:relative;padding-left:30px;}
 .timeline::before{
@@ -216,6 +236,16 @@ footer.rep-footer{
   transition:border-color .2s ease;display:inline-block;margin-top:12px;
 }
 .tl-jump:hover{border-color:var(--accent);}
+
+.tl-placeholder-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;}
+.tl-placeholder-img{
+  aspect-ratio:4/3;border-radius:5px;border:1px dashed var(--line);
+  background:var(--bg);display:flex;align-items:center;justify-content:center;
+  color:var(--text-dim);cursor:zoom-in;transition:border-color .2s ease, color .2s ease;
+}
+.tl-placeholder-img:hover{border-color:var(--accent);color:var(--accent);}
+.tl-placeholder-img svg{width:26px;height:26px;opacity:.55;}
+@media(max-width:600px){.tl-placeholder-grid{grid-template-columns:repeat(3,1fr);gap:6px;}}
 .tl-empty{
   display:none;color:var(--text-dim);font-size:.85rem;padding:30px 0;text-align:center;
   font-family:var(--mono);
@@ -225,6 +255,46 @@ footer.rep-footer{
   position:absolute;right:16px;bottom:12px;
   font-family:var(--mono);font-size:.66rem;letter-spacing:.4px;color:var(--text-dim);
 }
+.tl-datebar{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 10px;}
+.tl-datebar .tl-date{margin-bottom:8px;}
+.tl-date-project{
+  display:none;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.4px;color:var(--text-dim);
+  margin-bottom:8px;
+}
+@media(max-width:600px){
+  .tl-date-project{display:inline-block;}
+  .tl-project-badge{display:none;}
+}
+
+.tl-thumb{cursor:zoom-in;}
+.tl-thumb img{transition:transform .25s ease;}
+.tl-thumb:hover img{transform:scale(1.05);}
+
+.lightbox-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:color-mix(in srgb, var(--bg) 85%, black 15%);
+  display:flex;align-items:center;justify-content:center;
+  padding:6vh 6vw;
+  opacity:0;visibility:hidden;
+  transition:opacity .25s ease, visibility .25s ease;
+  cursor:zoom-out;
+}
+.lightbox-overlay.active{opacity:1;visibility:visible;}
+.lightbox-content{max-width:100%;max-height:100%;}
+.lightbox-content img{
+  display:block;max-width:100%;max-height:88vh;
+  border-radius:8px;border:1px solid var(--line);
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+}
+.lightbox-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  width:min(60vw,420px);aspect-ratio:4/3;
+  border-radius:8px;border:1px dashed var(--line);
+  background:var(--bg-alt);color:var(--text-dim);
+}
+.lightbox-placeholder svg{width:48px;height:48px;opacity:.55;}
+.lightbox-placeholder span{font-family:var(--mono);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;}
 </style>
 </head>
 <body>
@@ -256,12 +326,73 @@ footer.rep-footer{
         <button class="filter-chip" data-filter="in-progress">In Progress</button>
         <button class="filter-chip" data-filter="complete">Complete</button>
         <button class="filter-chip" data-filter="paused">Paused</button>
+        <div class="filter-row-date" id="dateFilterRow">
+          <span class="select-wrap">
+            <select class="filter-select" id="yearFilter" aria-label="Filter by year">
+              <option value="all">All Years</option>
+            </select>
+          </span>
+          <span class="select-wrap">
+            <select class="filter-select" id="monthFilter" aria-label="Filter by month">
+              <option value="all">All Months</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </span>
+        </div>
       </div>
 
+      <!--
       <div class="timeline" id="timeline">
-        <div class="tl-entry" data-status="paused" style="animation-delay:.02s">
+        <div class="tl-entry" data-status="paused" data-year="2026" data-month="8" style="animation-delay:.02s"> // Change these vals
           <div class="tl-node"></div>
-          <div class="tl-date">12 August 2026</div>
+          <div class="tl-datebar">
+            <div class="tl-date">PLACEHOLDER DATE</div>
+            <div class="tl-date-project">PLACEHOLDER PROJECT NAME</div>
+          </div>
+          <div class="tl-card">
+            <div class="tl-main">
+              <div class="tl-head">
+                <div>
+                  <div class="tl-title">PLACEHOLDER TITLE</div>
+                </div>
+                <div class="tl-status">Paused</div> // CHANGE STATUS
+              </div>
+              <div class="tl-body">PLACEHOLDER UPDATE</div>
+              <div class="tl-placeholder-grid">
+                <div class="tl-placeholder-img" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+                </div>
+                <div class="tl-placeholder-img" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+                </div>
+                <div class="tl-placeholder-img" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+                </div>
+              </div>
+              <a class="tl-jump" href="index.html#proj-nem-live">View project card &rarr;</a> // change where this leads
+            </div>
+            <div class="tl-project-badge">PLACEHOLDER PROJECT NAME</div>
+          </div>
+        </div>
+      -->
+
+        <div class="tl-entry" data-status="paused" data-year="2026" data-month="8" style="animation-delay:.02s">
+          <div class="tl-node"></div>
+          <div class="tl-datebar">
+            <div class="tl-date">12 August 2026</div>
+            <div class="tl-date-project">Live NEM</div>
+          </div>
           <div class="tl-card">
             <div class="tl-main">
               <div class="tl-head">
@@ -277,9 +408,12 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:0s">
+        <div class="tl-entry" data-status="complete" data-year="2026" data-month="8" style="animation-delay:0s">
           <div class="tl-node"></div>
-          <div class="tl-date">7 August 2026</div>
+          <div class="tl-datebar">
+            <div class="tl-date">7 August 2026</div>
+            <div class="tl-date-project">Portfolio Website</div>
+          </div>
           <div class="tl-card">
             <div class="tl-main">
               <div class="tl-head">
@@ -295,9 +429,12 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="in-progress" style="animation-delay:.04s">
+        <div class="tl-entry" data-status="in-progress" data-year="2026" data-month="8" style="animation-delay:.04s">
           <div class="tl-node"></div>
-          <div class="tl-date">5 August 2026</div>
+          <div class="tl-datebar">
+            <div class="tl-date">5 August 2026</div>
+            <div class="tl-date-project">Live NEM</div>
+          </div>
           <div class="tl-card">
             <div class="tl-main">
               <div class="tl-head">
@@ -313,9 +450,12 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="in-progress" style="animation-delay:.06s">
+        <div class="tl-entry" data-status="in-progress" data-year="2026" data-month="8" style="animation-delay:.06s">
           <div class="tl-node"></div>
-          <div class="tl-date">August 2026</div>
+          <div class="tl-datebar">
+            <div class="tl-date">August 2026</div>
+            <div class="tl-date-project">Network Builder</div>
+          </div>
           <div class="tl-card">
             <div class="tl-thumb"><img src="Projects/PersonalSoftware/Network Builder/NetworkBuilder.png" alt="Network Builder screenshot" loading="lazy"></div>
             <div class="tl-main">
@@ -332,7 +472,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="in-progress" style="animation-delay:.1s">
+        <div class="tl-entry" data-status="in-progress" data-year="2026" data-month="6" style="animation-delay:.1s">
           <div class="tl-node"></div>
           <div class="tl-date">Jun 2026 &ndash; Present</div>
           <div class="tl-card">
@@ -353,7 +493,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.14s">
+        <div class="tl-entry" data-status="complete" data-year="2026" style="animation-delay:.14s">
           <div class="tl-node"></div>
           <div class="tl-date">Semester 1, 2026</div>
           <div class="tl-card">
@@ -377,7 +517,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.18s">
+        <div class="tl-entry" data-status="complete" data-year="2026" data-month="2" style="animation-delay:.18s">
           <div class="tl-node"></div>
           <div class="tl-date">February 2026</div>
           <div class="tl-card">
@@ -401,7 +541,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.22s">
+        <div class="tl-entry" data-status="complete" data-year="2025" data-month="10" style="animation-delay:.22s">
           <div class="tl-node"></div>
           <div class="tl-date">October 2025</div>
           <div class="tl-card">
@@ -424,7 +564,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.26s">
+        <div class="tl-entry" data-status="complete" data-year="2025" data-month="10" style="animation-delay:.26s">
           <div class="tl-node"></div>
           <div class="tl-date">October 2025</div>
           <div class="tl-card">
@@ -447,7 +587,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.3s">
+        <div class="tl-entry" data-status="complete" data-year="2025" style="animation-delay:.3s">
           <div class="tl-node"></div>
           <div class="tl-date">Semester 1, 2025</div>
           <div class="tl-card">
@@ -470,7 +610,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.34s">
+        <div class="tl-entry" data-status="complete" data-year="2024" style="animation-delay:.34s">
           <div class="tl-node"></div>
           <div class="tl-date">Semester 1, 2024</div>
           <div class="tl-card">
@@ -493,7 +633,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.38s">
+        <div class="tl-entry" data-status="complete" data-year="2024" data-month="3" style="animation-delay:.38s">
           <div class="tl-node"></div>
           <div class="tl-date">March 2024</div>
           <div class="tl-card">
@@ -516,7 +656,7 @@ footer.rep-footer{
           </div>
         </div>
 
-        <div class="tl-entry" data-status="complete" style="animation-delay:.42s">
+        <div class="tl-entry" data-status="complete" data-year="2024" data-month="1" style="animation-delay:.42s">
           <div class="tl-node"></div>
           <div class="tl-date">January 2024</div>
           <div class="tl-card">
@@ -541,9 +681,13 @@ footer.rep-footer{
 
       </div>
 
-      <div class="tl-empty" id="tlEmpty">No updates in this category yet.</div>
+      <div class="tl-empty" id="tlEmpty">No updates match these filters.</div>
     </div>
   </section>
+</div>
+
+<div class="lightbox-overlay" id="lightboxOverlay">
+  <div class="lightbox-content" id="lightboxContent"></div>
 </div>
 
 <footer class="rep-footer">
@@ -556,20 +700,122 @@ footer.rep-footer{
     const chips = document.querySelectorAll('.filter-chip');
     const entries = document.querySelectorAll('.tl-entry');
     const empty = document.getElementById('tlEmpty');
+    const yearFilter = document.getElementById('yearFilter');
+    const monthFilter = document.getElementById('monthFilter');
+
+    // Populate the year dropdown from whatever years actually appear on entries,
+    // so it stays correct as new updates are added.
+    const years = [...new Set(Array.from(entries).map(e=>e.dataset.year).filter(Boolean))]
+      .sort((a,b)=> b - a);
+    years.forEach(y=>{
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y;
+      yearFilter.appendChild(opt);
+    });
+
+    let statusFilter = 'all';
+
+    function applyFilters(){
+      const yearVal = yearFilter.value;
+      const monthVal = monthFilter.value;
+      let visibleCount = 0;
+      entries.forEach(entry=>{
+        const statusMatch = statusFilter === 'all' || entry.dataset.status === statusFilter;
+        const yearMatch = yearVal === 'all' || entry.dataset.year === yearVal;
+        const monthMatch = monthVal === 'all' || entry.dataset.month === monthVal;
+        const match = statusMatch && yearMatch && monthMatch;
+        entry.style.display = match ? '' : 'none';
+        if(match) visibleCount++;
+      });
+      empty.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
 
     chips.forEach(chip=>{
       chip.addEventListener('click', ()=>{
         chips.forEach(c=>c.classList.remove('active'));
         chip.classList.add('active');
-        const filter = chip.dataset.filter;
-        let visibleCount = 0;
-        entries.forEach(entry=>{
-          const match = filter === 'all' || entry.dataset.status === filter;
-          entry.style.display = match ? '' : 'none';
-          if(match) visibleCount++;
-        });
-        empty.style.display = visibleCount === 0 ? 'block' : 'none';
+        statusFilter = chip.dataset.filter;
+        applyFilters();
       });
+    });
+
+    yearFilter.addEventListener('change', applyFilters);
+    monthFilter.addEventListener('change', applyFilters);
+  })();
+
+  // Image zoom — same tap/click-to-lightbox logic used in script.js on the main site.
+  (function(){
+    const lightboxOverlay = document.getElementById('lightboxOverlay');
+    const lightboxContent = document.getElementById('lightboxContent');
+    if(!lightboxOverlay || !lightboxContent) return;
+
+    const TAP_MOVE_LIMIT = 10;
+    const CLOSE_GUARD_MS = 350;
+    let lightboxOpenedAt = 0;
+
+    function openLightbox(html){
+      lightboxContent.innerHTML = html;
+      lightboxOverlay.classList.add('active');
+      lightboxOpenedAt = Date.now();
+    }
+    function closeLightbox(){
+      lightboxOverlay.classList.remove('active');
+    }
+
+    function makeTappable(el, getHtml){
+      let startX = 0, startY = 0, down = false;
+      el.addEventListener('pointerdown', (e)=>{
+        down = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+      el.addEventListener('pointermove', (e)=>{
+        if(!down) return;
+        if(Math.abs(e.clientX - startX) > TAP_MOVE_LIMIT || Math.abs(e.clientY - startY) > TAP_MOVE_LIMIT){
+          down = false;
+        }
+      });
+      el.addEventListener('pointerup', ()=>{
+        if(down){
+          down = false;
+          const html = getHtml();
+          if(html) openLightbox(html);
+        }
+      });
+      el.addEventListener('pointercancel', ()=>{ down = false; });
+      el.addEventListener('contextmenu', (e)=>{
+        e.preventDefault();
+        down = false;
+        const html = getHtml();
+        if(html) openLightbox(html);
+      });
+    }
+
+    document.querySelectorAll('.tl-thumb').forEach(thumb=>{
+      makeTappable(thumb, ()=>{
+        const img = thumb.querySelector('img');
+        if(!img) return null;
+        const fullSrc = img.dataset.full || img.src;
+        return `<img src="${fullSrc}" alt="${img.alt}" loading="lazy" decoding="async">`;
+      });
+    });
+
+    document.querySelectorAll('.tl-placeholder-img').forEach(ph=>{
+      makeTappable(ph, ()=>{
+        return `<div class="lightbox-placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg>
+          <span>Image coming soon</span>
+        </div>`;
+      });
+    });
+
+    lightboxOverlay.addEventListener('click', ()=>{
+      if(Date.now() - lightboxOpenedAt < CLOSE_GUARD_MS) return;
+      closeLightbox();
+    });
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeLightbox();
     });
   })();
 </script>
