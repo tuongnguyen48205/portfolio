@@ -697,7 +697,7 @@
 
   section{
     position:relative;z-index:1;
-    padding:70px 8% 70px;
+    padding:70px clamp(24px,8%,96px) 70px;
     max-width:1200px;margin:0 auto;
   }
   section:not(#home)::before{
@@ -841,7 +841,7 @@
   .sec-sub3{color:var(--text-dim);font-size:.70rem;margin-top:10px;margin-bottom:20px;max-width:1000px;}
 
   .bus-link{
-    max-width:1200px;margin:0 auto;padding:6px 8% 6px;
+    max-width:1200px;margin:0 auto;padding:6px clamp(24px,8%,96px) 6px;
     display:flex;flex-direction:column;align-items:center;gap:6px;
   }
   .bus-link-inner{
