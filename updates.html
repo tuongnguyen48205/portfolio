@@ -105,7 +105,7 @@ img{max-width:100%;display:block;}
 }
 .topbar-dl:hover{border-color:var(--accent2);}
 
-.wrap{max-width:1180px;margin:0 auto;padding:0 6%;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(24px,6%,70.8px);}
 .wrap.narrow{max-width:880px;}
 
 .hero{padding:70px 0 40px;}
@@ -175,7 +175,7 @@ footer.rep-footer{
   content:'';position:absolute;right:14px;top:50%;
   width:6px;height:6px;
   border-right:1.5px solid var(--text-dim);border-bottom:1.5px solid var(--text-dim);
-  transform:translateY(-70%) rotate(45deg);
+  transform:translateY(-50%) rotate(45deg);
   pointer-events:none;transition:border-color .2s ease;
 }
 .select-wrap:hover::after,.select-wrap:focus-within::after{border-color:var(--accent);}
