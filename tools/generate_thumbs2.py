@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageOps
 except ImportError:
     print("Pillow is required: pip install Pillow")
     sys.exit(1)
@@ -48,6 +48,7 @@ def find_source_images():
 
 def make_thumbnail(src_path: Path, out_path: Path):
     with Image.open(src_path) as img:
+        img = ImageOps.exif_transpose(img)  # fix orientation from camera/phone EXIF data
         img = img.convert("RGB") if img.mode in ("P", "RGBA") else img
         w, h = img.size
         if w > THUMB_MAX_WIDTH:
