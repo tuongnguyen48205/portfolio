@@ -723,7 +723,7 @@
     font-size:clamp(2rem,4.2vw,3.4rem);
     font-weight:800;line-height:1.3;white-space:nowrap;
     padding-bottom:0.1em;
-    background:linear-gradient(120deg,var(--text) 15%,var(--accent)); /* idk if i want to keep this gradient or not*/
+    background:linear-gradient(120deg,var(--text) 100%,var(--accent)); /* idk if i want to keep this gradient or not*/
     -webkit-background-clip:text;background-clip:text;color:transparent;
     animation:namePowerOn 1.1s ease-out;
   }
