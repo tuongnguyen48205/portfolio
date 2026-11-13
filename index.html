@@ -82,6 +82,9 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader.pl-done .pl-grid{opacity:0}
 #pageLoader.pl-done .pl-top{transform:translateY(-101%)}
 #pageLoader.pl-done .pl-bot{transform:translateY(101%)}
+@media (max-width:768px){
+  #pageLoader .pl-bletter{display:none}
+}
 @media (prefers-reduced-motion:reduce){
     #pageLoader .pl-half,#pageLoader .pl-core,#pageLoader .pl-arm{transition-duration:.01s}
   #pageLoader.pl-done .pl-top,#pageLoader.pl-done .pl-bot{transform:none;opacity:0}
@@ -1916,7 +1919,7 @@ html.pl-skip #pageLoader{display:none!important}
       ), {duration: travel, delay: i * stagger, easing: lift, fill: 'both'});
 
       var letEl = wrap.querySelector('.bus-letter');
-      if(letEl){
+      if(letEl && !(window.matchMedia && matchMedia('(max-width: 768px)').matches)){
         var lr2 = letEl.getBoundingClientRect();
         var lc = getComputedStyle(letEl);
         var tag = document.createElement('div');
