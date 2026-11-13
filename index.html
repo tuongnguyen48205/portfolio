@@ -94,8 +94,18 @@ html.pl-skip #pageLoader{display:none!important}
   #pageLoader.pl-done .pl-top,#pageLoader.pl-done .pl-bot{transform:none;opacity:0}
 }
 </style>
+<style id="pageExitStyles">
+#pageExit{position:fixed;inset:0;z-index:2147482999;pointer-events:none;opacity:0;
+  background:var(--pl-bg,var(--bg,#0f151d));transition:opacity .22s ease}
+#pageExit.pe-go{opacity:1;pointer-events:all}
+</style>
 <noscript><style>#pageLoader{display:none!important}</style></noscript>
-<script>try{if(sessionStorage.getItem("plSeen")==="1")document.documentElement.classList.add("pl-skip")}catch(e){}</script>
+<script>try{
+  var seen=sessionStorage.getItem("plSeen")==="1";
+  var internal=false;
+  try{internal=!!document.referrer&&new URL(document.referrer).origin===location.origin}catch(e){}
+  if(seen||internal){document.documentElement.classList.add("pl-skip");sessionStorage.setItem("plSeen","1")}
+}catch(e){}</script>
 
 
 <script data-goatcounter="https://tuongnguyen48205.goatcounter.com/count"
@@ -2028,6 +2038,52 @@ html.pl-skip #pageLoader{display:none!important}
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+})();
+</script>
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ov = null, busy = false, DURATION = 230;
+
+  function build(){
+    ov = document.createElement('div');
+    ov.id = 'pageExit';
+    ov.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(ov);
+  }
+
+  function play(){
+    if(!ov) build();
+    void ov.offsetWidth;
+    ov.classList.add('pe-go');
+  }
+
+  function reset(){
+    busy = false;
+    if(ov) ov.classList.remove('pe-go');
+  }
+
+  document.addEventListener('click', function(e){
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest ? e.target.closest('a[href]') : null;
+    if(!a || a.hasAttribute('download')) return;
+    var t = a.getAttribute('target');
+    if(t && t !== '_self') return;
+    var href = a.getAttribute('href');
+    if(!href || href.charAt(0) === '#' || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+    var url;
+    try{ url = new URL(a.href, location.href); }catch(_){ return; }
+    if(url.origin !== location.origin) return;
+    if(url.pathname === location.pathname && url.search === location.search) return;
+    if(reduce) return;
+    e.preventDefault();
+    if(busy) return;
+    busy = true;
+    play();
+    setTimeout(function(){ location.href = url.href; }, DURATION);
+  });
+
+  window.addEventListener('pageshow', function(e){ if(e.persisted || busy) reset(); });
 })();
 </script>
 <script src="script.js" defer></script>
