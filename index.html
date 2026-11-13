@@ -55,9 +55,6 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader .pl-wave-grid{stroke:var(--accent,#3dd9ff);filter:drop-shadow(0 0 5px var(--accent,#3dd9ff))}
 #pageLoader .pl-wave-gen{stroke:var(--accent2,var(--accent,#3dd9ff));opacity:.85;filter:drop-shadow(0 0 5px var(--accent2,var(--accent,#3dd9ff)))}
 #pageLoader.pl-closed .pl-wave-grid{stroke:var(--accent2,var(--accent,#3dd9ff));filter:drop-shadow(0 0 10px var(--accent2,var(--accent,#3dd9ff)))}
-#pageLoader .pl-flash{fill:var(--accent2,var(--accent,#3dd9ff));opacity:0;transform-box:fill-box;transform-origin:center}
-#pageLoader.pl-closed .pl-flash{animation:plFlash .6s ease-out}
-@keyframes plFlash{0%{opacity:.7;transform:scaleY(1)}100%{opacity:0;transform:scaleY(30)}}
 #pageLoader .pl-info{width:min(560px,82vw)}
 #pageLoader .pl-label{display:flex;justify-content:space-between;font-size:clamp(.62rem,1.6vmin,.8rem);letter-spacing:.2em;text-transform:uppercase}
 #pageLoader .pl-label span:first-child{opacity:.6}
@@ -77,14 +74,12 @@ html.pl-skip #pageLoader{display:none!important}
   transition:transform .35s cubic-bezier(.3,1.6,.5,1),stroke .15s ease}
 #pageLoader.pl-closed .pl-arm{transform:rotate(0deg);stroke:var(--accent2,var(--accent,#3dd9ff))}
 #pageLoader .pl-status{display:flex;justify-content:space-between;font-size:clamp(.7rem,1.8vmin,.9rem);letter-spacing:.14em}
-#pageLoader.pl-closed .pl-status{color:var(--accent2,var(--accent,#3dd9ff))}
 #pageLoader.pl-done .pl-core{opacity:0;transform:scale(.97)}
 #pageLoader.pl-done .pl-grid{opacity:0}
 #pageLoader.pl-done .pl-top{transform:translateY(-101%)}
 #pageLoader.pl-done .pl-bot{transform:translateY(101%)}
 @media (prefers-reduced-motion:reduce){
-  #pageLoader.pl-closed .pl-flash{animation:none}
-  #pageLoader .pl-half,#pageLoader .pl-core,#pageLoader .pl-arm{transition-duration:.01s}
+    #pageLoader .pl-half,#pageLoader .pl-core,#pageLoader .pl-arm{transition-duration:.01s}
   #pageLoader.pl-done .pl-top,#pageLoader.pl-done .pl-bot{transform:none;opacity:0}
 }
 </style>
@@ -107,7 +102,6 @@ html.pl-skip #pageLoader{display:none!important}
         <line class="pl-axis" x1="0" y1="100" x2="1000" y2="100"/>
         <path class="pl-wave pl-wave-gen" id="plGen"/>
         <path class="pl-wave pl-wave-grid" id="plGrid"/>
-        <rect class="pl-flash" x="0" y="98" width="1000" height="4"/>
       </svg>
     </div>
     <div class="pl-info">
@@ -1737,7 +1731,7 @@ html.pl-skip #pageLoader{display:none!important}
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MIN_MS = reduced ? 0 : 1200;
   var MAX_MS = 6000;
-  var start = performance.now(), loaded = document.readyState === 'complete', pct = 0, finished = false, gone = false;
+  var start = performance.now(), loaded = document.readyState === 'complete', pct = 0, finished = false, gone = false, finishedAt = 0;
   var TAU = Math.PI * 2;
   var STEPS = 160, WIDTH = 1000, MID = 100, PEAK = 78;
   var CYCLES = 3;
@@ -1828,7 +1822,7 @@ html.pl-skip #pageLoader{display:none!important}
   }
 
   function finish(){
-    if(finished) return; finished = true;
+    if(finished) return; finished = true; finishedAt = performance.now();
     try{ sessionStorage.setItem('plSeen','1'); }catch(e){}
     loader.classList.add('pl-closed');
     playClose();
@@ -1861,7 +1855,9 @@ html.pl-skip #pageLoader{display:none!important}
     var slip = (1 - p) * (1 - p);
     var diff = finished ? 0 : slip * TAU * 2;
     var drive = (now / 1000) * 4;
-    var gridAmp = PEAK * Math.min(1, pct / 12);
+    var settle = finished ? Math.min(1, (now - finishedAt) / 450) : 0;
+    var calm = 1 - settle * settle * (3 - 2 * settle);
+    var gridAmp = PEAK * Math.min(1, pct / 12) * calm;
     var genAmp = gridAmp * (0.4 + 0.6 * p);
     var genCycles = CYCLES * (1 + slip * 0.25);
 
