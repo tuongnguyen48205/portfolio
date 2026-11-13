@@ -37,7 +37,23 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if (typeof window.refreshExpandAllLabel === 'function') window.refreshExpandAllLabel();
   });
 
-  function goToLinkedCard(id){
+  function holdAlign(align){
+    const root = document.documentElement;
+    let cancelled = false;
+    const cancel = ()=>{ cancelled = true; };
+    ['wheel','touchstart','keydown','mousedown'].forEach(t=>window.addEventListener(t, cancel, {passive:true, once:true}));
+    const run = ()=>{ if(!cancelled) align(); };
+    run();
+    const done = ()=>{
+      run();
+      setTimeout(()=>{ run(); root.style.scrollBehavior = ''; }, 400);
+    };
+    if(document.readyState === 'complete') done();
+    else window.addEventListener('load', done, {once:true});
+    setTimeout(()=>{ root.style.scrollBehavior = ''; }, 8000);
+  }
+
+  function goToLinkedCard(id, instant){
     if(!id) return;
     const card = document.getElementById(id);
     if(!card || !card.classList.contains('card')) return;
@@ -69,7 +85,12 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     }
 
     setTimeout(()=>{
-      card.scrollIntoView({behavior:'smooth', block:'center'});
+      if(instant){
+        document.documentElement.style.scrollBehavior = 'auto';
+        holdAlign(()=>card.scrollIntoView({behavior:'auto', block:'center'}));
+      } else {
+        card.scrollIntoView({behavior:'smooth', block:'center'});
+      }
       card.classList.remove('link-highlight');
       void card.offsetWidth;
       card.classList.add('link-highlight');
@@ -102,7 +123,19 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 
   window.addEventListener('DOMContentLoaded', ()=>{
-    if(location.hash) goToLinkedCard(location.hash.slice(1));
+    const root = document.documentElement;
+    if(!location.hash){ root.style.scrollBehavior = ''; return; }
+    let id = location.hash.slice(1);
+    try{ id = decodeURIComponent(id); }catch(e){}
+    const target = document.getElementById(id);
+    if(!target){ root.style.scrollBehavior = ''; return; }
+    if(typeof window.settleBusLinks === 'function') window.settleBusLinks(target);
+    if(target.classList.contains('card')){
+      goToLinkedCard(id, true);
+    } else {
+      root.style.scrollBehavior = 'auto';
+      holdAlign(()=>target.scrollIntoView({behavior:'auto', block:'start'}));
+    }
   });
   window.addEventListener('hashchange', ()=>{
     if(location.hash) goToLinkedCard(location.hash.slice(1));
@@ -1157,6 +1190,22 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
       revealObserver.unobserve(el);
     };
 
+    function setClosedText(el){
+      const statusText = el.querySelector('.bl-status-text');
+      if(!statusText) return;
+      const type = el.dataset.type;
+      const vin = el.dataset.vin, vout = el.dataset.vout, cap = el.dataset.cap, ind = el.dataset.ind;
+      if(type === 'voltage'){
+        statusText.textContent = (vin && vout) ? `VIN ${vin}V \u2192 VOUT ${vout}V` : 'OUTPUT: LOCKED';
+      } else if(type === 'capacitor'){
+        statusText.textContent = cap ? `CHARGED: ${cap}` : 'CHARGE: STORED';
+      } else if(type === 'inductor'){
+        statusText.textContent = ind ? `L LOCKED: ${ind}` : 'FLUX: STABLE';
+      } else {
+        statusText.textContent = 'SWITCH CLOSED';
+      }
+    }
+
     const busLinkObserver = new IntersectionObserver((entries)=>{
       entries.forEach(entry=>{
         if(!entry.isIntersecting) return;
@@ -1164,29 +1213,14 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
         busLinkObserver.unobserve(el);
         el.classList.add('visible');
 
-        const statusText = el.querySelector('.bl-status-text');
         const type = el.dataset.type;
         const isVoltage = type === 'voltage';
         const sparkTarget = isVoltage ? el.querySelector('.bl-tap-probe') : el.querySelectorAll('.bl-post')[1];
-        const vin = el.dataset.vin;
-        const vout = el.dataset.vout;
-        const cap = el.dataset.cap;
-        const ind = el.dataset.ind;
         const delay = (type === 'voltage' || type === 'inductor') ? 800 : 650;
 
         setTimeout(()=>{
           el.classList.add('closed');
-          if(statusText){
-            if(type === 'voltage'){
-              statusText.textContent = (vin && vout) ? `VIN ${vin}V \u2192 VOUT ${vout}V` : 'OUTPUT: LOCKED';
-            } else if(type === 'capacitor'){
-              statusText.textContent = cap ? `CHARGED: ${cap}` : 'CHARGE: STORED';
-            } else if(type === 'inductor'){
-              statusText.textContent = ind ? `L LOCKED: ${ind}` : 'FLUX: STABLE';
-            } else {
-              statusText.textContent = 'SWITCH CLOSED';
-            }
-          }
+          setClosedText(el);
           if(typeof window.playSound === 'function') window.playSound('lock');
           if(sparkTarget && typeof spawnSparkBurst === 'function'){
             const r = sparkTarget.getBoundingClientRect();
@@ -1196,6 +1230,40 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
       });
     }, { threshold: 0.5 });
     document.querySelectorAll('.bus-link').forEach(el=>busLinkObserver.observe(el));
+
+    function settleLink(el){
+      if(el.classList.contains('settled')) return;
+      busLinkObserver.unobserve(el);
+      el.classList.add('settled','visible','closed');
+      setClosedText(el);
+    }
+    function settleReveal(el){
+      if(el.classList.contains('visible')) return;
+      el.classList.add('no-anim');
+      window.revealNow(el);
+      setTimeout(()=>el.classList.remove('no-anim'), 200);
+    }
+
+    window.settleBusLinks = function(target){
+      if(!target) return;
+      document.querySelectorAll('.bus-link').forEach(el=>{
+        if(el.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING) settleLink(el);
+      });
+      document.querySelectorAll('.reveal').forEach(el=>{
+        if(el === target || el.contains(target) || (el.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING)) settleReveal(el);
+      });
+    };
+
+    function settleAboveViewport(){
+      document.querySelectorAll('.bus-link').forEach(el=>{
+        if(el.getBoundingClientRect().bottom < 0) settleLink(el);
+      });
+      document.querySelectorAll('.reveal').forEach(el=>{
+        if(el.getBoundingClientRect().bottom < 0) settleReveal(el);
+      });
+    }
+    window.addEventListener('load', ()=>setTimeout(settleAboveViewport, 50));
+    window.addEventListener('pageshow', (e)=>{ if(e.persisted) settleAboveViewport(); });
   })();
 
   (function(){
