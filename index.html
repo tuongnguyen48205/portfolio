@@ -1706,7 +1706,7 @@ html.pl-skip #pageLoader{display:none!important}
       pctEl = document.getElementById('plPct');
   var root = document.documentElement, body = document.body;
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var MIN_MS = reduced ? 0 : 1500;
+  var MIN_MS = reduced ? 0 : 800;
   var MAX_MS = 6000;
   var start = performance.now(), loaded = document.readyState === 'complete', pct = 0, finished = false;
 
