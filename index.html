@@ -45,7 +45,7 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader .pl-bot{bottom:0}
 #pageLoader .pl-grid{position:absolute;inset:0;opacity:.5;
   background-image:linear-gradient(color-mix(in srgb,var(--accent,#3dd9ff) 14%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--accent,#3dd9ff) 14%,transparent) 1px,transparent 1px);
-  background-size:60px 60px;transition:opacity .4s ease}
+  background-size:var(--pl-gs,60px) var(--pl-gs,60px);background-position:var(--pl-gx,0) var(--pl-gy,0);transition:opacity .4s ease}
 #pageLoader .pl-core{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;
   gap:clamp(16px,4vh,40px);transition:opacity .35s ease,transform .5s ease}
 #pageLoader .pl-scope{width:100%;height:clamp(110px,30vh,320px)}
@@ -108,6 +108,22 @@ html.pl-skip #pageLoader{display:none!important}
 }catch(e){}</script>
 
 
+<script>
+(function(){
+  var d=document.documentElement;
+  try{ if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches) return; }catch(e){}
+  d.classList.add("intro-pending");
+  window.startIntro=function(){
+    if(d.classList.contains("intro-go")) return;
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ d.classList.add("intro-go"); }); });
+  };
+  setTimeout(window.startIntro, 9000);
+  if(d.classList.contains("pl-skip")){
+    if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", window.startIntro);
+    else window.startIntro();
+  }
+})();
+</script>
 <script>try{if(location.hash.length>1)document.documentElement.style.scrollBehavior="auto"}catch(e){}</script>
 <script data-goatcounter="https://tuongnguyen48205.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -1777,6 +1793,19 @@ html.pl-skip #pageLoader{display:none!important}
       bletters = loader.querySelectorAll('.pl-bletter');
   var root = document.documentElement, body = document.body;
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var plGrid = loader.querySelector('.pl-grid');
+  function syncGrid(){
+    var bg = document.querySelector('.circuit-bg');
+    var r = bg ? bg.getBoundingClientRect() : null;
+    var W = r && r.width ? r.width : window.innerWidth;
+    var H = r && r.height ? r.height : window.innerHeight;
+    var k = Math.max(W / 1200, H / 800);
+    plGrid.style.setProperty('--pl-gs', (60 * k) + 'px');
+    plGrid.style.setProperty('--pl-gx', ((W - 1200 * k) / 2) + 'px');
+    plGrid.style.setProperty('--pl-gy', (((H - 800 * k) / 2) + 57.5 * k) + 'px');
+  }
+  syncGrid();
+  window.addEventListener('resize', syncGrid);
   var MIN_MS = reduced ? 0 : 1200;
   var MAX_MS = 6000;
   var start = performance.now(), loaded = document.readyState === 'complete', pct = 0, finished = false, gone = false, finishedAt = 0;
@@ -1981,6 +2010,7 @@ html.pl-skip #pageLoader{display:none!important}
       try{ flying = !!flyToRail(); }catch(e){ flying = false; }
       if(!flying) revealRail(false);
       loader.classList.add('pl-done');
+      if(window.startIntro) window.startIntro();
       setTimeout(function(){
         gone = true;
         if(!flying) revealRail(false);
