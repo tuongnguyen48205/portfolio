@@ -41,7 +41,7 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader.pl-gone{display:none}
 #pageLoader{--pl-lw:clamp(2px,.35vmin,4px)}
 #pageLoader .pl-half{position:absolute;left:0;right:0;background:var(--pl-bg,var(--bg,#0f151d));
-  transition:transform .85s cubic-bezier(.77,0,.18,1)}
+  transition:transform .65s cubic-bezier(.77,0,.18,1)}
 #pageLoader .pl-top{top:0;height:calc(var(--pl-split,50%) + 1px)}
 #pageLoader .pl-bot{bottom:0;height:calc(100% - var(--pl-split,50%) + 1px)}
 #pageLoader .pl-grid{position:absolute;inset:0;opacity:.55;
@@ -60,9 +60,13 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader .pl-scope svg{display:block;width:100%;height:100%;overflow:visible}
 #pageLoader .pl-axis{stroke:color-mix(in srgb,var(--accent,#3dd9ff) 28%,transparent);stroke-width:1;stroke-dasharray:4 6;vector-effect:non-scaling-stroke}
 #pageLoader .pl-wave{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-width:clamp(2px,.35vmin,4px)}
-#pageLoader .pl-wave-grid{stroke:var(--accent,#3dd9ff);filter:drop-shadow(0 0 5px var(--accent,#3dd9ff))}
-#pageLoader .pl-wave-gen{stroke:var(--accent2,var(--accent,#3dd9ff));opacity:.85;filter:drop-shadow(0 0 5px var(--accent2,var(--accent,#3dd9ff)))}
-#pageLoader.pl-closed .pl-wave-grid{stroke:var(--accent2,var(--accent,#3dd9ff));filter:drop-shadow(0 0 10px var(--accent2,var(--accent,#3dd9ff)))}
+#pageLoader .pl-wave-grid{stroke:var(--accent,#3dd9ff)}
+#pageLoader .pl-wave-gen{stroke:var(--accent2,var(--accent,#3dd9ff));opacity:.85}
+#pageLoader.pl-closed .pl-wave-grid{stroke:var(--accent2,var(--accent,#3dd9ff))}
+#pageLoader .pl-wave-glow{stroke-width:clamp(8px,1.4vmin,16px);opacity:.16}
+#pageLoader .pl-wave-glow-grid{stroke:var(--accent,#3dd9ff)}
+#pageLoader .pl-wave-glow-gen{stroke:var(--accent2,var(--accent,#3dd9ff))}
+#pageLoader.pl-closed .pl-wave-glow-grid{stroke:var(--accent2,var(--accent,#3dd9ff));opacity:.24}
 #pageLoader .pl-info{width:min(560px,82vw)}
 #pageLoader .pl-label{display:flex;justify-content:space-between;font-size:clamp(.62rem,1.6vmin,.8rem);letter-spacing:.2em;text-transform:uppercase}
 #pageLoader .pl-label span:first-child{opacity:.6}
@@ -144,6 +148,8 @@ html.pl-skip #pageLoader{display:none!important}
     <div class="pl-scope">
       <svg viewBox="0 0 1000 200" preserveAspectRatio="none">
         <line class="pl-axis" x1="0" y1="100" x2="1000" y2="100"/>
+        <path class="pl-wave pl-wave-glow pl-wave-glow-gen" id="plGenGlow"/>
+        <path class="pl-wave pl-wave-glow pl-wave-glow-grid" id="plGridGlow"/>
         <path class="pl-wave pl-wave-gen" id="plGen"/>
         <path class="pl-wave pl-wave-grid" id="plGrid"/>
       </svg>
@@ -1795,6 +1801,8 @@ html.pl-skip #pageLoader{display:none!important}
       freqEl = document.getElementById('plFreq'),
       genPath = document.getElementById('plGen'),
       gridPath = document.getElementById('plGrid'),
+      genGlow = document.getElementById('plGenGlow'),
+      gridGlow = document.getElementById('plGridGlow'),
       bnodes = loader.querySelectorAll('.pl-bnode'),
       bletters = loader.querySelectorAll('.pl-bletter');
   var root = document.documentElement, body = document.body;
@@ -1817,11 +1825,11 @@ html.pl-skip #pageLoader{display:none!important}
   }
   syncGrid();
   window.addEventListener('resize', syncGrid);
-  var MIN_MS = reduced ? 0 : 1200;
-  var MAX_MS = 6000;
+  var MIN_MS = reduced ? 0 : 700;
+  var MAX_MS = 3500;
   var start = performance.now(), loaded = document.readyState === 'complete', pct = 0, finished = false, gone = false, finishedAt = 0;
   var TAU = Math.PI * 2;
-  var STEPS = 160, WIDTH = 1000, MID = 100, PEAK = 78;
+  var STEPS = 120, WIDTH = 1000, MID = 100, PEAK = 78;
   var CYCLES = 3;
   function setCycles(){ CYCLES = Math.max(2, Math.min(7, Math.round(window.innerWidth / 260))); }
   setCycles();
@@ -1896,6 +1904,16 @@ html.pl-skip #pageLoader{display:none!important}
   mo.observe(body, {attributes:true});
   var poll = setInterval(syncBg, 100);
 
+  var waiting = 2;
+  function ready(){ if(--waiting <= 0) loaded = true; }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(ready, ready);
+  function heroReady(){
+    var img = document.querySelector('.avatar-image');
+    if(img && !img.complete){ img.addEventListener('load', ready); img.addEventListener('error', ready); }
+    else ready();
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', heroReady);
+  else heroReady();
   window.addEventListener('load', function(){ loaded = true; });
   setTimeout(function(){ loaded = true; }, MAX_MS);
 
@@ -2030,8 +2048,8 @@ html.pl-skip #pageLoader{display:none!important}
         mo.disconnect();
         loader.classList.add('pl-gone');
         loader.remove();
-      }, 1000);
-    }, 520);
+      }, 750);
+    }, 360);
   }
 
   function tick(now){
@@ -2041,7 +2059,7 @@ html.pl-skip #pageLoader{display:none!important}
     if(!finished){
       var target = loaded ? 100 : 90 * (1 - Math.exp(-t / 900));
       if(loaded && t < MIN_MS) target = Math.min(target, 100 * t / MIN_MS);
-      pct += (target - pct) * 0.1;
+      pct += (target - pct) * 0.2;
       if(target >= 100 && pct > 99.4) pct = 100;
     }
 
@@ -2049,14 +2067,15 @@ html.pl-skip #pageLoader{display:none!important}
     var slip = (1 - p) * (1 - p);
     var diff = finished ? 0 : slip * TAU * 2;
     var drive = (now / 1000) * 4;
-    var settle = finished ? Math.min(1, (now - finishedAt) / 450) : 0;
+    var settle = finished ? Math.min(1, (now - finishedAt) / 300) : 0;
     var calm = 1 - settle * settle * (3 - 2 * settle);
     var gridAmp = PEAK * Math.min(1, pct / 12) * calm;
     var genAmp = gridAmp * (0.4 + 0.6 * p);
     var genCycles = CYCLES * (1 + slip * 0.25);
 
-    gridPath.setAttribute('d', wave(gridAmp, CYCLES, drive));
-    genPath.setAttribute('d', wave(genAmp, genCycles, drive + diff));
+    var gd = wave(gridAmp, CYCLES, drive), nd = wave(genAmp, genCycles, drive + diff);
+    gridPath.setAttribute('d', gd); gridGlow.setAttribute('d', gd);
+    genPath.setAttribute('d', nd); genGlow.setAttribute('d', nd);
 
     if(!finished){
       fill.style.strokeDashoffset = 100 - pct;
