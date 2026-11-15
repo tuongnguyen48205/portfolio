@@ -39,13 +39,21 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;
   font-family:'JetBrains Mono',monospace;color:var(--accent,#3dd9ff);pointer-events:all}
 #pageLoader.pl-gone{display:none}
-#pageLoader .pl-half{position:absolute;left:0;right:0;height:50.5%;background:var(--pl-bg,var(--bg,#0f151d));
+#pageLoader{--pl-lw:clamp(2px,.35vmin,4px)}
+#pageLoader .pl-half{position:absolute;left:0;right:0;background:var(--pl-bg,var(--bg,#0f151d));
   transition:transform .85s cubic-bezier(.77,0,.18,1)}
-#pageLoader .pl-top{top:0}
-#pageLoader .pl-bot{bottom:0}
-#pageLoader .pl-grid{position:absolute;inset:0;opacity:.5;
+#pageLoader .pl-top{top:0;height:calc(var(--pl-split,50%) + 1px)}
+#pageLoader .pl-bot{bottom:0;height:calc(100% - var(--pl-split,50%) + 1px)}
+#pageLoader .pl-grid{position:absolute;inset:0;opacity:.55;
   background-image:linear-gradient(color-mix(in srgb,var(--accent,#3dd9ff) 14%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--accent,#3dd9ff) 14%,transparent) 1px,transparent 1px);
-  background-size:var(--pl-gs,60px) var(--pl-gs,60px);background-position:var(--pl-gx,0) var(--pl-gy,0);transition:opacity .4s ease}
+  background-size:var(--pl-gs,60px) var(--pl-gs,60px);background-position:var(--pl-gx,0) var(--pl-gy,0)}
+#pageLoader .pl-bot .pl-grid{background-position:var(--pl-gx,0) calc(var(--pl-gy,0px) - var(--pl-split,0px) + 1px)}
+#pageLoader .pl-half::after{content:"";position:absolute;left:0;right:0;height:var(--pl-lw);background:var(--accent2,var(--accent,#3dd9ff));
+  filter:drop-shadow(0 0 10px var(--accent2,var(--accent,#3dd9ff)));opacity:0}
+#pageLoader .pl-top::after{bottom:0}
+#pageLoader .pl-bot::after{top:0}
+#pageLoader.pl-done .pl-half::after{opacity:1}
+#pageLoader.pl-done .pl-scope{opacity:0;transition:none}
 #pageLoader .pl-core{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;
   gap:clamp(16px,4vh,40px);transition:opacity .35s ease,transform .5s ease}
 #pageLoader .pl-scope{width:100%;height:clamp(110px,30vh,320px)}
@@ -83,7 +91,6 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader.pl-closed .pl-bletter.on{fill:var(--accent2,var(--accent,#3dd9ff));filter:drop-shadow(0 0 5px var(--accent2,var(--accent,#3dd9ff)))}
 #pageLoader .pl-status{display:flex;justify-content:space-between;font-size:clamp(.7rem,1.8vmin,.9rem);letter-spacing:.14em}
 #pageLoader.pl-done .pl-core{opacity:0;transform:scale(.97)}
-#pageLoader.pl-done .pl-grid{opacity:0}
 #pageLoader.pl-done .pl-top{transform:translateY(-101%)}
 #pageLoader.pl-done .pl-bot{transform:translateY(101%)}
 @media (max-width:768px){
@@ -131,9 +138,8 @@ html.pl-skip #pageLoader{display:none!important}
 <body>
 
 <div id="pageLoader" aria-hidden="true">
-  <div class="pl-half pl-top"></div>
-  <div class="pl-half pl-bot"></div>
-  <div class="pl-grid"></div>
+  <div class="pl-half pl-top"><div class="pl-grid"></div></div>
+  <div class="pl-half pl-bot"><div class="pl-grid"></div></div>
   <div class="pl-core">
     <div class="pl-scope">
       <svg viewBox="0 0 1000 200" preserveAspectRatio="none">
@@ -1793,16 +1799,21 @@ html.pl-skip #pageLoader{display:none!important}
       bletters = loader.querySelectorAll('.pl-bletter');
   var root = document.documentElement, body = document.body;
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var plGrid = loader.querySelector('.pl-grid');
   function syncGrid(){
     var bg = document.querySelector('.circuit-bg');
     var r = bg ? bg.getBoundingClientRect() : null;
     var W = r && r.width ? r.width : window.innerWidth;
     var H = r && r.height ? r.height : window.innerHeight;
     var k = Math.max(W / 1200, H / 800);
-    plGrid.style.setProperty('--pl-gs', (60 * k) + 'px');
-    plGrid.style.setProperty('--pl-gx', ((W - 1200 * k) / 2) + 'px');
-    plGrid.style.setProperty('--pl-gy', (((H - 800 * k) / 2) + 57.5 * k) + 'px');
+    var lr = loader.getBoundingClientRect();
+    var sc = loader.querySelector('.pl-scope');
+    var sr = sc ? sc.getBoundingClientRect() : null;
+    var split = sr && sr.height ? sr.top - lr.top + sr.height / 2 : lr.height / 2;
+    split = Math.max(lr.height * 0.2, Math.min(lr.height * 0.8, split));
+    loader.style.setProperty('--pl-split', split + 'px');
+    loader.style.setProperty('--pl-gs', (60 * k) + 'px');
+    loader.style.setProperty('--pl-gx', ((W - 1200 * k) / 2) + 'px');
+    loader.style.setProperty('--pl-gy', (((H - 800 * k) / 2) + 57.5 * k) + 'px');
   }
   syncGrid();
   window.addEventListener('resize', syncGrid);
@@ -2001,6 +2012,7 @@ html.pl-skip #pageLoader{display:none!important}
   function finish(){
     if(finished) return; finished = true; finishedAt = performance.now();
     try{ sessionStorage.setItem('plSeen','1'); }catch(e){}
+    syncGrid();
     loader.classList.add('pl-closed');
     playClose();
     txt.textContent = 'BREAKER CLOSED';
