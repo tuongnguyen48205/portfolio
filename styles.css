@@ -1922,3 +1922,26 @@
     .local-time-corner{display:none;}
     h1.name{white-space:normal;font-size:clamp(1.8rem,8vw,2.6rem);}
   }
+
+@keyframes introFade{from{opacity:0}}
+@keyframes introRise{from{opacity:0;transform:translateY(14px)}}
+
+html.intro-pending:not(.intro-go) .circuit-bg .circuit-decor-desktop,
+html.intro-pending:not(.intro-go) .circuit-bg .circuit-decor-mobile,
+html.intro-pending:not(.intro-go) footer,
+html.intro-pending:not(.intro-go) nav,
+html.intro-pending:not(.intro-go) .hero-grid > *,
+html.intro-pending.pl-skip:not(.intro-go) #busRail{opacity:0}
+html.intro-pending:not(.intro-go) *,
+html.intro-pending:not(.intro-go) *::before,
+html.intro-pending:not(.intro-go) *::after{animation-play-state:paused!important}
+
+html.intro-pending.intro-go .circuit-bg .circuit-decor-desktop,
+html.intro-pending.intro-go .circuit-bg .circuit-decor-mobile{animation:introFade 2s ease-out .2s both}
+html.intro-pending.intro-go footer{animation:introFade 1.6s ease-out .8s both}
+html.intro-pending.intro-go nav{animation:introFade 1.2s ease-out .3s both}
+html.intro-pending.intro-go .hero-grid > :nth-child(1){animation:introRise 1.2s cubic-bezier(.2,.7,.2,1) .45s both}
+html.intro-pending.intro-go .hero-grid > :nth-child(2){animation:introFade 1.6s ease-out .8s both}
+html.intro-pending.intro-go.pl-skip #busRail{animation:introFade 1.2s ease-out .6s both}
+
+html.intro-pending h1.name{animation-delay:.6s;animation-fill-mode:backwards}
