@@ -1996,7 +1996,7 @@ html.pl-skip #pageLoader{display:none!important}
       var ox = hasDot ? dr.left + dr.width / 2 : px(10) + len / 2;
       var oy = hasDot ? dr.top + dr.height / 2 : py(20);
       if(hasDot) dotLaunch.style.visibility = 'hidden';
-      var sd = 930, sdelay = 150;
+      var sdelay = 150, srcArrive = travel + stagger * 4 + 160, sd = srcArrive - sdelay;
       for(var j = 0; j < 5; j++){
         var sz = 8 - j * 1.2;
         var comet = document.createElement('div');
@@ -2066,7 +2066,7 @@ html.pl-skip #pageLoader{display:none!important}
       revealRail(true);
       var out = layer.animate([{opacity: 1}, {opacity: 0}], {duration: 300, fill: 'forwards'});
       out.onfinish = function(){ layer.remove(); };
-    }, travel + stagger * 4 + 60);
+    }, travel + stagger * 4 + 160);
     return true;
   }
 
