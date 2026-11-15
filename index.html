@@ -54,6 +54,10 @@ html.pl-skip #pageLoader{display:none!important}
 #pageLoader .pl-bot::after{top:0}
 #pageLoader.pl-done .pl-half::after{opacity:1}
 #pageLoader.pl-done .pl-scope{opacity:0;transition:none}
+#pageLoader .pl-pctwrap{display:inline-flex;align-items:center;gap:.75em}
+#pageLoader .pl-dot{display:block;width:8px;height:8px;border-radius:50%;flex:none;background:var(--accent,#3dd9ff);
+  opacity:calc(.14 + .86 * var(--pl-b,0));box-shadow:0 0 calc(12px * var(--pl-b,0)) calc(2px * var(--pl-b,0)) var(--accent,#3dd9ff)}
+#pageLoader.pl-closed .pl-dot{background:var(--accent2,var(--accent,#3dd9ff));box-shadow:0 0 12px 2px var(--accent2,var(--accent,#3dd9ff))}
 #pageLoader .pl-core{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;
   gap:clamp(16px,4vh,40px);transition:opacity .35s ease,transform .5s ease}
 #pageLoader .pl-scope{width:100%;height:clamp(110px,30vh,320px)}
@@ -173,7 +177,7 @@ html.pl-skip #pageLoader{display:none!important}
         <text class="pl-bletter" x="390" y="44">E</text>
         <circle class="pl-spark" id="plSpark" cx="10" cy="20" r="4"/>
       </svg>
-      <div class="pl-status"><span id="plText">ENERGISING BUS A</span><span id="plPct">0%</span></div>
+      <div class="pl-status"><span id="plText">ENERGISING BUS A</span><span class="pl-pctwrap"><span class="pl-dot" id="plDot"></span><span id="plPct">0%</span></span></div>
     </div>
   </div>
 </div>
@@ -1781,12 +1785,23 @@ html.pl-skip #pageLoader{display:none!important}
   var railHide = document.createElement('style');
   railHide.textContent = '#busRail{opacity:0!important}';
   document.head.appendChild(railHide);
+  var railWait = document.createElement('style');
+  railWait.textContent = '#busRail .bus-current{opacity:0}#busRail .bus-node-wrap.active .bus-dot{border-color:var(--line);background:var(--bg-alt);box-shadow:none}#busRail .bus-node-wrap.active .bus-letter{color:var(--text-dim)}';
+  var railFade = document.createElement('style');
+  railFade.textContent = '#busRail .bus-current{transition:opacity .8s ease}#busRail .bus-node-wrap .bus-dot{transition:.6s}';
+  document.head.appendChild(railFade);
+  document.head.appendChild(railWait);
+  function releaseRail(){
+    if(railWait.parentNode) railWait.remove();
+    setTimeout(function(){ if(railFade.parentNode) railFade.remove(); }, 1200);
+  }
   var flying = false;
   function revealRail(fade){
     if(!railHide.parentNode) return;
     railHide.remove();
     var r = document.getElementById('busRail');
     if(fade && r && r.animate) r.animate([{opacity: 0}, {opacity: 1}], {duration: 300, easing: 'ease-out'});
+    setTimeout(releaseRail, fade ? 450 : 0);
   }
   var fill = document.getElementById('plFill'),
       spark = document.getElementById('plSpark'),
@@ -1798,6 +1813,7 @@ html.pl-skip #pageLoader{display:none!important}
       bnodes = loader.querySelectorAll('.pl-bnode'),
       bletters = loader.querySelectorAll('.pl-bletter');
   var root = document.documentElement, body = document.body;
+  var dotEl = document.getElementById('plDot');
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function syncGrid(){
     var bg = document.querySelector('.circuit-bg');
@@ -1963,12 +1979,47 @@ html.pl-skip #pageLoader{display:none!important}
     layer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:2147483001';
 
     var bar = document.createElement('div');
-    bar.style.cssText = 'position:absolute;left:0;top:0;transform-origin:0 50%;background:' + ac2 + ';box-shadow:0 0 8px ' + ac2 + ';width:' + len + 'px;height:' + T + 'px';
+    bar.style.cssText = 'position:absolute;left:0;top:0;transform-origin:50% 50%;background:' + ac2 + ';box-shadow:0 0 8px ' + ac2 + ';width:' + len + 'px;height:' + T + 'px';
     layer.appendChild(bar);
     bar.animate([
       {transform: 'translate(' + px(10) + 'px,' + (py(20) - T / 2) + 'px) scaleX(1)'},
       {transform: 'translate(' + px(10) + 'px,' + (py(20) - T / 2) + 'px) scaleX(0)'}
-    ], {duration: 560, easing: 'cubic-bezier(.6,0,.2,1)', fill: 'forwards'});
+    ], {duration: 380, easing: 'cubic-bezier(.6,0,.2,1)', fill: 'forwards'});
+
+    var srcEl = document.getElementById('busSource');
+    var cr = srcEl ? srcEl.getBoundingClientRect() : null;
+    if(cr && cr.width > 4 && cr.height > 4){
+      var ccx = cr.left + cr.width / 2, ccy = cr.top + cr.height / 2;
+      var dotLaunch = document.getElementById('plDot');
+      var dr = dotLaunch ? dotLaunch.getBoundingClientRect() : null;
+      var hasDot = dr && dr.width > 2;
+      var ox = hasDot ? dr.left + dr.width / 2 : px(10) + len / 2;
+      var oy = hasDot ? dr.top + dr.height / 2 : py(20);
+      if(hasDot) dotLaunch.style.visibility = 'hidden';
+      var sd = 930, sdelay = 150;
+      for(var j = 0; j < 5; j++){
+        var sz = 8 - j * 1.2;
+        var comet = document.createElement('div');
+        comet.style.cssText = 'position:absolute;left:0;top:0;border-radius:50%;opacity:0;width:' + sz + 'px;height:' + sz + 'px;background:' + ac2 + ';box-shadow:0 0 ' + (10 - j) + 'px ' + ac2;
+        layer.appendChild(comet);
+        var cop = 1 - j * 0.17;
+        var can = comet.animate(arc(
+          ox, oy, ccx, ccy, ' translate(-50%,-50%)',
+          {opacity: cop}, {opacity: cop}
+        ), {duration: sd, delay: sdelay + j * 38, easing: lift, fill: j === 0 ? 'both' : 'forwards'});
+        can.onfinish = (function(el){ return function(){ el.remove(); }; })(comet);
+      }
+      for(var q = 0; q < 2; q++){
+        var rip = document.createElement('div');
+        rip.style.cssText = 'position:fixed;pointer-events:none;z-index:2147483001;box-sizing:border-box;border-radius:50%;opacity:0;border:' + (2 - q * 0.5) + 'px solid ' + ac2 + ';width:24px;height:24px;left:' + (ccx - 12) + 'px;top:' + (ccy - 12) + 'px';
+        document.body.appendChild(rip);
+        var ran = rip.animate([
+          {transform: 'scale(1)', opacity: 0.9 - q * 0.25},
+          {transform: 'scale(3.2)', opacity: 0}
+        ], {duration: 700, delay: sdelay + sd - 30 + q * 130, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards'});
+        ran.onfinish = (function(el){ return function(){ el.remove(); }; })(rip);
+      }
+    }
 
     for(var i = 0; i < 5; i++){
       var wrap = wraps[i];
@@ -2056,6 +2107,7 @@ html.pl-skip #pageLoader{display:none!important}
     }
 
     var p = pct / 100;
+    if(dotEl) dotEl.style.setProperty('--pl-b', p.toFixed(3));
     var slip = (1 - p) * (1 - p);
     var diff = finished ? 0 : slip * TAU * 2;
     var drive = (now / 1000) * 4;
