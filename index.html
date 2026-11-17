@@ -110,6 +110,51 @@ html.pl-skip #pageLoader{display:none!important}
   background:var(--pl-bg,var(--bg,#0f151d));transition:opacity .22s ease}
 #pageExit.pe-go{opacity:1;pointer-events:all}
 </style>
+<style id="cursorLockOnStyles">
+#cursorLockOn{position:fixed;left:0;top:0;width:0;height:0;z-index:2147482990;pointer-events:none;display:none;
+  --lk:var(--accent,#3dd9ff);--lk2:var(--accent2,var(--accent,#3dd9ff));will-change:transform}
+#cursorLockOn.lk-on{display:block}
+#cursorLockOn .lk-box,#cursorLockOn .lk-ring,#cursorLockOn .lk-dot{position:absolute;left:0;top:0}
+#cursorLockOn .lk-box{width:56px;height:56px;margin:-28px 0 0 -28px;
+  filter:drop-shadow(0 0 5px var(--lk));animation:lkBox 1s linear forwards}
+#cursorLockOn .lk-c{position:absolute;width:15px;height:15px;border:0 solid var(--lk);display:block}
+#cursorLockOn .lk-tl{top:0;left:0;border-width:2px 0 0 2px}
+#cursorLockOn .lk-tr{top:0;right:0;border-width:2px 2px 0 0}
+#cursorLockOn .lk-bl{bottom:0;left:0;border-width:0 0 2px 2px}
+#cursorLockOn .lk-br{bottom:0;right:0;border-width:0 2px 2px 0}
+#cursorLockOn .lk-ring{width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;
+  border:2px solid var(--lk2);box-shadow:0 0 12px var(--lk2);animation:lkRing 1s linear forwards}
+#cursorLockOn .lk-dot{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;
+  background:var(--lk2);box-shadow:0 0 10px 2px var(--lk2);animation:lkDot 1s linear forwards}
+@keyframes lkBox{
+  0%{transform:scale(3.6) rotate(90deg);opacity:0;animation-timing-function:cubic-bezier(.16,.9,.24,1)}
+  12%{opacity:1}
+  50%{transform:scale(1) rotate(0deg);animation-timing-function:ease-out}
+  60%{transform:scale(.82);animation-timing-function:ease-in-out}
+  72%{transform:scale(1);opacity:1}
+  86%{transform:scale(1);opacity:1}
+  100%{transform:scale(1);opacity:0}
+}
+@keyframes lkRing{
+  0%{transform:scale(4.4);opacity:0;animation-timing-function:cubic-bezier(.16,.9,.24,1)}
+  15%{opacity:.85}
+  50%{transform:scale(.7);opacity:.9;animation-timing-function:ease-out}
+  100%{transform:scale(2.6);opacity:0}
+}
+@keyframes lkDot{
+  0%,40%{transform:scale(0);opacity:0}
+  52%{transform:scale(2);opacity:1}
+  70%{transform:scale(1);opacity:1}
+  86%{transform:scale(1);opacity:1}
+  100%{transform:scale(1);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+  #cursorLockOn .lk-box{animation:lkFade 1s linear forwards}
+  #cursorLockOn .lk-ring{display:none}
+  #cursorLockOn .lk-dot{animation:lkFade 1s linear forwards}
+}
+@keyframes lkFade{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
+</style>
 <noscript><style>#pageLoader{display:none!important}</style></noscript>
 <script>try{
   var seen=sessionStorage.getItem("plSeen")==="1";
@@ -2190,6 +2235,45 @@ html.pl-skip #pageLoader{display:none!important}
   });
 
   window.addEventListener('pageshow', function(e){ if(e.persisted || busy) reset(); });
+})();
+</script>
+<script>
+(function(){
+  var x = 0, y = 0, known = false, raf = 0, timer = 0;
+  var el = document.createElement('div');
+  el.id = 'cursorLockOn';
+  el.setAttribute('aria-hidden', 'true');
+  el.innerHTML = '<div class="lk-ring"></div>' +
+    '<div class="lk-box"><i class="lk-c lk-tl"></i><i class="lk-c lk-tr"></i><i class="lk-c lk-bl"></i><i class="lk-c lk-br"></i></div>' +
+    '<div class="lk-dot"></div>';
+  document.body.appendChild(el);
+
+  function track(e){
+    if(e.pointerType === 'touch') return;
+    x = e.clientX; y = e.clientY; known = true;
+  }
+  window.addEventListener('pointermove', track, {passive:true});
+  window.addEventListener('pointerdown', track, {passive:true});
+
+  function place(){ el.style.transform = 'translate(' + x + 'px,' + y + 'px)'; }
+  function follow(){ place(); raf = requestAnimationFrame(follow); }
+  function stop(){ cancelAnimationFrame(raf); el.classList.remove('lk-on'); }
+
+  function play(){
+    if(!known) return;
+    clearTimeout(timer);
+    cancelAnimationFrame(raf);
+    el.classList.remove('lk-on');
+    void el.offsetWidth;
+    place();
+    el.classList.add('lk-on');
+    follow();
+    timer = setTimeout(stop, 1050);
+  }
+
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Control' && !e.repeat) play();
+  });
 })();
 </script>
 <script src="script.js" defer></script>
