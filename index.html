@@ -2271,8 +2271,52 @@ html.pl-skip #pageLoader{display:none!important}
     timer = setTimeout(stop, 1050);
   }
 
+  var actx = null;
+  function audio(){
+    if(!actx){
+      try{
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if(AC) actx = new AC();
+      }catch(_){ actx = null; }
+    }
+    if(actx && actx.state === 'suspended') actx.resume().catch(function(){});
+    return actx;
+  }
+
+  function tone(type, f0, f1, t0, dur, vol, master){
+    var o = actx.createOscillator();
+    var g = actx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f0, t0);
+    if(f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(master);
+    o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+
+  function lockSound(){
+    var c = audio();
+    if(!c) return;
+    try{
+      var t = c.currentTime;
+      var master = c.createGain();
+      master.gain.value = 0.28;
+      master.connect(c.destination);
+
+      tone('sawtooth', 1800, 300, t, 0.5, 0.35, master);
+      tone('square', 900, 900, t + 0.5, 0.07, 0.4, master);
+      tone('square', 1350, 1350, t + 0.58, 0.14, 0.4, master);
+      tone('sine', 120, 45, t + 0.5, 0.25, 0.9, master);
+    }catch(_){}
+  }
+
   window.addEventListener('keydown', function(e){
-    if(e.key === 'Control' && !e.repeat) play();
+    if(e.key === 'Control' && !e.repeat){
+      play();
+      lockSound();
+    }
   });
 })();
 </script>
